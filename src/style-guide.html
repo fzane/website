@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiet Bench — Design Guide · franciszane.github.io</title>
+<meta name="description" content="The design system for Francis Zane's research notebook site. This file IS the spec: the CSS in the DESIGN SYSTEM block below is the reference implementation.">
+
+<!-- ============================================================
+     FONTS — exactly three families, loaded once.
+     Lora           : headings, leads, slide titles (400–600 + italic)
+     Atkinson Hyperlegible : all body & UI text (400, 700 + italic)
+     Caveat         : hand-written margin notes ONLY (400–600)
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+
+<style>
+/* ================================================================
+   PART 1 — THE DESIGN SYSTEM ("Quiet Bench")
+   Copy this block. Everything here is normative — including the
+   comments. The budgets in comments are rules, not advice.
+   ================================================================ */
+
+:root{
+  /* ---- ground ---- */
+  --paper:      #fbfaf6;   /* page background — warm off-white, never pure white   */
+  --card:       #ffffff;   /* card / raised surface                                 */
+  --well:       #f2efe7;   /* recessed surface: image placeholders, code wells      */
+  --line:       #e5e1d6;   /* hairline borders, 1px solid                           */
+  --line-dash:  #d8d3c4;   /* dashed borders for "absent / negative" items          */
+
+  /* ---- ink (4 steps, warm gray — never cool gray, never #000) ---- */
+  --ink:        #211f1a;   /* headings, strong emphasis                             */
+  --body:       #56524a;   /* body text                                             */
+  --muted:      #6e6a60;   /* secondary text, neutral-tag text                      */
+  --faint:      #9e998c;   /* captions, page numbers, scene labels, folios          */
+
+  /* ---- working colors: muted, each with ONE job ---- */
+  --blue:  #44549e;   /* PRIMARY: links, primary tags, structural emphasis          */
+  --clay:  #c06243;   /* KEY FINDING: the one colored word per screen, accent rules */
+  --moss:  #5e7a4a;   /* CATEGORY: content-type labels, About-section accents       */
+  --gold:  #b08c3d;   /* METADATA: tertiary labels, topic chips                     */
+  --tag-neutral-bg: #efe9da;  /* quiet tag background (with --muted text)           */
+
+  /* ---- hand (the only Penciled import — see §4.3) ---- */
+  --pencil: #8a8068;  /* default ink for Caveat margin notes                        */
+
+  /* ---- warm dark scene (≤2 per essay, never consecutive — §7.2) ---- */
+  --dark-bg:    #26221b;   /* warm charcoal, NOT black                              */
+  --dark-card:  #322d23;
+  --dark-line:  #46402f;
+  --dark-ink:   #f3efe6;
+  --dark-body:  #c4b69b;
+  --dark-faint: #8a7a5f;
+  --blue-dark:  #9aa8e0;   /* lightened working colors for dark ground              */
+  --clay-dark:  #d99a76;
+  --gold-dark:  #d4b36a;
+
+  /* ---- type stacks ---- */
+  --serif: 'Lora', Georgia, serif;
+  --sans:  'Atkinson Hyperlegible', -apple-system, 'Segoe UI', sans-serif;
+  --hand:  'Caveat', cursive;
+  --mono:  ui-monospace, Menlo, Consolas, monospace; /* literal markup ONLY — §5.5 */
+
+  /* ---- geometry ---- */
+  --r-card:  10px;         /* cards                                                 */
+  --r-thumb: 7px;          /* images, thumbnails, wells                             */
+  --r-tag:   5px;          /* overlay tags                                          */
+  --shadow-card:  0 2px 8px  rgba(40,35,25,.05);   /* resting card                  */
+  --shadow-float: 0 6px 22px rgba(40,35,25,.07);   /* featured / floating card      */
+
+  /* ---- layout ---- */
+  --measure: 56ch;         /* max body-text line length                             */
+  --content-max: 1000px;   /* site content column                                   */
+  --pad-x: clamp(28px, 8vw, 100px);  /* page side padding                           */
+}
+
+/* ---- base ---- */
+.qb { background: var(--paper); color: var(--ink); font-family: var(--sans);
+      font-size: 17.5px; line-height: 1.75; }
+.qb p { color: var(--body); max-width: var(--measure); margin: 0 0 1em 0; }
+
+/* ---- headings (Lora 500, tight leading, small negative tracking) ----
+   NOTHING sits above a heading. No kicker, no label, no eyebrow —
+   in any case, weight, or color. A scene or section OPENS with its
+   title. (Wayfinding lives in the running footer — §7.1.) */
+.qb-display { font-family: var(--serif); font-weight: 500; font-size: 80px;
+              line-height: 1.0; letter-spacing: -0.015em; color: var(--ink); margin: 0; }
+.qb-h1      { font-family: var(--serif); font-weight: 500; font-size: 58px;
+              line-height: 1.0; letter-spacing: -0.015em; color: var(--ink); margin: 0; }
+.qb-h2      { font-family: var(--serif); font-weight: 500; font-size: 28px;
+              line-height: 1.2;  color: var(--ink); margin: 0; }
+.qb-h3      { font-family: var(--serif); font-weight: 500; font-size: 33px;
+              line-height: 1.2;  color: var(--ink); margin: 0; }
+.qb-lead    { font-family: var(--serif); font-style: italic; font-weight: 400;
+              font-size: 25px; line-height: 1.5; color: #36332c; margin: 0; }
+.qb-small   { font-size: 14.5px; }
+.qb-caption { font-size: 13px; color: var(--faint); }
+
+/* ---- the accent rule: a short straight stroke under display text.
+        ONCE per page (site name) or per essay (cover title only).
+        Never under interior scene titles, never under H2/H3,
+        never full width, never vertical (no left-border accents). ---- */
+.qb-rule       { border: none; border-top: 2px solid var(--clay);
+                 width: 220px; margin: 18px 0 0 4px; }
+.qb-rule.moss  { border-top-color: var(--moss); width: 96px; }
+
+/* ---- colored-word emphasis: color + bold in sans, color only in serif.
+        BUDGET (hard, per screen/scene): ONE clay moment, max TWO blue
+        elements. A clay moment = one word/phrase OR one rule OR one
+        prompt-delta — not one of each. NEVER background highlights. ---- */
+.qb-em-blue { color: var(--blue); font-weight: 700; }
+.qb-em-clay { color: var(--clay); font-weight: 700; }
+.qb p .qb-em-blue, .qb p .qb-em-clay { font-weight: 700; }
+.qb-serif-em { color: var(--clay); font-weight: inherit; } /* inside Lora text */
+
+/* ---- links ---- */
+.qb-link        { color: var(--blue); font-weight: 700; text-decoration: none; }
+.qb-link:hover  { text-decoration: underline; text-underline-offset: 3px; }
+.qb-link-ext::after { content: " ↗"; }
+.qb-link-more::after { content: " →"; }
+
+/* ---- nav: each item owns one working color; active = 2px underline ---- */
+.qb-nav { display: flex; gap: 32px; font-size: 15.5px; }
+.qb-nav a { color: var(--muted); text-decoration: none; padding-bottom: 2px; }
+.qb-nav a:hover { color: var(--ink); }
+.qb-nav a.active { color: var(--ink); border-bottom: 2px solid var(--nav-c, var(--blue)); }
+
+/* ---- wordmark ---- */
+.qb-mark { font-family: var(--serif); font-weight: 500; font-size: 22px; color: var(--ink); }
+.qb-mark b { color: var(--clay); font-weight: 500; }  /* the asterisk */
+
+/* ---- overlay tags: lowercase, sit ON the top edge of cards/figures.
+        Solid blue = primary identity tag. Neutral = secondary garnish. ---- */
+.qb-tag { position: absolute; top: -10px; left: 14px; z-index: 1;
+          background: var(--blue); color: #fff; font-family: var(--sans);
+          font-size: 11.5px; font-weight: 400; letter-spacing: 0.08em;
+          padding: 2px 11px; border-radius: var(--r-tag); }
+.qb-tag.neutral { background: var(--tag-neutral-bg); color: var(--muted); }
+
+/* ---- cards ---- */
+.qb-card { position: relative; background: var(--card);
+           border: 1px solid var(--line); border-radius: var(--r-card);
+           box-shadow: var(--shadow-card); padding: 38px 44px; }
+.qb-card.float { box-shadow: var(--shadow-float); }
+
+/* ---- meta row: date is plain; categories get a 1.5px colored underline ---- */
+.qb-meta { display: flex; gap: 18px; font-size: 13.5px; }
+.qb-meta .date { color: var(--muted); }
+.qb-meta .cat  { text-decoration: none; padding-bottom: 1px; border-bottom: 1.5px solid; }
+.qb-meta .cat.moss { color: var(--moss); border-color: var(--moss); }
+.qb-meta .cat.gold { color: var(--gold); border-color: var(--gold); }
+.qb-meta .cat.blue { color: var(--blue); border-color: var(--blue); }
+
+/* ---- figures & placeholders ---- */
+.qb-thumb { background: var(--well); border: 1px solid var(--line);
+            border-radius: var(--r-thumb); }
+.qb-thumb.absent { border: 1px dashed var(--line-dash); opacity: 0.55; }
+.qb-ph-label { display: flex; align-items: center; justify-content: center;
+               height: 100%; font-size: 11px; letter-spacing: 0.12em;
+               text-transform: uppercase; color: var(--faint); }
+
+/* ---- quoted long material (briefs, excerpts) — §4.5.
+        Lora italic, muted, indented behind a 1px HAIRLINE — never a
+        2px clay border (a clay left-border is not an accent rule).
+        Zero working colors inside the quote itself. ---- */
+.qb-brief { font-family: var(--serif); font-style: italic; font-weight: 400;
+            font-size: 19px; line-height: 1.65; color: var(--muted);
+            border-left: 1px solid var(--line); padding-left: 24px;
+            max-width: 60ch; margin: 0; }
+
+/* ---- evidence chips: convergent outputs (names, colorways, quotes).
+        Serif value + lowercase faint attribution on a white card.
+        Exceptions: dashed + dimmed (same grammar as absent figures). ---- */
+.qb-item { display: inline-flex; align-items: baseline; gap: 12px;
+           background: var(--card); border: 1px solid var(--line);
+           border-radius: var(--r-card); box-shadow: var(--shadow-card);
+           padding: 13px 22px; font-family: var(--serif); font-weight: 500;
+           font-size: 21px; color: var(--ink); }
+.qb-item .who { font-family: var(--sans); font-weight: 400; font-size: 11.5px;
+                letter-spacing: 0.06em; color: var(--faint); }
+.qb-item.cold { opacity: 0.55; border-style: dashed; border-color: var(--line-dash);
+                box-shadow: none; }
+
+/* ---- literal markup chip: mono is legal ONLY for text that literally
+        appears in source code. Prices, chip names, taglines are serif. ---- */
+.qb-code-chip { display: inline-flex; align-items: baseline; gap: 12px;
+                background: var(--well); border: 1px solid var(--line);
+                border-radius: var(--r-card); padding: 12px 18px; }
+.qb-code-chip code { font-family: var(--mono); font-size: 14px; color: var(--ink); }
+.qb-code-chip .who { font-family: var(--sans); font-size: 11.5px; color: var(--faint); }
+
+/* ---- hand note (Caveat) — the ONLY hand element. Ration in §4.3:
+        max one per act, 2–3 per essay, never consecutive scenes,
+        never on dark ground, pencil or clay only (never gold). ---- */
+.qb-hand { font-family: var(--hand); font-size: 21px; line-height: 1.35;
+           color: var(--pencil); transform: rotate(-2deg); display: inline-block; }
+.qb-hand.clay { color: var(--clay); }
+
+/* ---- numbered sidenote (footnote that lives in the margin column) ---- */
+.qb-sup  { color: var(--clay); font-size: 13px; font-weight: 700; }
+.qb-side { font-size: 14.5px; line-height: 1.6; color: var(--muted); }
+.qb-side b { color: var(--clay); }
+
+/* ---- running footer for essays/decks: ALL Atkinson, 13px, faint.
+        Deck title left, "n / N" right. Never serif, never bold. ---- */
+.qb-foot { display: flex; justify-content: space-between;
+           font-family: var(--sans); font-size: 13px; color: var(--faint); }
+
+/* ---- dark scene (≤2 per essay, never consecutive — §7.2) ---- */
+.qb-dark { background: var(--dark-bg); color: var(--dark-ink); }
+.qb-dark p { color: var(--dark-body); }
+.qb-dark .qb-card { background: var(--dark-card); border-color: var(--dark-line);
+                    box-shadow: 0 12px 36px rgba(0,0,0,.35); }
+.qb-dark .qb-tag  { background: var(--blue-dark); color: #1d1b15; }
+.qb-dark .qb-caption, .qb-dark .qb-foot { color: var(--dark-faint); }
+
+/* ================================================================
+   PART 2 — GUIDE SCAFFOLDING ONLY (presentation of this document;
+   not part of the design system — do not copy into the site)
+   ================================================================ */
+body { margin: 0; -webkit-font-smoothing: antialiased; }
+.g-wrap { max-width: 1080px; margin: 0 auto; padding: 72px var(--pad-x) 140px; }
+.g-section { margin-top: 96px; }
+.g-sec-head { display: flex; align-items: baseline; gap: 16px;
+              border-top: 1px solid var(--line); padding-top: 22px; margin-bottom: 8px; }
+.g-sec-num { font-size: 14.5px; color: var(--faint); }
+.g-demo { background: var(--card); border: 1px solid var(--line);
+          border-radius: var(--r-card); padding: 44px 48px; margin-top: 28px; }
+.g-demo.on-paper { background: var(--paper); }
+.g-note { font-size: 14.5px; color: var(--muted); margin-top: 12px; max-width: 70ch; }
+.g-row { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+table.g-spec { border-collapse: collapse; width: 100%; margin-top: 20px;
+               font-size: 14.5px; }
+table.g-spec th { text-align: left; font-weight: 700; color: var(--ink);
+                  border-bottom: 1px solid var(--line); padding: 8px 18px 8px 0; }
+table.g-spec td { border-bottom: 1px solid var(--line); padding: 10px 18px 10px 0;
+                  color: var(--body); vertical-align: baseline; }
+.g-swatch { width: 170px; }
+.g-swatch .chip { height: 64px; border-radius: var(--r-thumb); border: 1px solid var(--line); }
+.g-swatch .nm { font-weight: 700; font-size: 14.5px; margin-top: 10px; color: var(--ink); }
+.g-swatch .hx { font-size: 13px; color: var(--faint); }
+.g-swatch .job { font-size: 13.5px; color: var(--body); line-height: 1.45; margin-top: 2px; }
+code, .g-code { font-family: ui-monospace, Menlo, Consolas, monospace;
+                font-size: 13px; background: var(--well); border-radius: 4px;
+                padding: 1px 6px; color: var(--ink); }
+pre.g-code { padding: 18px 22px; overflow-x: auto; line-height: 1.6; margin: 16px 0 0 0; }
+.g-slide { width: 1280px; height: 720px; box-sizing: border-box;
+           border: 1px solid var(--line); border-radius: var(--r-thumb);
+           overflow: hidden; zoom: 0.72; }
+.g-dont li { margin-bottom: 8px; }
+ul.g-list { padding-left: 22px; }
+ul.g-list li { margin-bottom: 8px; color: var(--body); max-width: 70ch; }
+.g-bad-good { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 24px; }
+.g-bg-cell { border: 1px solid var(--line); border-radius: var(--r-card);
+             padding: 26px 28px; background: var(--paper); }
+.g-bg-cell .lbl { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+                  font-weight: 700; margin-bottom: 16px; }
+.g-bg-cell .lbl.bad  { color: #a0432a; }
+.g-bg-cell .lbl.good { color: var(--moss); }
+</style>
+</head>
+
+<body class="qb">
+<div class="g-wrap">
+
+  <!-- ==================== HEADER ==================== -->
+  <header>
+    <div class="qb-caption" style="letter-spacing:.12em; text-transform:uppercase;">franciszane.github.io · design system · June 2026</div>
+    <h1 class="qb-display" style="margin-top:28px;">Quiet Bench</h1>
+    <hr class="qb-rule">
+    <p class="qb-lead" style="margin-top:34px; max-width:44ch;">A calm, warm system for a research notebook — serif voice, muted working colors, and the occasional pencil note in the margin.</p>
+    <p style="margin-top:24px;">This page is both the documentation and the reference implementation. The CSS in the <code>PART 1 — THE DESIGN SYSTEM</code> block of this file is normative — <b>including its comments</b>; the budgets written there are rules, not advice. <code>PART 2</code> styles only this guide. The site this serves mixes visual essays (scroll-scene decks), experiments, and standard pages; everything below applies to all of them unless marked otherwise. Matching the tokens is necessary but not sufficient — the composition rules and color budgets carry equal weight.</p>
+  </header>
+
+  <!-- ==================== 1 · PRINCIPLES ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">1</span><h2 class="qb-h2">Principles</h2></div>
+    <ul class="g-list" style="margin-top:18px;">
+      <li><b>Informal, not casual.</b> The voice of an enthusiastic tinkerer: lowercase tags, plain words, visible delight — but precise spacing and restrained color. Never LinkedIn-hype, never MBA-deck.</li>
+      <li><b>Visuals carry the argument.</b> This site is a conscious alternative to the long post. Prefer a figure, a comparison grid, or one strong sentence over a paragraph.</li>
+      <li><b>Color is labor, not decoration.</b> Four muted working colors, each with one job (§3). A colored word is the emphasis system; backgrounds stay quiet.</li>
+      <li><b>One thousand no's.</b> Empty space is a feature. Never pad with stats, icons, or filler sections.</li>
+      <li><b>Composition is the spec too.</b> Correct tokens assembled like a marketing page are still wrong. Every screen should match one of the archetypes in §5–§7; when in doubt, copy an archetype wholesale rather than improvising with the tokens.</li>
+    </ul>
+  </section>
+
+  <!-- ==================== 2 · TYPOGRAPHY ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">2</span><h2 class="qb-h2">Typography</h2></div>
+    <p style="margin-top:18px;">Three families, no more. <b>Lora</b> (weight 500, slight negative tracking) is the heading voice. <b>Atkinson Hyperlegible</b> is every other word — body, UI, captions, tags. <b>Caveat</b> appears only as hand notes (§4.3). Monospace exists solely for literal markup (§5.5). No condensed or display faces.</p>
+    <p><b>Headings open cold.</b> Nothing ever sits above a heading: no kicker, no eyebrow, no label — uppercase <i>or lowercase</i>, bold <i>or regular</i>, colored <i>or muted</i>. A lowercase muted label above a title is still a kicker. Wayfinding belongs in the running footer (§7.1).</p>
+
+    <div class="g-demo">
+      <div class="qb-display">Francis Zane</div>
+      <div class="qb-caption" style="margin-top:6px;">Display — Lora 500 · 80px · line-height 1.0 · letter-spacing −0.015em · site name and essay cover title only</div>
+      <div class="qb-h1" style="margin-top:36px;">About</div>
+      <div class="qb-caption" style="margin-top:6px;">H1 page title — Lora 500 · 58px · always followed by an accent rule (§4.1)</div>
+      <div class="qb-h3" style="margin-top:36px;">Nobody Chose the Headphones</div>
+      <div class="qb-caption" style="margin-top:6px;">H3 card / entry title — Lora 500 · 33px · line-height 1.2</div>
+      <div class="qb-h2" style="margin-top:36px;">Experiments</div>
+      <div class="qb-caption" style="margin-top:6px;">H2 section heading — Lora 500 · 28px</div>
+      <p class="qb-lead" style="margin-top:36px;">I build small things to find out what's true.</p>
+      <div class="qb-caption" style="margin-top:6px;">Lead — Lora italic 400 · 25px · line-height 1.5 · color #36332c · one per page, max</div>
+      <p style="margin-top:36px; margin-bottom:0;">Body — Atkinson Hyperlegible 400 at 17.5px with 1.75 line-height and a max measure of 56ch. Emphasis inside body text is a <span class="qb-em-blue">colored bold word</span>, never italics-for-emphasis and never a highlight.</p>
+      <div class="qb-caption" style="margin-top:18px;">Caption — 13px · faint #9e998c. Small text — 14.5px · used for sidenotes and meta.</div>
+    </div>
+
+    <table class="g-spec">
+      <tr><th>Role</th><th>Font</th><th>Size / line-height</th><th>Notes</th></tr>
+      <tr><td>Display (site name / essay cover)</td><td>Lora 500</td><td>80 / 1.0</td><td>−0.015em tracking</td></tr>
+      <tr><td>H1 page title</td><td>Lora 500</td><td>58 / 1.0</td><td>followed by accent rule</td></tr>
+      <tr><td>H3 entry title</td><td>Lora 500</td><td>33 / 1.2</td><td>inside cards</td></tr>
+      <tr><td>H2 section</td><td>Lora 500</td><td>28 / 1.2</td><td></td></tr>
+      <tr><td>Lead</td><td>Lora italic 400</td><td>25 / 1.5</td><td>ink #36332c · About page only</td></tr>
+      <tr><td>Landing tagline</td><td>Atkinson 400</td><td>20 / 1.65</td><td>one blue emphasis phrase · §6</td></tr>
+      <tr><td>Body</td><td>Atkinson 400</td><td>17.5 / 1.75</td><td>#56524a · measure 56ch</td></tr>
+      <tr><td>Small / sidenote</td><td>Atkinson 400</td><td>14.5 / 1.6</td><td>#6e6a60</td></tr>
+      <tr><td>Caption / folio / footer</td><td>Atkinson 400</td><td>13 / 1.5</td><td>#9e998c · never serif, never bold</td></tr>
+      <tr><td>Tag</td><td>Atkinson 400</td><td>11.5 · +0.08em</td><td>lowercase always</td></tr>
+      <tr><td>Quoted brief</td><td>Lora italic 400</td><td>19 / 1.65</td><td>#6e6a60 · §4.5</td></tr>
+      <tr><td>Evidence chip</td><td>Lora 500</td><td>21</td><td>+ 11.5px faint attribution · §5.5</td></tr>
+      <tr><td>Hand note</td><td>Caveat 400–500</td><td>21 / 1.35</td><td>rotate −2°</td></tr>
+      <tr><td>Scene title</td><td>Lora 500</td><td>48 / 1.1</td><td>at 1280×720; scale proportionally · max 56</td></tr>
+      <tr><td>Scene body</td><td>Atkinson 400</td><td>18–19</td><td>never smaller than 18 on scenes</td></tr>
+    </table>
+  </section>
+
+  <!-- ==================== 3 · COLOR ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">3</span><h2 class="qb-h2">Color</h2></div>
+    <p style="margin-top:18px;">Warm throughout — grays lean brown, white leans cream, dark scenes are charcoal-brown, never black or cool gray. The four working colors are deliberately muted; they read as ink, not paint. <b>Each has exactly one job.</b> If two jobs collide on one element, blue wins.</p>
+
+    <div class="g-row" style="margin-top:28px;">
+      <div class="g-swatch"><div class="chip" style="background:#fbfaf6;"></div><div class="nm">paper</div><div class="hx">#fbfaf6</div><div class="job">page ground</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#ffffff;"></div><div class="nm">card</div><div class="hx">#ffffff</div><div class="job">raised surfaces</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#f2efe7;"></div><div class="nm">well</div><div class="hx">#f2efe7</div><div class="job">recessed: placeholders, code</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#211f1a;"></div><div class="nm">ink</div><div class="hx">#211f1a</div><div class="job">headings · strong text</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#56524a;"></div><div class="nm">body</div><div class="hx">#56524a</div><div class="job">body text</div></div>
+    </div>
+    <div class="g-row" style="margin-top:32px;">
+      <div class="g-swatch"><div class="chip" style="background:#44549e;"></div><div class="nm">blue · primary</div><div class="hx">#44549e</div><div class="job">links, primary tags, structural emphasis</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#c06243;"></div><div class="nm">clay · key finding</div><div class="hx">#c06243</div><div class="job">THE colored word, accent rules, the asterisk</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#5e7a4a;"></div><div class="nm">moss · category</div><div class="hx">#5e7a4a</div><div class="job">content-type labels, About accents</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#b08c3d;"></div><div class="nm">gold · metadata</div><div class="hx">#b08c3d</div><div class="job">topic chips, tertiary labels</div></div>
+      <div class="g-swatch"><div class="chip" style="background:#8a8068;"></div><div class="nm">pencil</div><div class="hx">#8a8068</div><div class="job">hand notes</div></div>
+    </div>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">3.1 — The budget (hard rules, per screen or scene)</h3>
+    <ul class="g-list" style="margin-top:14px;">
+      <li><b>Clay: one moment.</b> One word/phrase, or one accent rule, or one prompt-delta, or one hand note in clay — <i>one of these, total</i>. The second clay element on a screen is a bug.</li>
+      <li><b>Blue: at most two elements</b> (a tag and a link, say). Blue is never a label, kicker, or heading.</li>
+      <li><b>Repetition kills color.</b> In any grid or row of repeated elements, the repeated part is ink/neutral. Four prices in four cards are ink — coloring all four clay marks nothing and spends the whole budget. Color marks the <i>exception</i>, not the pattern.</li>
+      <li><b>Moss and gold</b> appear only in their §5.3 meta-row / topic-chip roles. They never migrate to scenes as decoration.</li>
+      <li>If a screen feels colorful, remove something. Zero working colors on a screen is always acceptable.</li>
+    </ul>
+
+    <div class="g-bad-good">
+      <div class="g-bg-cell">
+        <div class="lbl bad">✕ Don't — repeated clay</div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <span style="background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; font-family:var(--serif); font-size:17px;">The L-1 <b style="color:var(--clay); font-family:var(--sans); font-size:13px;">$1,280</b></span>
+          <span style="background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; font-family:var(--serif); font-size:17px;">Auralis One <b style="color:var(--clay); font-family:var(--sans); font-size:13px;">$899</b></span>
+          <span style="background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; font-family:var(--serif); font-size:17px;">Lumen Slate <b style="color:var(--clay); font-family:var(--sans); font-size:13px;">$1,290</b></span>
+        </div>
+      </div>
+      <div class="g-bg-cell">
+        <div class="lbl good">✓ Do — ink values, color only if one is the finding</div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <span style="background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; font-family:var(--serif); font-size:17px;">The L-1 <b style="color:var(--ink); font-family:var(--sans); font-size:13px;">$1,280</b></span>
+          <span style="background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; font-family:var(--serif); font-size:17px;">Auralis One <b style="color:var(--ink); font-family:var(--sans); font-size:13px;">$899</b></span>
+          <span style="background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; font-family:var(--serif); font-size:17px;">Lumen Slate <b style="color:var(--ink); font-family:var(--sans); font-size:13px;">$1,290</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 4 · EMPHASIS & ACCENTS ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">4</span><h2 class="qb-h2">Emphasis &amp; accents</h2></div>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:26px;">4.1 — The accent rule</h3>
+    <div class="g-demo on-paper">
+      <div class="qb-display" style="font-size:64px;">Francis Zane</div>
+      <hr class="qb-rule" style="width:180px;">
+      <div class="qb-h1" style="font-size:46px; margin-top:44px;">About</div>
+      <hr class="qb-rule moss" style="width:78px;">
+    </div>
+    <p class="g-note">A short, straight 2px stroke under display text — the quiet descendant of a hand-drawn underline. Clay under the site name; moss under interior page titles. Width is 30–60% of the text above it, offset 16–18px below, indented 2–4px. <b>Once per page; in an essay, under the cover title only</b> — never under interior scene titles, never under H2/H3, never full-width. The rule is always horizontal: a colored <i>left</i> border on a quote or card is not an accent rule, it's a banned trope (§9).</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">4.2 — Colored words</h3>
+    <div class="g-demo">
+      <p style="margin:0;">Working notes on AI — experiments first, words second, <span class="qb-em-blue">made to be read</span>.</p>
+      <p style="margin:18px 0 0 0;">Six AIs, one two-sentence request. Where the details in AI output <span class="qb-em-clay">actually come from</span>.</p>
+      <p class="qb-lead" style="font-size:22px; margin-top:24px;">Four of six built <span class="qb-serif-em">headphones</span>.</p>
+    </div>
+    <p class="g-note">The emphasis system. In sans body text: color + weight 700. In serif (Lora) text: color only, weight unchanged. Blue marks structure ("what this is"); clay marks findings ("what surprised us"). Never use background highlights, marker effects, or underline-as-emphasis. Budget per §3.1: one clay moment per screen.</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">4.3 — Hand notes <span style="color:var(--faint); font-weight:400;">(optional, rationed)</span></h3>
+    <div class="g-demo on-paper">
+      <div class="g-row" style="align-items:center; gap:48px;">
+        <div style="position:relative; width:300px;">
+          <span class="qb-tag neutral">results</span>
+          <div class="qb-thumb" style="height:170px;"><div class="qb-ph-label">figure</div></div>
+          <div class="qb-caption" style="margin-top:10px; font-family:var(--serif); font-style:italic; font-size:14.5px;">fig. 1 — six storefronts, one prompt.</div>
+        </div>
+        <div>
+          <span class="qb-hand">started as a bet with myself ↖</span><br>
+          <span class="qb-hand clay" style="margin-top:18px;">nobody asked for headphones!</span>
+        </div>
+      </div>
+    </div>
+    <p class="g-note">The one element imported from the "Penciled" exploration. Caveat 21px, rotated −2°, in pencil (#8a8068) or clay for excitement — never gold, never recolored for dark ground (hand notes don't appear on dark scenes at all). <b>Ration:</b> at most one per screen; in an essay, <b>at most one per act and 2–3 per essay total, never on consecutive scenes</b>. Only in margins or beside figures, never inline with body text; never carries essential information (it must be deletable without loss); plain unicode arrows (↖ ← →) may point at what it annotates. A clay hand note counts as the screen's clay moment (§3.1).</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">4.4 — Numbered sidenotes</h3>
+    <div class="g-demo">
+      <div style="display:grid; grid-template-columns:1fr 260px; gap:56px;">
+        <p style="margin:0;">Most of what's here started as a question that fit on an index card.<sup class="qb-sup">1</sup> Instead of answering with a long post, I answer with the kind of thing I'd want to sit through.</p>
+        <p class="qb-side" style="margin:0;"><b>1.</b>&nbsp; Mostly weekend-sized. A weekend is the right size for an honest question.</p>
+      </div>
+    </div>
+    <p class="g-note">Tufte-style: a clay superscript in the text, the note in the margin column at 14.5px muted. Use for asides and method details on pages that have a margin column (§6).</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">4.5 — Quoting long material <span style="color:var(--faint); font-weight:400;">(briefs, excerpts)</span></h3>
+    <div class="g-demo">
+      <div class="qb-card float" style="position:relative; max-width:720px; padding:44px 52px;">
+        <span class="qb-tag" style="left:32px; top:-11px;">the prompt + a design brief</span>
+        <p style="font-family:var(--serif); font-size:22px; line-height:1.6; margin:0; color:var(--ink);"><span style="color:var(--muted);">make a single file html page with a realistic mockup of a product page…</span> <span style="color:var(--clay);">use the following design brief:</span></p>
+        <p class="qb-brief" style="margin-top:22px;">Design a product page that feels less like a catalog entry and more like a quiet unveiling: spacious, luminous, and meticulously composed. Use a restrained palette, generous negative space, and large-scale imagery…</p>
+      </div>
+    </div>
+    <p class="g-note">Quoted long-form material (a brief, an excerpt) is Lora italic 19px in muted, indented behind a <b>1px hairline</b> left border — never a 2px clay border, never a colored lead-in line. <b>The quote itself carries zero working colors.</b> When showing a prompt that grew (base + addition), the base is muted and the addition is clay — that <i>delta</i> is the screen's entire clay budget; nothing inside the quoted material below it gets colored.</p>
+  </section>
+
+  <!-- ==================== 5 · COMPONENTS ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">5</span><h2 class="qb-h2">Components</h2></div>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:26px;">5.1 — Wordmark &amp; navigation</h3>
+    <div class="g-demo on-paper">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <div class="qb-mark">FZ<b>*</b></div>
+        <nav class="qb-nav">
+          <a href="#" class="active" style="--nav-c:#44549e;">Projects</a>
+          <a href="#" style="--nav-c:#5e7a4a;">About</a>
+          <a href="#" style="--nav-c:#c06243;">CV</a>
+        </nav>
+      </div>
+    </div>
+    <p class="g-note">Wordmark: Lora 500, 22px, with a clay asterisk. Nav: Atkinson 15.5px; inactive items are muted, the active item is ink with a 2px underline in that item's own color (Projects = blue, About = moss, CV = clay — fixed assignments).</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">5.2 — Tags</h3>
+    <div class="g-demo on-paper" style="padding-top:56px;">
+      <div class="g-row" style="gap:56px;">
+        <div style="position:relative; width:260px;">
+          <span class="qb-tag">experiment 01</span>
+          <div class="qb-thumb" style="height:90px;"></div>
+        </div>
+        <div style="position:relative; width:260px;">
+          <span class="qb-tag neutral">me, probably</span>
+          <div class="qb-thumb" style="height:90px;"></div>
+        </div>
+      </div>
+    </div>
+    <p class="g-note">Overlay tags sit ON the top edge of cards and figures (absolute, top −10px, left 14–30px). Always lowercase. <b>Solid blue</b> = the identity of the thing ("experiment 01", "the prompt, verbatim", model names). <b>Neutral</b> (#efe9da bg, muted text) = secondary garnish ("results", "me, probably"). No rotation in Quiet Bench; tags sit straight.</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">5.3 — The experiment card</h3>
+    <div class="g-demo on-paper" style="padding-top:56px;">
+      <article class="qb-card" style="display:grid; grid-template-columns:1fr 300px; gap:48px; align-items:center;">
+        <span class="qb-tag" style="left:30px;">experiment 01</span>
+        <div>
+          <h3 class="qb-h3">Nobody Chose the Headphones</h3>
+          <p style="font-size:16.5px; max-width:48ch; margin:14px 0 0 0;">Six AIs, one two-sentence request. Where the details in AI output <span class="qb-em-clay">actually come from</span>.</p>
+          <div class="qb-meta" style="margin-top:20px;">
+            <span class="date">June 2026</span>
+            <a href="#" class="cat moss">presentation</a>
+            <a href="#" class="cat gold">ai</a>
+          </div>
+        </div>
+        <div style="position:relative;">
+          <span class="qb-tag neutral">results</span>
+          <div class="qb-thumb" style="height:176px;"><div class="qb-ph-label">cover image</div></div>
+        </div>
+      </article>
+      <div style="margin-top:44px;"><a href="#" class="qb-link qb-link-more">All experiments</a></div>
+    </div>
+    <p class="g-note">The list-entry pattern for the landing page. Card: white, 1px line border, 10px radius, resting shadow, 38×44px padding. Two-column grid (text 1fr / image 300px, 48px gap). Meta row: plain date, then category links with 1.5px colored underlines (moss = content type, gold = topic). Below the list, a single blue "All experiments →" action link. <b>Interaction:</b> the whole card may be one link — hover lifts the shadow from resting to float (0.25s ease) and nothing else; <b>text never changes color on hover</b> (the title stays ink; a link's underline per §4.2 is the system's only other hover behavior). Cover images: object-fit cover anchored top, 7px radius, well background while loading; a neutral overlay tag ("results") on the image is optional garnish. Dates are written out — "June 2026", never "2026-06".</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">5.4 — Figures, real and absent</h3>
+    <div class="g-demo on-paper" style="padding-top:52px;">
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:26px 22px;">
+        <div style="position:relative;"><span class="qb-tag">deepseek</span><div class="qb-thumb" style="height:110px;"></div></div>
+        <div style="position:relative;"><span class="qb-tag">claude opus</span><div class="qb-thumb" style="height:110px;"></div></div>
+        <div style="position:relative; opacity:.55;"><span class="qb-tag neutral">gpt · backpack</span><div class="qb-thumb absent" style="height:110px; opacity:1;"></div></div>
+      </div>
+    </div>
+    <p class="g-note">Screenshots and evidence images: 7px radius, well background while loading, 1px line border, blue identity tag. Items that <i>don't</i> match the pattern being shown (negatives, absences) get a dashed border, a neutral tag, and 0.55 opacity on the whole unit — the visual grammar for "this one is the exception."</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:40px;">5.5 — Evidence chips &amp; literal markup</h3>
+    <div class="g-demo on-paper">
+      <div style="display:flex; flex-wrap:wrap; gap:14px;">
+        <span class="qb-item">Sarah K. <span class="who">deepseek</span></span>
+        <span class="qb-item">Sarah K. <span class="who">opus</span></span>
+        <span class="qb-item">Sarah L. <span class="who">gemini</span></span>
+        <span class="qb-item cold">Marcus T. <span class="who">gpt</span></span>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:26px;">
+        <span class="qb-code-chip"><code>&lt;title&gt;Aura Pro — Apple&lt;/title&gt;</code><span class="who">3 of 4 titles claim to be apple</span></span>
+        <span class="qb-item" style="font-size:18px;">$549 <span class="who">airpods max's launch price</span></span>
+        <span class="qb-item" style="font-size:18px;">“A19 Pro chip” <span class="who">apple's real chip line</span></span>
+      </div>
+    </div>
+    <p class="g-note">Convergent outputs (invented names, colorways, taglines, prices) are <b>evidence chips</b>: Lora 500 value + lowercase faint attribution on a white card; exceptions go dashed + dimmed, same grammar as §5.4. <b>Monospace is legal only for text that literally appears in source code</b> — a <code>&lt;title&gt;</code> tag qualifies; a price, a chip name, or a tagline does not. Those are quoted artifacts of language, and they're set in serif. Chip values are ink — never clay (§3.1).</p>
+  </section>
+
+  <!-- ==================== 6 · PAGE LAYOUT ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">6</span><h2 class="qb-h2">Page layout</h2></div>
+    <p style="margin-top:18px;">Site pages (landing, about, project indexes) share one skeleton:</p>
+    <ul class="g-list">
+      <li><b>Content column:</b> max-width 1000px, centered; side padding <code>clamp(28px, 8vw, 100px)</code>.</li>
+      <li><b>Header:</b> wordmark left, nav right, on one baseline. 52px top padding.</li>
+      <li><b>Hero block:</b> 96px below the header. Display name (or H1 + rule), then the tagline 30px below the rule. <b>The landing tagline is sans body at 20px with one blue emphasis phrase</b> ("…experiments first, words second, <span class="qb-em-blue">made to be read</span>.") — the Lora-italic lead (§2) is reserved for the About page.</li>
+      <li><b>Section gap:</b> 88px between major blocks. Card grids: 26–30px gaps.</li>
+      <li><b>Optional margin column:</b> pages that use sidenotes or hand-notes switch the main area to <code>grid-template-columns: 1fr 300px; gap: 64–80px</code>. The aside holds portraits, figures, footnotes, and hand notes. On screens under 900px the aside folds beneath the main column and hand notes are dropped (they're optional by definition).</li>
+      <li><b>Footer of the about page:</b> a 1px line rule, then external links: <span class="qb-link qb-link-ext" style="font-size:15.5px;">GitHub</span>&nbsp;&nbsp;<span class="qb-link qb-link-ext" style="font-size:15.5px;">Email</span> — blue, bold, "↗" suffix for external.</li>
+    </ul>
+    <p class="g-note">Landing page order: header → hero (name, clay rule, tagline) → "Experiments" H2 with a muted count ("one so far") → experiment cards → "All experiments →". About page order: header → H1 + moss rule → Lora-italic lead → body (with sidenotes in the margin column, portrait card tagged "me, probably") → "currently poking at:" row of category-underlined topics → links rule.</p>
+    <p class="g-note" style="margin-top:14px;"><b>Every other page reuses the same skeleton</b> — same header, same column, H1 + moss rule. <b>Projects index:</b> H1 "Projects", then the same entry cards as the landing list. <b>CV:</b> plain prose under H2 section headings, external links as blue "↗" links — no cards, no working colors beyond that. <b>404:</b> one body line and a single blue link home; this page is a fine home for one hand note. No page invents new chrome.</p>
+  </section>
+
+  <!-- ==================== 7 · SCENES (SLIDES & SCROLL ESSAYS) ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">7</span><h2 class="qb-h2">Scenes — slides &amp; scroll essays</h2></div>
+    <p style="margin-top:18px;">Decks and full-viewport scroll scenes are designed at <b>1280×720</b> (16:9); in scroll essays each scene is <code>min-height: 100svh</code> with the same composition rules. Padding: 70px top, 120px sides, 56px bottom. <b>A scene is a composed slide, not an article section that happens to fill the viewport</b> — every scene should match one of the archetypes below.</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:32px;">7.1 — Scene anatomy</h3>
+    <ul class="g-list" style="margin-top:14px;">
+      <li><b>No kickers, no scene labels.</b> A scene opens with its Lora title, full stop. The narrative beat ("the reveal", "the product") goes <i>into</i> the title or stays in your head. Bold blue lowercase labels are kickers and are banned (§2, §9).</li>
+      <li><b>Content sits in the middle band</b>, vertically centered or optically so. Evidence (cards, grids) centers horizontally; a lone artifact card centers on the scene's axis, it doesn't hug the left column edge.</li>
+      <li><b>Running footer:</b> deck title left, "n / N" right — Atkinson 13px faint, both sides. Never serif, never bold. This is the only wayfinding a scene gets.</li>
+      <li><b>Title scale:</b> Lora 500, 48px at 1280×720 (cover may use display 80). Cap scene titles at ~56px when fluid.</li>
+      <li><b>One idea per scene.</b> Title + evidence + at most one short summary line (18–19px). If the summary wants to be a paragraph, the scene wants a figure instead.</li>
+    </ul>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:32px;">7.2 — The dark ration</h3>
+    <p>Default scenes are light (paper). The warm dark scene exists for <b>at most two beats per essay</b> — the moments the argument turns — and <b>never on consecutive scenes</b>. An essay that alternates light/dark has spent the device; so has one where a third of the scenes are dark. The prompt/artifact card lives on <i>light</i> paper by default (below); putting it on dark counts against the ration. No hand notes on dark ground, ever.</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:32px;">7.3 — Archetype: the artifact scene <span style="color:var(--faint); font-weight:400;">(light — the default)</span></h3>
+    <div class="g-slide" style="margin-top:24px; background:var(--paper); padding:70px 120px 56px; display:flex; flex-direction:column;">
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div class="qb-card float" style="position:relative; max-width:720px; padding:52px 60px;">
+          <span class="qb-tag" style="left:32px; top:-11px;">the prompt, verbatim</span>
+          <p style="font-family:var(--serif); font-size:28px; line-height:1.65; margin:0; color:var(--ink); max-width:none;">make a single file html page with a realistic mockup of <span class="qb-serif-em">a product page</span> from an e-commerce site. use realistic mockup text but leave images as boxes.</p>
+        </div>
+        <p style="font-size:18px; margin:44px 0 0 0; max-width:none;">Same two sentences, six models, independently. <b style="color:var(--ink);">No product. No brand. No audience. No price.</b></p>
+      </div>
+      <div class="qb-foot"><div>Nobody Chose the Headphones</div><div>2 / 20</div></div>
+    </div>
+    <p class="g-note">Shown at 72% zoom; values in the markup are at true 1280×720 scale. A floating white card with a blue identity tag holds quoted material verbatim, <b>centered</b> on the scene. No title needed — the tag names the artifact. One clay phrase inside the quote, max (here it is the screen's whole clay budget). The summary line below is one sentence with one bold-ink landing phrase.</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:36px;">7.4 — Archetype: the evidence grid</h3>
+    <div class="g-slide" style="margin-top:24px; background:var(--paper); padding:70px 120px 56px; display:flex; flex-direction:column;">
+      <h2 style="font-family:var(--serif); font-weight:500; font-size:48px; letter-spacing:-0.01em; margin:0; color:var(--ink);">Four of six built <span class="qb-serif-em">headphones</span>.</h2>
+      <div style="flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:26px 22px; align-content:center; margin-top:16px;">
+        <div style="position:relative;"><span class="qb-tag">deepseek</span><div class="qb-thumb" style="height:126px; background:var(--card); box-shadow:var(--shadow-card);"></div></div>
+        <div style="position:relative;"><span class="qb-tag">claude opus</span><div class="qb-thumb" style="height:126px; background:var(--card); box-shadow:var(--shadow-card);"></div></div>
+        <div style="position:relative;"><span class="qb-tag">mimo</span><div class="qb-thumb" style="height:126px; background:var(--card); box-shadow:var(--shadow-card);"></div></div>
+        <div style="position:relative;"><span class="qb-tag">kimi</span><div class="qb-thumb" style="height:126px; background:var(--card); box-shadow:var(--shadow-card);"></div></div>
+        <div style="position:relative; opacity:.55;"><span class="qb-tag neutral">gpt · backpack</span><div class="qb-thumb absent" style="height:126px; background:var(--card); opacity:1;"></div></div>
+        <div style="position:relative; opacity:.55;"><span class="qb-tag neutral">gemini · projector</span><div class="qb-thumb absent" style="height:126px; background:var(--card); opacity:1;"></div></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <p style="font-size:18px; margin:0; max-width:none;">Wireless. Noise-cancelling. Over-ear. <b style="color:var(--ink);">The request never mentioned a product.</b></p>
+        <div class="qb-caption">5 / 20</div>
+      </div>
+    </div>
+    <p class="g-note">Lora title with one clay serif-emphasis word, a grid of tagged figures (dashed + dimmed for the exceptions), one summary line with a bold ink landing phrase. Evidence chips (§5.5) compose the same way when the evidence is words rather than screenshots. A hand note may sit beside the title on scenes like this — within the §4.3 ration.</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:36px;">7.5 — Archetype: the statement scene</h3>
+    <div class="g-slide qb-dark" style="margin-top:24px; padding:70px 120px 56px; display:flex; flex-direction:column;">
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+        <h2 style="font-family:var(--serif); font-weight:500; font-size:54px; line-height:1.15; letter-spacing:-0.01em; margin:0; max-width:13ch; color:var(--dark-ink);">Whatever you don't say still gets <span style="color:var(--clay-dark);">decided</span>.</h2>
+        <p style="font-size:19px; margin:36px 0 0 0; max-width:44ch;">Every gap you leave gets filled with the most expected choice — and the most expected choice carries no one's intent.</p>
+      </div>
+      <div class="qb-foot"><div>Nobody Chose the Headphones</div><div>10 / 20</div></div>
+    </div>
+    <p class="g-note">A text-only beat: <b>one</b> Lora sentence (≤2 lines, ≤1 clay word) and at most one short plain supporting line — no bold pile-ups, no second paragraph. Generous void is the composition. Shown dark because a statement is usually the beat that earns the dark ration (§7.2); the same archetype on paper is the default. If you have three statement scenes in a row, the essay needs a figure, not three statements.</p>
+
+    <h3 class="qb-h2" style="font-size:21px; margin-top:36px;">7.6 — Motion &amp; affordances</h3>
+    <ul class="g-list" style="margin-top:14px;">
+      <li>Scenes reveal with a single fade-up (opacity 0→1, translateY 22px→0, 0.7s ease, staggered ~0.15s per element). Total stagger on a scene stays under ~1s. Respect <code>prefers-reduced-motion</code>.</li>
+      <li>Scroll cue: "scroll ↓", 13.5px faint, bottom center. Progress dots (if any): 7px, line-dash, <b>active = ink</b> — navigation affordances never use working colors.</li>
+      <li>Dark-ground substitutions: card #322d23, border #46402f, tag flips to light blue #9aa8e0 with dark text, serif emphasis uses #d99a76, card shadow deepens to <code>0 12px 36px rgba(0,0,0,.35)</code>. These are the only dark substitutions — nothing else gets recolored.</li>
+    </ul>
+  </section>
+
+  <!-- ==================== 8 · VOICE ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">8</span><h2 class="qb-h2">Voice &amp; copy</h2></div>
+    <ul class="g-list" style="margin-top:18px;">
+      <li>Pieces are <b>"experiments"</b>, never "posts" or "articles". Counts are written out, lowercase: "one so far".</li>
+      <li>Tags are lowercase and conversational: "experiment 01", "me, probably", "the prompt, verbatim".</li>
+      <li>The nav destination is "Projects", but the pieces themselves are experiments: the landing H2 reads "Experiments", entry tags read "experiment 01", and the action link reads "All experiments →" — never "project 01" or "All projects".</li>
+      <li>Dates are written out — "June 2026" — never "2026-06" or "06/2026".</li>
+      <li>Findings are stated as short declaratives with one emphasized word: "Four of six built <span class="qb-serif-em" style="font-family:var(--serif);">headphones</span>."</li>
+      <li>Narrative beats ("the reveal", "now look closer") live in titles or in the writing — never as labels above titles.</li>
+      <li>Methods get one honest line, faint, at the end — never a methodology section up front.</li>
+      <li>Hand notes are the author talking to themself, not to the reader: "started as a bet with myself", "nobody asked for headphones!"</li>
+    </ul>
+  </section>
+
+  <!-- ==================== 9 · DON'T ==================== -->
+  <section class="g-section">
+    <div class="g-sec-head"><span class="g-sec-num">9</span><h2 class="qb-h2">Don't</h2></div>
+    <ul class="g-list g-dont" style="margin-top:18px;">
+      <li><b>No kickers or eyebrows of any kind</b> — uppercase or lowercase, bold or regular, colored or muted. Headings open cold.</li>
+      <li><b>No colored left-borders</b> on quotes, cards, or callouts. The accent rule is horizontal, under display text, once per page (§4.1).</li>
+      <li><b>No repeated working colors</b> across grids or rows — four clay prices is zero emphasis and four bugs (§3.1).</li>
+      <li><b>No color changes on hover</b> — hover lifts a card's shadow or underlines a link, nothing else (§5.3).</li>
+      <li><b>No monospace for non-code.</b> Prices, product names, taglines are serif quotes, not code (§5.5).</li>
+      <li><b>No more than two dark scenes per essay, never consecutive</b>; the artifact card defaults to light (§7.2).</li>
+      <li><b>No serif, no bold in the running footer</b> — Atkinson 13px faint only (§7.1).</li>
+      <li>No marker/background highlights — emphasis is colored words only (§4.2).</li>
+      <li>No condensed, tall, or high-contrast display faces; no Inter/Roboto/system-grotesque substitutions.</li>
+      <li>No small-caps labels — tags are lowercase.</li>
+      <li>No pure black, pure white, or cool grays — everything warms toward brown.</li>
+      <li>No saturated versions of the working colors; if a color pops, it's wrong.</li>
+      <li>No emoji, no icon fonts, no decorative SVG illustrations. Unicode arrows (→ ↗ ↖) are the entire icon set.</li>
+      <li>No more than one hand note per screen, one per act, 2–3 per essay; none at all is always acceptable. Never on dark ground, never gold (§4.3).</li>
+      <li>No formal gallery/museum styling: no centered tracked-out captions, no full-black scenes.</li>
+    </ul>
+    <footer style="border-top:1px solid var(--line); margin-top:88px; padding-top:20px;" class="qb-caption">
+      Quiet Bench · June 2026 · fonts: Lora · Atkinson Hyperlegible · Caveat (Google Fonts) · normative CSS (including comments) lives in PART 1 of this file's &lt;style&gt; block
+    </footer>
+  </section>
+
+</div>
+</body>
+</html>

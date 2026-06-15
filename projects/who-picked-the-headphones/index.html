@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who Picked the Headphones</title>
+<meta name="description" content="Six AIs, one two-sentence request. How we get so much work out of an AI from so little input.">
+
+<!-- Quiet Bench fonts: Lora (headings/leads), Atkinson Hyperlegible (body/UI), Caveat (hand notes) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     "Quiet Bench" design system — tokens lifted verbatim from the
+     style guide (PART 1). This deck is a scroll-scene application
+     of §7 (Slides & scroll scenes).
+     ============================================================ */
+  :root{
+    /* ground */
+    --paper:#fbfaf6; --card:#ffffff; --well:#f2efe7; --line:#e5e1d6; --line-dash:#d8d3c4;
+    /* ink (warm gray, 4 steps) */
+    --ink:#211f1a; --body:#56524a; --muted:#6e6a60; --faint:#9e998c;
+    /* working colors, one job each */
+    --blue:#44549e; --clay:#c06243; --moss:#5e7a4a; --gold:#b08c3d; --tag-neutral-bg:#efe9da;
+    --pencil:#8a8068;
+    /* warm dark scene (emphasis beats only) */
+    --dark-bg:#26221b; --dark-card:#322d23; --dark-line:#46402f;
+    --dark-ink:#f3efe6; --dark-body:#c4b69b; --dark-faint:#8a7a5f;
+    --blue-dark:#9aa8e0; --clay-dark:#d99a76; --gold-dark:#d4b36a;
+    /* type */
+    --serif:'Lora',Georgia,serif;
+    --sans:'Atkinson Hyperlegible',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    --hand:'Caveat',cursive;
+    --mono:ui-monospace,Menlo,Consolas,monospace; /* code samples excepted — see §2 */
+    /* geometry */
+    --r-card:10px; --r-thumb:7px; --r-tag:5px;
+    --shadow-card:0 2px 8px rgba(40,35,25,.05);
+    --shadow-float:0 6px 22px rgba(40,35,25,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);font-size:17.5px;line-height:1.75;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+  /* ---------- scenes ---------- */
+  .scene{min-height:100svh;display:flex;align-items:center;justify-content:center;
+    padding:clamp(56px,9vh,70px) clamp(28px,8vw,120px) 64px;position:relative}
+  .inner{width:100%;max-width:1000px}
+  .scene.light{background:var(--paper);color:var(--ink)}
+  .scene.dark{background:var(--dark-bg);color:var(--dark-ink)}
+  .scene.dark p{color:var(--dark-body)}
+
+  /* assert → Lora display heading; the colored word is clay (color only in serif).
+     Scenes open cold on this title — no kicker, eyebrow, or label above it (§2/§9). */
+  .assert{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.4vw,60px);
+    line-height:1.08;letter-spacing:-.015em;color:var(--ink);max-width:30ch;text-wrap:balance}
+  .dark .assert{color:var(--dark-ink)}
+  .assert .hl{color:var(--clay)}
+  .dark .assert .hl{color:var(--clay-dark)}
+
+  /* accent rule — short clay stroke, used under the display name only (§4.1) */
+  .rule{border:none;border-top:2px solid var(--clay);width:220px;margin:22px 0 0 4px}
+
+  .sub{margin-top:24px;font-size:clamp(16px,1.5vw,18.5px);line-height:1.75;max-width:56ch;color:var(--body);text-wrap:pretty}
+  .dark .sub{color:var(--dark-body)}
+  .sub b{font-weight:700;color:var(--ink)}
+  .dark .sub b{color:var(--dark-ink)}
+
+  /* reveal-on-enter (single fade-up, ~0.15s stagger — §7 motion) */
+  html.js .fx{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;transition-delay:var(--d,0s)}
+  html.js .scene.on .fx{opacity:1;transform:none}
+
+  /* ---------- the artifact card (verbatim evidence) — §7 ---------- */
+  .artifact{position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-card);box-shadow:var(--shadow-float);padding:40px 46px;max-width:760px;margin-top:10px}
+  .dark .artifact{background:var(--dark-card);border-color:var(--dark-line);box-shadow:0 12px 36px rgba(0,0,0,.35)}
+  .artifact .ptext{font-family:var(--serif);font-weight:400;font-size:clamp(19px,2.2vw,26px);line-height:1.6;color:var(--ink)}
+  .dark .artifact .ptext{color:var(--dark-ink)}
+  .artifact .p-base{color:var(--muted)}
+  .dark .artifact .p-base{color:var(--dark-faint)}
+  .artifact .p-delta{color:var(--clay)}
+  .dark .artifact .p-delta{color:var(--clay-dark)}
+
+  /* ---------- overlay tag (lowercase, sits on the top edge) — §5.2 ---------- */
+  .tag{position:absolute;top:-11px;left:30px;z-index:2;background:var(--blue);color:#fff;
+    font-family:var(--sans);font-size:11.5px;font-weight:400;letter-spacing:.08em;
+    padding:2px 11px;border-radius:var(--r-tag);text-transform:lowercase;white-space:nowrap}
+  .dark .tag{background:var(--blue-dark);color:#1d1b15}
+  .tag.neutral{background:var(--tag-neutral-bg);color:var(--muted)}
+  .dark .tag.neutral{background:var(--dark-line);color:var(--dark-body)}
+
+  /* ---------- figure grids (evidence) — §5.4 ---------- */
+  .grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:30px 22px;margin-top:48px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:30px 22px;margin-top:48px}
+  .shot{position:relative}
+  .shot .frame{position:relative;height:var(--fh,230px);overflow:hidden;background:var(--well);
+    border:1px solid var(--line);border-radius:var(--r-thumb);box-shadow:var(--shadow-card);cursor:zoom-in}
+  .shot .frame img{display:block;width:100%;height:auto;transition:transform 1.2s ease}
+  /* hover = the page slowly scrolls inside its frame; click = lightbox */
+  .shot:hover .frame img{transform:translateY(min(0px,calc(var(--fh,230px) - 100%)));transition:transform 7s linear}
+  /* the "absent / exception" grammar: dashed border, dimmed, neutral tag.
+     Dimming sits on the frame/tag, not the cell, so hand notes inside a
+     dim shot keep full strength. */
+  .shot.dim .frame{border:1px dashed var(--line-dash);box-shadow:none;opacity:.6}
+  .shot.dim .frame img{filter:grayscale(1)}
+  .shot.dim .tag{opacity:.7}
+
+  /* ---------- output items (colorways, reviewer names) ---------- */
+  .itemrow{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+  .item{display:inline-flex;align-items:center;gap:12px;background:var(--card);
+    border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);
+    padding:13px 22px;font-family:var(--serif);font-weight:500;font-size:clamp(18px,1.9vw,23px);color:var(--ink)}
+  .dark .item{background:var(--dark-card);border-color:var(--dark-line);color:var(--dark-ink)}
+  .item .who{font-family:var(--sans);font-weight:400;font-size:11.5px;letter-spacing:.06em;
+    color:var(--faint);text-transform:lowercase}
+  .dark .item .who{color:var(--dark-faint)}
+  .item.cold{background:var(--well);box-shadow:none;color:var(--muted)}
+
+  /* ---------- generated/real pair ---------- */
+  .qpair{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;max-width:860px}
+  .q{position:relative;background:var(--well);border:1px solid var(--line);
+    border-radius:var(--r-card);padding:38px 32px 30px}
+  .dark .q{background:var(--dark-card);border-color:var(--dark-line)}
+  .q .qt{font-family:var(--serif);font-weight:500;font-size:clamp(28px,3.6vw,42px);
+    line-height:1.05;letter-spacing:-.015em;color:var(--ink)}
+  .dark .q .qt{color:var(--dark-ink)}
+  .q .qs{font-size:13px;color:var(--faint);margin-top:16px}
+  .q.real{background:var(--card);box-shadow:var(--shadow-card)}
+
+  /* ---------- literal-markup facts (code samples excepted) ---------- */
+  .facts{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+  .fact{display:inline-flex;align-items:baseline;gap:12px;background:var(--well);
+    border:1px solid var(--line);border-radius:var(--r-card);padding:12px 18px}
+  .dark .fact{background:var(--dark-card);border-color:var(--dark-line)}
+  .fact code{font-family:var(--mono);font-size:14px;color:var(--ink)}
+  .dark .fact code{color:var(--dark-ink)}
+  .fact .who{font-family:var(--sans);font-size:11.5px;color:var(--faint);
+    text-transform:lowercase;letter-spacing:.04em}
+  .dark .fact .who{color:var(--dark-faint)}
+
+  /* ---------- design brief (quoted long material) — §4.5 ----------
+     Lora italic, muted, indented behind a 1px HAIRLINE — never a 2px clay
+     border, never a colored lead-in line. The quote carries zero working
+     colors; the clay delta lives in the prompt line above it, not here. */
+  .brief{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(17px,1.9vw,21px);
+    line-height:1.6;max-width:64ch;color:var(--muted);border-left:1px solid var(--line);
+    padding-left:24px;margin-top:28px}
+
+  /* ---------- product slabs (§5 cards) ---------- */
+  .slabs{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:48px}
+  .slab{position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:30px 24px 24px}
+  .slab .nm{font-family:var(--serif);font-weight:500;font-size:24px;color:var(--ink)}
+  .slab .by{font-family:var(--sans);font-size:11.5px;color:var(--faint);
+    text-transform:lowercase;letter-spacing:.04em;margin:5px 0 14px}
+  .slab .ph{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--muted);line-height:1.55}
+  /* prices repeat across the four slabs, so they stay ink — color marks the
+     exception, not the pattern (§3.1). */
+  .slab .pr{font-family:var(--sans);font-weight:700;font-size:16px;margin-top:14px;color:var(--ink)}
+
+  /* ---------- the lesson (closing cards — same grammar as the evidence cards) ---------- */
+  .close-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px 22px;margin-top:52px;max-width:880px}
+  .close-card{position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:32px 30px 28px}
+  .close-card p{font-family:var(--serif);font-weight:500;font-size:clamp(19px,2.1vw,25px);
+    line-height:1.35;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+  .close-card b{font-weight:500;color:var(--ink)}
+  .close-card b.key{color:var(--clay)}  /* the single clay moment on the finale (§3.1) */
+  .dark .close-card{background:var(--dark-card);border-color:var(--dark-line);box-shadow:0 12px 36px rgba(0,0,0,.25)}
+  .dark .close-card p,.dark .close-card b{color:var(--dark-ink)}
+  .dark .close-card b.key{color:var(--clay-dark)}
+  @media (max-width:700px){.close-grid{grid-template-columns:1fr}}
+
+  /* ---------- hand note (Caveat) — rationed, optional, deletable (§4.3) ---------- */
+  .hand{position:absolute;font-family:var(--hand);font-size:22px;line-height:1.35;
+    color:var(--pencil);transform:rotate(-2deg);max-width:15ch;z-index:3}
+  .hand.clay{color:var(--clay)}
+  /* no .dark .hand variants: hand notes never appear on dark ground (§4.3) */
+
+  /* ---------- dot rail (navigation affordance) ---------- */
+  .rail{position:fixed;right:16px;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;gap:9px;z-index:10}
+  .rail a{width:7px;height:7px;border-radius:50%;background:var(--line-dash);display:block;
+    transition:transform .3s,background .3s}
+  /* navigation affordances never use working colors: active dot is ink (§7.6) */
+  .rail a.active{background:var(--ink);transform:scale(1.5)}
+
+  @media (max-width:900px){
+    .grid6,.grid4{grid-template-columns:repeat(2,1fr)}
+    .slabs{grid-template-columns:repeat(2,1fr)}
+    .qpair{grid-template-columns:1fr}
+    .shot .frame{--fh:180px}
+    .rail{display:none}
+    .hand{display:none} /* hand notes are optional; dropped on narrow screens */
+  }
+  @media (prefers-reduced-motion:reduce){
+    html.js .fx{opacity:1;transform:none;transition:none}
+    .shot:hover .frame img{transform:none;transition:none}
+    .seq-head,.seq-cap,.chip,.tag-extra,.gh,.seq-grid .frame,.seq-grid .frame img,.seq-grid .tag{transition:none!important}
+  }
+
+
+  /* ---------- continuous-scroll layer ----------
+     Keeps Quiet Bench tokens/components, but changes the deck into a
+     connected scroll essay with a progressive argument rail. */
+  body{padding-left:300px}
+  .scene{min-height:auto;display:block;align-items:stretch;justify-content:normal;
+    padding:clamp(84px,13vh,138px) clamp(44px,8vw,120px) clamp(92px,14vh,150px);
+    scroll-margin-top:36px}
+  .scene:first-of-type{min-height:86svh;display:flex;align-items:center}
+  .scene.dark{box-shadow:inset 0 1px 0 var(--dark-line),inset 0 -1px 0 var(--dark-line)}
+  .scene.light + .scene.light{padding-top:clamp(48px,8vh,86px)}
+  .inner{max-width:1060px}
+
+  .story-rail{position:fixed;left:0;top:0;bottom:0;width:300px;z-index:20;
+    background:rgba(251,250,246,.96);border-right:1px solid var(--line);
+    padding:34px 24px 34px 30px;overflow-y:auto;box-shadow:2px 0 18px rgba(40,35,25,.035)}
+  .story-rail .thread{position:absolute;left:0;top:0;width:2px;height:var(--p,0%);background:var(--clay)}
+  .rail-kicker{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+  .rail-sub{margin-top:4px;font-size:10.5px;line-height:1.45;color:var(--faint)}
+  .rail-list{margin-top:26px;display:flex;flex-direction:column;gap:1px}
+  .rail-row{display:block;width:100%;border:0;background:transparent;text-align:left;cursor:pointer;
+    color:var(--body);font-family:var(--sans)}
+  .rail-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height .5s cubic-bezier(.25,.6,.3,1),opacity .3s ease}
+  .rail-wrap.on{max-height:92px;opacity:1}
+  .rail-row.act{padding:15px 0 6px;font-size:10.5px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink)}
+  .rail-row.beat{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:12.5px;
+    line-height:1.45;font-weight:400}
+  .rail-row.beat::before{content:"";flex:0 0 6px;height:6px;margin-top:6px;background:var(--line-dash);
+    border-radius:50%;transition:background .25s,transform .25s}
+  .rail-row.beat.active{color:var(--clay);font-weight:700}
+  .rail-row.beat.active::before{background:var(--clay);transform:scale(1.2)}
+  .rail-end{overflow:hidden;max-height:0;opacity:0;margin-top:20px;border-top:1px solid var(--ink);
+    padding-top:0;font-size:12px;font-weight:700;line-height:1.55;color:var(--ink);
+    transition:max-height .55s cubic-bezier(.25,.6,.3,1),opacity .35s,padding-top .35s}
+  .rail-end.on{max-height:140px;opacity:1;padding-top:14px}
+
+  @media (max-width:1100px){
+    body{padding-left:0}
+    .story-rail{position:sticky;width:100%;max-height:45svh;border-right:0;border-bottom:1px solid var(--line);
+      padding:18px 24px;box-shadow:0 2px 14px rgba(40,35,25,.04)}
+    .scene{padding-left:clamp(26px,7vw,70px);padding-right:clamp(26px,7vw,70px)}
+  }
+  @media (max-width:700px){
+    .scene{padding-top:64px;padding-bottom:74px}
+    .grid6,.grid4,.slabs{grid-template-columns:1fr}
+    .shot .frame{--fh:220px}
+  }
+
+  /* ---------- pinned convergence sequence (storefronts → headphones → colors) ----------
+     One grid, three readings: the scroll re-interprets the same evidence in place. */
+  .scene.seq-wrap{height:330svh;min-height:0;display:block;padding:0}
+  .seq-anchor{position:absolute;left:0;width:1px;height:1px;pointer-events:none}
+  .seq-sticky{position:sticky;top:0;height:100svh;display:flex;align-items:center;
+    padding:20px clamp(44px,7vw,110px)}
+  .seq-sticky .inner{max-width:1060px;margin:0 auto}
+  .seq-heads,.seq-caps{display:grid;align-items:start}
+  .seq-caps{margin-top:24px}
+  .seq-head,.seq-cap{grid-area:1/1;opacity:0;transform:translateY(12px);
+    transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .seq-head{font-size:clamp(26px,3.8vw,46px)}
+  .seq-wrap[data-step="0"] .seq-head[data-s="0"],.seq-wrap[data-step="0"] .seq-cap[data-s="0"],
+  .seq-wrap[data-step="1"] .seq-head[data-s="1"],.seq-wrap[data-step="1"] .seq-cap[data-s="1"],
+  .seq-wrap[data-step="2"] .seq-head[data-s="2"],.seq-wrap[data-step="2"] .seq-cap[data-s="2"]{
+    opacity:1;transform:none;pointer-events:auto}
+  .seq-grid{margin-top:28px;gap:26px 22px}
+  .seq-grid .frame{--fh:clamp(120px,21svh,230px)}
+  .seq-grid .tag{transition:background .4s ease,color .4s ease}
+  .tag-extra{opacity:0;transition:opacity .4s ease}
+  .seq-grid .odd .frame{transition:opacity .5s ease}
+  .seq-grid .odd .frame img{transition:transform 1.2s ease,filter .5s ease}
+  .seq-wrap.st1 .odd .frame{border:1px dashed var(--line-dash);box-shadow:none;opacity:.6}
+  .seq-wrap.st1 .odd .frame img{filter:grayscale(1)}
+  .seq-wrap.st1 .odd .tag{background:var(--tag-neutral-bg);color:var(--muted)}
+  .seq-wrap.st1 .odd .tag-extra{opacity:1}
+  .chip{position:absolute;left:10px;bottom:10px;z-index:2;display:inline-flex;align-items:center;gap:8px;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r-tag);box-shadow:var(--shadow-card);
+    padding:4px 11px;font-family:var(--serif);font-weight:500;font-size:14px;color:var(--ink);
+    opacity:0;transform:translateY(8px);
+    transition:opacity .45s ease var(--d,0s),transform .45s ease var(--d,0s);pointer-events:none}
+  .cdot{width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.14)}
+  .chip.cold{background:var(--well);box-shadow:none;color:var(--muted)}
+  .seq-wrap.st2 .chip{opacity:1;transform:none}
+  .seq-grid .gh{opacity:0;transition:opacity .4s ease}
+  .seq-wrap[data-step="0"] .gh[data-s="0"]{opacity:1}
+  .seq-wrap[data-step="1"] .gh[data-s="1"]{opacity:1}
+  .capnote{display:block;margin-top:6px;font-size:12.5px;color:var(--faint)}
+
+  /* ---------- annotated slop figure ---------- */
+  .slop-fig{display:grid;grid-template-columns:minmax(260px,400px) 1fr;gap:clamp(24px,4vw,46px);
+    align-items:center;margin-top:44px;max-width:860px}
+  .slop-fig .frame{--fh:440px}
+  .slop-notes{display:flex;flex-direction:column;gap:20px}
+  .hand2{font-family:var(--hand);font-size:clamp(20px,2vw,25px);line-height:1.3;
+    color:var(--pencil);transform:rotate(-1.6deg)}
+  .slop-notes .hand2:nth-child(even){transform:rotate(1.3deg)}
+
+  /* ---------- lightbox (click any screenshot for the full page) ---------- */
+  .lightbox{position:fixed;inset:0;z-index:80;background:rgba(28,25,19,.93);
+    display:flex;justify-content:center;padding:34px 20px}
+  .lightbox[hidden]{display:none}
+  .lb-scroll{overflow-y:auto;max-width:min(1040px,94vw);width:100%;border-radius:10px;
+    background:#fff;box-shadow:0 18px 60px rgba(0,0,0,.5)}
+  .lb-scroll img{display:block;width:100%;height:auto}
+  .lb-close{position:absolute;top:12px;right:18px;z-index:2;background:transparent;border:0;
+    color:#f3efe6;font-family:var(--sans);font-size:14px;cursor:pointer;padding:10px}
+
+  /* ---------- rail header (desktop: static label · mobile: collapsible bar) ---------- */
+  .rail-top{display:block;width:100%;background:transparent;border:0;padding:0;
+    text-align:left;font-family:var(--sans);cursor:default}
+  .rail-kicker,.rail-sub{display:block}
+  .rail-now,.rail-caret{display:none}
+
+  @media (max-width:1100px){
+    .story-rail{top:0;padding:0;max-height:none;overflow:visible}
+    .story-rail .thread{top:0;left:0;height:3px;width:var(--p,0%);max-width:100%}
+    .rail-top{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer}
+    .rail-sub{display:none}
+    .rail-now{display:block;flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--clay);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rail-caret{display:block;color:var(--faint);font-size:11px;transition:transform .3s ease}
+    .story-rail.open .rail-caret{transform:rotate(180deg)}
+    .rail-list{display:none;margin-top:0;padding:2px 18px 14px;max-height:46svh;overflow-y:auto}
+    .story-rail.open .rail-list{display:flex}
+    .story-rail:not(.open) .rail-end{display:none}
+    .rail-end{margin:0 18px 14px}
+  }
+
+  @media (max-width:900px){
+    .scene.seq-wrap{height:auto}
+    .seq-sticky{position:static;height:auto;padding:64px clamp(26px,7vw,70px) 74px}
+    .seq-heads,.seq-caps{display:block}
+    .seq-head,.seq-cap{grid-area:auto;opacity:1;transform:none;pointer-events:auto}
+    .seq-head[data-s="1"],.seq-head[data-s="2"]{display:none}
+    .seq-cap{margin-top:16px}
+    .seq-wrap .odd .frame{border:1px dashed var(--line-dash);box-shadow:none;opacity:.6}
+    .seq-wrap .odd .frame img{filter:grayscale(1)}
+    .seq-wrap .odd .tag{background:var(--tag-neutral-bg);color:var(--muted)}
+    .seq-wrap .tag-extra,.seq-wrap .chip{opacity:1;transform:none}
+    .capnote{display:none} /* hover affordance is meaningless on touch */
+    .slop-fig{grid-template-columns:1fr}
+    .slop-fig .frame{--fh:300px}
+  }
+
+</style>
+</head>
+<body>
+
+<aside class="story-rail" id="storyRail" aria-label="Story outline">
+  <div class="thread" id="railThread"></div>
+  <button class="rail-top" id="railToggle" type="button" aria-expanded="false">
+    <span class="rail-kicker">the story so far</span>
+    <span class="rail-sub">assembles as you read · click to revisit</span>
+    <span class="rail-now" id="railNow"></span>
+    <span class="rail-caret">▾</span>
+  </button>
+  <div class="rail-list" id="railList"></div>
+  <div class="rail-end" id="railEnd">say little, lean on the familiar — and depart from it on purpose.</div>
+</aside>
+
+<!-- ACT I · THE BET -->
+
+<section class="scene light" id="s1">
+  <div class="inner">
+    <h1 class="assert fx" style="font-size:clamp(40px,7vw,80px)">Who Picked<br>the Headphones?</h1>
+    <hr class="rule fx" style="--d:.3s">
+    <p class="sub fx" style="--d:.45s">How is it that we can get so much work out of an AI from so little input?</p>
+  </div>
+</section>
+
+<section class="scene light" id="s2">
+  <div class="inner">
+    <h2 class="assert fx">Let's try a very simple prompt.</h2>
+    <div class="artifact fx" style="--d:.25s;margin-top:38px">
+      <span class="tag">the prompt, verbatim</span>
+      <p class="ptext">make a single file html page with a realistic mockup of a product page from an e-commerce site. use realistic mockup text but leave images as boxes.</p>
+    </div>
+    <p class="sub fx" style="--d:.45s">This went to six models, independently. Note what's <i>not</i> in here: <b>no product, no brand, no price.</b></p>
+  </div>
+</section>
+
+<!-- ACT II · THE REVEAL — one pinned grid, three readings (storefronts → headphones → colors) -->
+
+<section class="scene light seq-wrap" id="seq" data-step="0">
+  <span class="seq-anchor" id="s4" style="top:0"></span>
+  <span class="seq-anchor" id="s5" style="top:40%"></span>
+  <span class="seq-anchor" id="s6" style="top:63%"></span>
+  <div class="seq-sticky">
+    <div class="inner">
+      <div class="seq-heads">
+        <h2 class="assert seq-head" data-s="0">What did the models think?</h2>
+        <h2 class="assert seq-head" data-s="1">Everyone needs <span class="hl">headphones</span>, apparently.</h2>
+        <h2 class="assert seq-head" data-s="2">What color are they?</h2>
+      </div>
+      <div class="grid6 seq-grid">
+        <div class="shot"><span class="tag">deepseek-v4-pro</span><div class="frame"><img src="img/deepseek-01.png" alt="DeepSeek storefront"></div><span class="chip" style="--d:0s"><span class="cdot" style="background:#0d0d12"></span>Midnight Black</span></div>
+        <div class="shot"><span class="tag">opus-4.8</span><div class="frame"><img src="img/opus-01.png" alt="Claude Opus storefront"></div><span class="chip" style="--d:.12s"><span class="cdot" style="background:#0d0d12"></span>Midnight Black</span></div>
+        <div class="shot"><span class="tag">mimo-v2.5</span><div class="frame"><img src="img/mimo25pro-01.png" alt="MiMo storefront"></div><span class="chip" style="--d:.24s"><span class="cdot" style="background:#0d0d12"></span>Midnight Black</span></div>
+        <div class="shot"><span class="tag">kimi-k2.6</span><div class="frame"><img src="img/kimi-01.png" alt="Kimi storefront"></div><span class="chip" style="--d:.36s"><span class="cdot" style="background:#0d0d12"></span>Midnight Black</span></div>
+        <div class="shot odd"><span class="tag">gpt-5.5<span class="tag-extra"> · backpack</span></span><div class="frame"><img src="img/gpt-01.png" alt="GPT backpack storefront"></div><span class="chip cold" style="--d:.52s"><span class="cdot" style="background:#5c6670"></span>Storm Gray</span></div>
+        <div class="shot odd"><span class="tag">gemini-3.5-flash<span class="tag-extra"> · projector</span></span><div class="frame"><img src="img/geminiflash-01.png" alt="Gemini Flash projector storefront"></div><span class="chip cold" style="--d:.52s"><span class="cdot" style="background:#6d4a9e"></span>Nebula Violet</span><span class="hand gh" data-s="0" style="bottom:-46px;right:2px">dark mode? really, gemini?</span><span class="hand gh" data-s="1" style="bottom:-58px;right:2px;max-width:none;white-space:nowrap">projecting images while you sleep? i'm confused…</span></div>
+      </div>
+      <div class="seq-caps">
+        <p class="sub seq-cap" data-s="0">Look at all the common elements: navigation, galleries, descriptions, reviews. <b>Who asked for them?</b> And what else is built in? <span class="capnote">hover any page to skim it · click to zoom</span></p>
+        <p class="sub seq-cap" data-s="1">The “default” product appears to be <b>over-the-ear, wireless, noise-cancelling headphones</b>. The request never mentioned a product.</p>
+        <p class="sub seq-cap" data-s="2">Four models picked the <b>identical color name</b>. The other two picked atmospheric noun + color.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene light" id="s8">
+  <div class="inner">
+    <h2 class="assert fx">And who reviewed them?</h2>
+    <div class="itemrow">
+      <span class="item fx" style="--d:.4s">Sarah K. <span class="who">deepseek-v4-pro · opus-4.8</span></span>
+      <span class="item fx" style="--d:.75s">Sarah L. <span class="who">gemini-3.5-flash · mimo-v2.5</span></span>
+    </div>
+    <p class="sub fx" style="--d:1s">Sarah did. Four of the pages invented a glowing “verified purchase” review from <b>a customer named Sarah</b> — and even the surnames arrived in matched pairs: two Sarah K.s, two Sarah L.s.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s9b">
+  <div class="inner">
+    <h2 class="assert fx">When people talk about <span class="hl">“slop”</span>, this is what they're reacting to.</h2>
+    <p class="sub fx" style="--d:.3s">Nothing on these pages is wrong — and nothing on them is anyone's. <b>Every detail rests at its most expected setting.</b> The dead center of the genre, unedited.</p>
+    <div class="slop-fig fx" style="--d:.5s">
+      <div class="shot"><span class="tag">opus-4.8 · verbatim output</span><div class="frame"><img src="img/opus-01.png" alt="Claude Opus headphones page" loading="lazy"></div></div>
+      <div class="slop-notes">
+        <span class="hand2">← the ★ 4.7 rating</span>
+        <span class="hand2">← the strikethrough discount</span>
+        <span class="hand2">← “Midnight Black”</span>
+        <span class="hand2">← the glowing review from Sarah</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene light" id="s10">
+  <div class="inner">
+    <h2 class="assert fx">But this is also why it works.</h2>
+    <p class="sub fx" style="--d:.3s">“A product page” isn't a specification — it's a reference to something you and the model have both seen a million times. And that reference is what two sentences bought: navigation, galleries, buy-boxes, reviews, a working store — a thousand decisions you didn't have to make, or even know about. <b>You said almost nothing, and yet it knew what you meant.</b></p>
+  </div>
+</section>
+
+<section class="scene dark" id="s11">
+  <div class="inner">
+    <h2 class="assert fx">Whatever you don't say<br>still gets <span class="hl">decided</span>.</h2>
+    <p class="sub fx" style="--d:.35s">Every gap you leave gets filled with the most expected choice — and the most expected choice carries <b>no one's intent</b>. The magic and the slop are the same machinery. The difference is whether anyone is deciding.</p>
+  </div>
+</section>
+
+<!-- ACT III · POINTING HARDER -->
+
+<section class="scene light" id="s12">
+  <div class="inner">
+    <h2 class="assert fx">Let's try to be more specific in what we want.</h2>
+    <div class="artifact fx" style="--d:.25s;margin-top:38px">
+      <span class="tag">the prompt + one clause</span>
+      <p class="ptext"><span class="p-base">make a single file html page with a realistic mockup of a product page from an e-commerce site. use realistic mockup text but leave images as boxes.</span> <span class="p-delta">give the page an apple.com design and aesthetic</span></p>
+    </div>
+    <p class="sub fx" style="--d:.45s">The same magic again: a few words pointing at a shared reference. And it works —</p>
+  </div>
+  <span class="hand fx" style="--d:.65s;top:18%;right:6%">Apple is cool, right?</span>
+</section>
+
+<section class="scene light" id="s13">
+  <div class="inner">
+    <h2 class="assert fx">A few words bought a whole new look.</h2>
+    <div class="grid4">
+      <div class="shot fx" style="--d:.3s"><span class="tag">opus-4.8</span><div class="frame"><img src="img/opus-03.png" alt="Claude Opus apple-like page" loading="lazy"></div></div>
+      <div class="shot fx" style="--d:.4s"><span class="tag">gpt-5.5</span><div class="frame"><img src="img/gpt-03.png" alt="GPT apple-like page" loading="lazy"></div></div>
+      <div class="shot fx" style="--d:.5s"><span class="tag">deepseek-v4-pro</span><div class="frame"><img src="img/deepseek-03.png" alt="DeepSeek apple-like page" loading="lazy"></div></div>
+      <div class="shot fx" style="--d:.6s"><span class="tag">gemini-3.5-flash</span><div class="frame"><img src="img/geminiflash-03.png" alt="Gemini Flash apple-like page" loading="lazy"></div></div>
+    </div>
+    <p class="sub fx" style="--d:.8s">And not four different new looks — <b>the same one, four times, independently</b>: vast white space, giant type, the product floating alone against nothing. Exactly what was asked for.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s14">
+  <div class="inner">
+    <h2 class="assert fx">We didn't get Apple-<i>like</i>.<br>We got <span class="hl">Apple</span>.</h2>
+    <div class="qpair">
+      <div class="q fx" style="--d:.3s"><span class="tag neutral">generated</span><div class="qt">Pro. Beyond.</div><div class="qs">Claude's headline for the fictional “Aura Pro”</div></div>
+      <div class="q real fx" style="--d:.55s"><span class="tag">real · apple.com</span><div class="qt">Pro. Beyond.</div><div class="qs">apple.com's iPhone 14 Pro campaign tagline</div></div>
+    </div>
+    <div class="facts">
+      <span class="fact fx" style="--d:.8s"><code>&lt;title&gt;Aura Pro — Apple&lt;/title&gt;</code><span class="who">3 of 4 titles claim to be apple</span></span>
+      <span class="fact fx" style="--d:.95s"><code>$549</code><span class="who">airpods max's exact launch price</span></span>
+      <span class="fact fx" style="--d:1.1s"><code>“A19 Pro chip”</code><span class="who">apple's real chip line</span></span>
+    </div>
+    <p class="sub fx" style="--d:1.25s">Real taglines, real chip names, real launch prices — and Apple's name in the title tag. <b>The pages don't imitate Apple. They believe they are Apple.</b></p>
+  </div>
+</section>
+
+<section class="scene light" id="s15">
+  <div class="inner">
+    <h2 class="assert fx">Form and content arrive <span class="hl">entangled</span>.</h2>
+    <p class="sub fx" style="--d:.35s">The clause asked only for a <b>look</b>. But in everything the model has read, Apple's look and Apple's catalog travel together — ask for one and the other comes with it. There is no separate channel for style: <b>every word you write is a clue about everything at once</b>.</p>
+  </div>
+</section>
+
+<section class="scene dark" id="s16">
+  <div class="inner">
+    <h2 class="assert fx">Precision is not <span class="hl">intention</span>.</h2>
+    <p class="sub fx" style="--d:.3s">Naming an exemplar doesn't add your intent — it swaps the genre's defaults for <b>someone else's</b>. Polished, exact, and still none of it yours.</p>
+  </div>
+</section>
+
+<!-- ACT IV · THE TURN -->
+
+<section class="scene light" id="s17">
+  <div class="inner">
+    <div class="artifact fx">
+      <span class="tag">the prompt + a design brief</span>
+      <p class="ptext"><span class="p-base">make a single file html page with a realistic mockup of a product page from an e-commerce site…</span> <span class="p-delta">use the following design brief:</span></p>
+      <p class="brief" style="margin-top:22px">Design a product page that feels less like a catalog entry and more like a quiet unveiling: spacious, luminous, and meticulously composed. Use a restrained palette, generous negative space, and large-scale imagery that lets the object appear almost weightless… concise declarative copy… emphasize precision, thinness, material quality, and everyday elegance…</p>
+    </div>
+    <p class="sub fx" style="--d:.4s">Why that description? <b>I just asked gpt-5.5 to describe the iPad page on apple.com</b> — without mentioning the brand or the product. Qualities only. Nothing left to impersonate.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s18">
+  <div class="inner">
+    <h2 class="assert fx">No longer Apple. Still unmistakably <i>that vibe</i>.</h2>
+    <div class="grid4">
+      <div class="shot fx" style="--d:.3s"><span class="tag">deepseek-v4-pro</span><div class="frame"><img src="img/deepseek-02.png" alt="DeepSeek brief-driven page" loading="lazy"></div></div>
+      <div class="shot fx" style="--d:.4s"><span class="tag">gpt-5.5</span><div class="frame"><img src="img/gpt-02.png" alt="GPT brief-driven page" loading="lazy"></div></div>
+      <div class="shot fx" style="--d:.5s"><span class="tag">opus-4.8</span><div class="frame"><img src="img/opus-02a.png" alt="Claude Opus brief-driven page" loading="lazy"></div></div>
+      <div class="shot fx" style="--d:.6s"><span class="tag">gemini-3.5-flash</span><div class="frame"><img src="img/geminiflash-02.png" alt="Gemini Flash brief-driven page" loading="lazy"></div></div>
+    </div>
+    <p class="sub fx" style="--d:.8s">None of these look just like Apple anymore. But they all have that vibe — <b>quiet, understated, elegant</b> — communicated through cream and off-white palettes, thin serif headlines, generous negative space, and museum-label captions. And inside that shared mood, four genuinely different pages.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s19">
+  <div class="inner">
+    <h2 class="assert fx">The iPad snuck back in.</h2>
+    <div class="slabs">
+      <div class="slab fx" style="--d:.3s"><div class="nm">The L-1</div><div class="by">deepseek-v4-pro</div><div class="ph">“a single billet of aerospace-grade alloy” — 4.2 mm thin</div><div class="pr">$1,280</div></div>
+      <div class="slab fx" style="--d:.45s"><div class="nm">Auralis One</div><div class="by">gpt-5.5</div><div class="ph">“a precision-built personal screen, milled aluminum frame”</div><div class="pr">$899</div></div>
+      <div class="slab fx" style="--d:.6s"><div class="nm">Lumen Slate</div><div class="by">opus-4.8</div><div class="ph">“a surface so thin it disappears into the room”</div><div class="pr">$1,290</div></div>
+      <div class="slab fx" style="--d:.75s"><div class="nm">MONO</div><div class="by">gemini-3.5-flash</div><div class="ph">“a spacious writing canvas… resting almost weightless”</div><div class="pr">$780</div></div>
+    </div>
+    <p class="sub fx" style="--d:1s">The brief never named a product. But it did mention words like <i>thin… luminous… weightless…</i> — and what that suggests, apparently, is <b>a $1,000 slab of aluminum</b>. Describe a form, and its content creeps back in.</p>
+  </div>
+</section>
+
+<section class="scene dark" id="s20">
+  <div class="inner">
+    <h2 class="assert fx">So who <span class="hl"><i>did</i></span> pick the headphones?</h2>
+    <p class="sub fx" style="--d:.3s">Nobody picked them. Or rather, we picked a genre — product pages — and that implied them without our ever having to say it.</p>
+    <div class="close-grid">
+      <div class="close-card fx" style="--d:.5s"><span class="tag neutral">the magic</span><p>You can ask for so much with so few words.</p></div>
+      <div class="close-card fx" style="--d:.65s"><span class="tag neutral">the reason</span><p>It works because you're pointing at familiar references — things we've all seen a million times.</p></div>
+      <div class="close-card fx" style="--d:.8s"><span class="tag neutral">the catch</span><p>Lean too far into the familiar, and it drifts into generic. That's the slop.</p></div>
+      <div class="close-card fx" style="--d:.95s"><span class="tag">the craft</span><p>Choose where to depart from the expected — <b class="key">intentionally</b>.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" type="button" aria-label="Close full view">close ×</button>
+  <div class="lb-scroll"><img id="lbImg" alt=""></div>
+</div>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  const scenes = [...document.querySelectorAll('.scene')];
+  const storyRail = document.getElementById('storyRail');
+  const railList = document.getElementById('railList');
+  const railThread = document.getElementById('railThread');
+  const railEnd = document.getElementById('railEnd');
+  const railNow = document.getElementById('railNow');
+  const railToggle = document.getElementById('railToggle');
+  const outline = [
+    {type:'act', id:'s1', label:'a very simple prompt'},
+    {type:'beat', id:'s2', label:'we ask six models for “a product page” — and say almost nothing else'},
+    {type:'beat', id:'s4', label:'six complete storefronts come back: navigation, galleries, reviews'},
+    {type:'beat', id:'s5', label:'most of them are selling the same thing — headphones'},
+    {type:'beat', id:'s6', label:'in the same color, even: Midnight Black, four times over'},
+    {type:'beat', id:'s8', label:'and on four pages, a customer named Sarah wrote the review'},
+    {type:'act', id:'s9b', label:'the machinery'},
+    {type:'beat', id:'s9b', label:'every detail at its most expected — this is what reads as slop'},
+    {type:'beat', id:'s10', label:'but the same defaults are the magic: it knew what we meant'},
+    {type:'beat', id:'s11', label:'because whatever we don’t say still gets decided'},
+    {type:'act', id:'s12', label:'getting more specific'},
+    {type:'beat', id:'s13', label:'so we point at apple.com — a few words buy a whole new look'},
+    {type:'beat', id:'s14', label:'real taglines, real prices — the pages believe they are Apple'},
+    {type:'beat', id:'s15', label:'but the look drags Apple’s catalog in with it'},
+    {type:'beat', id:'s16', label:'precision, it turns out, still isn’t intention'},
+    {type:'act', id:'s17', label:'describing, not naming'},
+    {type:'beat', id:'s18', label:'a brief with no brand keeps the vibe, drops the impersonation'},
+    {type:'beat', id:'s19', label:'and still the iPad sneaks back in'},
+    {type:'beat', id:'s20', label:'so the craft is choosing where to depart from the expected'}
+  ];
+
+  function smoothTo(el){
+    const target = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 28);
+    window.scrollTo({top:target, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  }
+
+  const entries = outline.map(item => {
+    const wrap = document.createElement('div');
+    wrap.className = 'rail-wrap';
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'rail-row ' + item.type;
+    button.textContent = item.label;
+    button.setAttribute('aria-label', 'Jump to ' + item.label);
+    button.addEventListener('click', () => {
+      const target = document.getElementById(item.id);
+      storyRail.classList.remove('open');
+      railToggle.setAttribute('aria-expanded', 'false');
+      if (target) smoothTo(target);
+    });
+    wrap.appendChild(button);
+    railList.appendChild(wrap);
+    return {...item, wrap, button, target:document.getElementById(item.id)};
+  });
+
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('on');
+    });
+  }, {rootMargin:'-18% 0px -18% 0px', threshold:0});
+  scenes.forEach(scene => revealObserver.observe(scene));
+
+  function passed(el){
+    return el && el.getBoundingClientRect().top < window.innerHeight * 0.56;
+  }
+
+  function updateRail(){
+    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    railThread.style.setProperty('--p', (Math.max(0, Math.min(1, window.scrollY / max)) * 100).toFixed(2) + '%');
+
+    let activeBeat = null;
+    entries.forEach(entry => {
+      const on = passed(entry.target);
+      entry.wrap.classList.toggle('on', on);
+      if (on && entry.type === 'beat') activeBeat = entry;
+    });
+    entries.forEach(entry => {
+      const active = entry === activeBeat;
+      entry.button.classList.toggle('active', active);
+      if (entry.type === 'beat') entry.button.setAttribute('aria-current', active ? 'location' : 'false');
+    });
+    railNow.textContent = activeBeat ? activeBeat.label : '';
+    railEnd.classList.toggle('on', passed(document.getElementById('s20')));
+  }
+
+  let ticking = false;
+  function schedule(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      updateRail();
+      updateSeq();
+    });
+  }
+  window.addEventListener('scroll', schedule, {passive:true});
+  window.addEventListener('resize', schedule);
+  updateRail();
+
+  // pinned convergence sequence: map scroll progress within the tall wrapper to 3 steps
+  const seq = document.getElementById('seq');
+  const seqNarrow = matchMedia('(max-width:900px)');
+  function updateSeq(){
+    if (!seq || seqNarrow.matches) return;
+    const span = seq.offsetHeight - window.innerHeight;
+    const p = span > 0 ? Math.max(0, Math.min(1, -seq.getBoundingClientRect().top / span)) : 1;
+    const step = p < 1/3 ? 0 : p < 2/3 ? 1 : 2;
+    seq.dataset.step = step;
+    seq.classList.toggle('st1', step >= 1);
+    seq.classList.toggle('st2', step >= 2);
+  }
+  updateSeq();
+
+  // lightbox: click any screenshot frame to read the full generated page
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  function closeLightbox(){
+    lightbox.hidden = true;
+    lbImg.removeAttribute('src');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', e => {
+    const frame = e.target.closest('.shot .frame');
+    if (frame){
+      const img = frame.querySelector('img');
+      if (img){
+        lbImg.src = img.currentSrc || img.src;
+        lbImg.alt = img.alt;
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+      return;
+    }
+    if (!lightbox.hidden && (e.target === lightbox || e.target.closest('.lb-close'))) closeLightbox();
+  });
+
+  // keyboard paging: arrow keys step through the story beats
+  const navTargets = [...new Set(outline.map(item => item.id))]
+    .map(id => document.getElementById(id)).filter(Boolean);
+  window.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (!lightbox.hidden){
+      if (e.key === 'Escape') closeLightbox();
+      return;
+    }
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    let idx = -1;
+    navTargets.forEach((t, i) => { if (passed(t)) idx = i; });
+    if (e.key === 'ArrowUp' && idx >= 0 && navTargets[idx].getBoundingClientRect().top < -120){
+      smoothTo(navTargets[idx]);
+      return;
+    }
+    const next = e.key === 'ArrowDown' ? Math.min(navTargets.length - 1, idx + 1) : Math.max(0, idx - 1);
+    smoothTo(navTargets[next]);
+  });
+
+  // mobile rail: collapsed bar toggles open
+  railToggle.addEventListener('click', () => {
+    if (!matchMedia('(max-width:1100px)').matches) return;
+    const open = storyRail.classList.toggle('open');
+    railToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+</body>
+</html>

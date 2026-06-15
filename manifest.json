@@ -1,0 +1,23 @@
+{
+  "site": {
+    "title": "Francis Zane",
+    "url": "https://USERNAME.github.io"
+  },
+  "pieces": [
+    {
+      "slug": "/projects/types-of-intelligence/",
+      "title": "Types of Intelligence",
+      "tag": "theory",
+      "description": "We built one kind of mind. You're the other — and the difference is the most practical thing you can know about working with it. The whole case, as one continuous scroll.",
+      "date": "2026-06"
+    },
+    {
+      "slug": "/projects/who-picked-the-headphones/",
+      "title": "Who Picked the Headphones",
+      "tag": "experiment",
+      "description": "Six AIs, one two-sentence request. Watch where the details in the output actually come from — and find the gap where your intention was supposed to go.",
+      "date": "2026-06",
+      "thumb": "/projects/who-picked-the-headphones/img/opus-01.png"
+    }
+  ]
+}

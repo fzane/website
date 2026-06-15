@@ -1,0 +1,205 @@
+/* Shared chrome for index / about / cv / projects / 404, in the "Quiet Bench"
+   design system. Project pages stay self-contained (they embed their own copy
+   of these tokens) and only include /nav.js. Fonts are loaded per-page via a
+   <link> in the <head> (Lora · Atkinson Hyperlegible · Caveat). */
+
+:root{
+  /* ground */
+  --paper:#fbfaf6; --ground:#f6f3ec; --card:#ffffff; --well:#f2efe7; --line:#e5e1d6; --line-dash:#d8d3c4;
+  /* ink (warm gray, 4 steps) */
+  --ink:#211f1a; --body:#56524a; --muted:#6e6a60; --faint:#9e998c;
+  /* working colors, one job each */
+  --blue:#44549e; --clay:#c06243; --moss:#5e7a4a; --gold:#b08c3d; --tag-neutral-bg:#efe9da;
+  /* type */
+  --serif:'Lora',Georgia,serif;
+  --sans:'Atkinson Hyperlegible',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --hand:'Caveat',cursive;
+  --pencil:#8a8068;
+  /* geometry */
+  --r-card:10px; --r-thumb:7px; --r-tag:5px;
+  --shadow-card:0 2px 8px rgba(40,35,25,.05);
+  --shadow-float:0 6px 22px rgba(40,35,25,.07);
+  --content-max:1040px;
+  --pad-x:clamp(28px,8vw,100px);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:17.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+::selection{background:#ead9c4}
+
+.page{max-width:var(--content-max);margin:0 auto;padding:52px var(--pad-x) 140px}
+
+/* ---- header: wordmark left, nav right, one baseline (§5.1) ---- */
+header.site{display:flex;align-items:baseline;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.mark{font-family:var(--serif);font-weight:500;font-size:22px;letter-spacing:-.01em;
+  color:var(--ink);text-decoration:none}
+.mark b{color:var(--clay);font-weight:500}
+.nav{display:flex;gap:32px;font-size:15.5px}
+.nav a{color:var(--muted);text-decoration:none;padding-bottom:2px}
+.nav a:hover{color:var(--ink)}
+.nav a[aria-current]{color:var(--ink);border-bottom:2px solid var(--nav-c,var(--blue))}
+
+/* ---- header right cluster: nav + social icon links ---- */
+.site-right{display:flex;align-items:center;gap:24px}
+.social{display:flex;align-items:center;gap:15px}
+.social a{display:inline-flex;color:var(--faint);transition:color .15s ease}
+.social a:hover{color:var(--ink)}
+.social svg{display:block;width:19px;height:19px;fill:currentColor}
+
+/* ---- hero (landing) ---- */
+.hero{margin-top:96px}
+.display{font-family:var(--serif);font-weight:500;font-size:clamp(48px,9vw,80px);
+  line-height:1;letter-spacing:-.015em;color:var(--ink);margin:0}
+.lead{font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(20px,2.4vw,25px);line-height:1.5;color:#36332c;margin:30px 0 0;max-width:48ch}
+
+/* ---- accent rule: short straight stroke under display / H1 text (§4.1) ---- */
+.rule{border:none;border-top:2px solid var(--clay);width:220px;margin:18px 0 0 4px}
+.rule.moss{border-top-color:var(--moss);width:120px}
+
+/* ---- inner-page title ---- */
+h1.title{font-family:var(--serif);font-weight:500;font-size:clamp(40px,6vw,58px);
+  line-height:1;letter-spacing:-.015em;color:var(--ink);margin:0}
+
+/* ---- sections & prose ---- */
+.sec{margin-top:88px}
+h2{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.2;color:var(--ink);margin:0}
+.count{font-size:14.5px;color:var(--muted);margin-left:12px}
+.subhead{font-family:var(--sans);font-style:italic;font-weight:400;font-size:15px;
+  letter-spacing:0;color:var(--muted);margin-left:12px}
+p{color:var(--body);max-width:56ch;margin:0 0 1em}
+.muted{color:var(--muted)}
+.prose{margin-top:40px}
+.prose p{margin:0 0 1.1em;max-width:62ch}
+.prose h2{margin:48px 0 14px}
+.em-blue{color:var(--blue);font-weight:700}
+.em-clay{color:var(--clay);font-weight:700}
+
+/* ---- links ---- */
+.link{color:var(--blue);font-weight:700;text-decoration:none}
+.link:hover{text-decoration:underline;text-underline-offset:3px}
+.link-more::after{content:" →"}
+.link-ext::after{content:" ↗"}
+
+/* ---- the "currently poking at" / topic row ---- */
+.topics{display:flex;flex-wrap:wrap;gap:18px;font-size:15px;margin-top:14px}
+.topics .cat{text-decoration:none;padding-bottom:1px;border-bottom:1.5px solid}
+.cat.moss{color:var(--moss);border-color:var(--moss)}
+.cat.gold{color:var(--gold);border-color:var(--gold)}
+.cat.blue{color:var(--blue);border-color:var(--blue)}
+
+/* ---- experiment cards: the list-entry pattern (§5.3) ---- */
+ul.pieces{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:30px}
+.entry{position:relative;display:grid;grid-template-columns:1fr 300px;gap:48px;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+  box-shadow:var(--shadow-card);padding:38px 44px;text-decoration:none;color:inherit;
+  transition:box-shadow .25s ease}
+.entry:hover{box-shadow:var(--shadow-float)}
+.entry.nothumb{grid-template-columns:1fr}
+.entry .tag{position:absolute;top:-11px;left:30px;background:var(--blue);color:#fff;
+  font-family:var(--sans);font-size:11.5px;font-weight:400;letter-spacing:.08em;
+  padding:2px 11px;border-radius:var(--r-tag);text-transform:lowercase}
+.entry .body{display:block;min-width:0}
+.entry .t{display:block;font-family:var(--serif);font-weight:500;
+  font-size:clamp(24px,3vw,33px);line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
+.entry:hover .t{color:var(--clay)}
+.entry .d{display:block;margin-top:12px;color:var(--body);font-size:16.5px;max-width:50ch}
+.entry .meta{display:flex;flex-wrap:wrap;gap:18px;font-size:13.5px;margin-top:20px}
+.entry .meta .date{color:var(--muted)}
+.entry .meta .cat{padding-bottom:1px;border-bottom:1.5px solid}
+.entry .thumb{display:block;height:176px;border-radius:var(--r-thumb);overflow:hidden;
+  border:1px solid var(--line);background:var(--well)}
+.entry .thumb img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+
+.more{margin-top:44px}
+
+/* ---- about: the two-halves contrast (a figure, not decoration) ---- */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:40px 0 4px}
+.half{position:relative;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:30px 34px}
+.chip-tag{position:absolute;top:-11px;left:26px;background:var(--tag-neutral-bg);
+  color:var(--muted);font-size:11.5px;letter-spacing:.08em;padding:2px 11px;border-radius:var(--r-tag)}
+.half h3{font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.2;
+  letter-spacing:-.01em;color:var(--ink);margin:6px 0 0}
+.half p{margin:11px 0 0;font-size:16px;max-width:none}
+.half.key{border-top:2px solid var(--clay)}
+
+/* ---- about: hand note pointing at the figure above (pencil, rationed) ---- */
+.prose .hand-note{text-align:right;margin:10px 4px 0;max-width:none}
+.hand{font-family:var(--hand);font-size:21px;line-height:1.35;color:var(--pencil);
+  transform:rotate(-2deg);display:inline-block}
+
+/* ---- about: a Lora pull-quote that breaks the prose ---- */
+.prose .statement{font-family:var(--serif);font-weight:500;
+  font-size:clamp(28px,4.4vw,40px);line-height:1.18;letter-spacing:-.015em;
+  color:var(--ink);max-width:18ch;margin:56px 0}
+
+/* ---- about: quoted long material behind a 1px hairline (§4.5) ---- */
+.prose .brief{font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;
+  line-height:1.65;color:var(--muted);border-left:1px solid var(--line);
+  padding-left:24px;max-width:60ch;margin:28px 0}
+
+/* ---- footer (about page) ---- */
+.foot-rule{border:none;border-top:1px solid var(--line);margin:88px 0 20px}
+.foot-links{display:flex;gap:24px}
+
+@media (max-width:720px){
+  .entry{grid-template-columns:1fr;gap:26px}
+  .entry .thumb{height:150px}
+  .nav{gap:22px}
+  .duo{grid-template-columns:1fr;gap:22px}
+}
+
+/* ============================================================
+   LANDING / PROJECTS INDEX — banded, full-bleed layout with
+   full-width entry rows. Pages opt in with <body class="warm">;
+   every other page keeps the quiet single column above.
+   ============================================================ */
+body.warm{background:var(--ground)}
+
+.band{padding:clamp(72px,11vh,128px) var(--pad-x)}
+.band-inner{max-width:1080px;margin:0 auto}
+.band-raised{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.band-well{background:var(--well);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+
+/* landing hero — the question set large, one clay clause */
+.hero-h1{font-family:var(--serif);font-weight:500;font-size:clamp(44px,8vw,92px);
+  line-height:1.02;letter-spacing:-.022em;margin:0;color:var(--ink);text-wrap:balance}
+.hero-h1 .clay{color:var(--clay)}
+
+/* section heading + italic-serif subline */
+.sec-h2{font-family:var(--serif);font-weight:500;font-size:clamp(32px,5.5vw,58px);
+  line-height:1.05;letter-spacing:-.018em;margin:0;color:var(--ink);text-wrap:balance}
+.sec-sub{font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.2vw,24px);
+  line-height:1.4;color:var(--muted);margin:14px 0 0}
+
+/* inner-page title (projects index) */
+.page-h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,6.5vw,72px);
+  line-height:1.03;letter-spacing:-.02em;margin:0;color:var(--ink);text-wrap:balance}
+.page-lead{font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.2vw,24px);
+  line-height:1.4;color:var(--muted);margin:16px 0 0}
+
+/* full-width entry rows: text block + optional thumbnail */
+.rows{display:grid;gap:24px;margin-top:clamp(34px,5vh,52px)}
+.row{position:relative;display:grid;grid-template-columns:1fr 300px;gap:clamp(28px,4vw,48px);
+  align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow-card);padding:clamp(28px,3vw,38px);text-decoration:none;color:inherit;
+  transition:box-shadow .25s ease,transform .25s ease}
+.row:hover{box-shadow:0 12px 30px rgba(40,35,25,.09);transform:translateY(-1px)}
+.row.nothumb{grid-template-columns:1fr}
+.rbody{display:block;min-width:0}
+.rtag{display:block;font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay)}
+.rtitle{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,33px);
+  line-height:1.18;letter-spacing:-.01em;color:var(--ink);margin:10px 0 0}
+.rdesc{display:block;font-size:16.5px;line-height:1.55;color:var(--body);max-width:54ch;margin:12px 0 0}
+.rmeta{display:flex;gap:18px;font-size:13.5px;margin-top:18px}
+.rdate{font-family:var(--serif);font-style:italic;color:var(--faint)}
+.rthumb{display:block;height:176px;border-radius:var(--r-thumb);overflow:hidden;
+  border:1px solid var(--line);background:var(--well)}
+.rthumb img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+
+@media (max-width:720px){
+  .row{grid-template-columns:1fr;gap:24px}
+  .rthumb{height:150px;order:2}
+}

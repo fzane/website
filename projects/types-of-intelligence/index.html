@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Types of Intelligence</title>
+<meta name="description" content="The AI we happened to build is good at what we can test. The rest — the intending — is the other kind of mind: you.">
+
+<!-- Quiet Bench fonts: Lora (headings/leads), Atkinson Hyperlegible (body/UI), Caveat (hand notes) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     "Quiet Bench" design system — tokens lifted from the style
+     guide (PART 1). This is a scroll-scene application of §7: a calm
+     warm essay with a progressive argument rail. Clay is the one
+     human/key colour, rationed to one moment per scene.
+     ============================================================ */
+  :root{
+    /* ground */
+    --paper:#fbfaf6; --card:#ffffff; --well:#f2efe7; --line:#e5e1d6; --line-dash:#d8d3c4;
+    /* ink (warm gray, 4 steps) */
+    --ink:#211f1a; --body:#56524a; --muted:#6e6a60; --faint:#9e998c;
+    /* working colours, one job each */
+    --blue:#44549e; --clay:#c06243; --moss:#5e7a4a; --gold:#b08c3d; --tag-neutral-bg:#efe9da;
+    --pencil:#8a8068;
+    /* warm dark scene (emphasis beats only) */
+    --dark-bg:#26221b; --dark-card:#322d23; --dark-line:#46402f;
+    --dark-ink:#f3efe6; --dark-body:#c4b69b; --dark-faint:#8a7a5f;
+    --blue-dark:#9aa8e0; --clay-dark:#d99a76; --gold-dark:#d4b36a;
+    /* type */
+    --serif:'Lora',Georgia,serif;
+    --sans:'Atkinson Hyperlegible',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    --hand:'Caveat',cursive;
+    --mono:ui-monospace,Menlo,Consolas,monospace;
+    /* geometry */
+    --r-card:10px; --r-thumb:7px; --r-tag:5px;
+    --shadow-card:0 2px 8px rgba(40,35,25,.05);
+    --shadow-float:0 6px 22px rgba(40,35,25,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);font-size:17.5px;line-height:1.75;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+  /* ---------- scenes (a connected scroll essay) ---------- */
+  .scene{display:block;padding:clamp(84px,13vh,138px) clamp(44px,8vw,120px) clamp(92px,14vh,150px);
+    position:relative;scroll-margin-top:36px}
+  .scene:first-of-type{min-height:86svh;display:flex;align-items:center}
+  .inner{width:100%;max-width:1060px}
+  .scene.light{background:var(--paper);color:var(--ink)}
+  .scene.dark{background:var(--dark-bg);color:var(--dark-ink);
+    box-shadow:inset 0 1px 0 var(--dark-line),inset 0 -1px 0 var(--dark-line)}
+  .scene.dark p{color:var(--dark-body)}
+  .scene.light + .scene.light{padding-top:clamp(48px,8vh,86px)}
+
+  /* assert → Lora display heading; the colored word is clay (colour only in serif).
+     Scenes open cold on this title — no kicker, eyebrow, or label above it (§2/§9). */
+  .assert{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.4vw,60px);
+    line-height:1.08;letter-spacing:-.015em;color:var(--ink);max-width:24ch;text-wrap:balance}
+  .dark .assert{color:var(--dark-ink)}
+  .assert .hl{color:var(--clay)}
+  .dark .assert .hl{color:var(--clay-dark)}
+
+  /* accent rule — short clay stroke, used under the cover title only (§4.1) */
+  .rule{border:none;border-top:2px solid var(--clay);width:220px;margin:22px 0 0 4px}
+
+  .sub{margin-top:26px;font-size:clamp(16px,1.5vw,18.5px);line-height:1.75;max-width:56ch;color:var(--body);text-wrap:pretty}
+  .dark .sub{color:var(--dark-body)}
+  .sub b{font-weight:700;color:var(--ink)}
+  .dark .sub b{color:var(--dark-ink)}
+  .sub i{font-style:italic}
+
+  /* reveal-on-enter — uses the `translate` property so rotated elements survive the reveal */
+  html.js .fx{opacity:0;translate:0 22px;transition:opacity .7s ease,translate .7s ease;transition-delay:var(--d,0s)}
+  html.js .scene.on .fx{opacity:1;translate:0 0}
+
+  .cue{position:absolute;bottom:46px;left:clamp(44px,8vw,120px);font-size:13.5px;color:var(--faint)}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+  html.js .cue{animation:bob 2.4s ease-in-out infinite}
+
+  /* ---------- the artifact / statement card (verbatim claims) — §4.5/§7 ---------- */
+  .artifact{position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-card);box-shadow:var(--shadow-float);padding:38px 46px;max-width:760px;margin-top:34px}
+  .artifact.lite{box-shadow:var(--shadow-card)}
+  .artifact .ptext{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.3vw,29px);line-height:1.3;color:var(--ink)}
+  .artifact.lite .ptext{font-weight:400}
+
+  /* ---------- overlay tag (lowercase, sits on the top edge) — §5.2 ---------- */
+  .tag{position:absolute;top:-11px;left:30px;z-index:2;background:var(--blue);color:#fff;
+    font-family:var(--sans);font-size:11.5px;font-weight:400;letter-spacing:.08em;
+    padding:2px 11px;border-radius:var(--r-tag);text-transform:lowercase;white-space:nowrap}
+  .dark .tag{background:var(--blue-dark);color:#1d1b15}
+  .tag.neutral{background:var(--tag-neutral-bg);color:var(--muted)}
+  .dark .tag.neutral{background:var(--dark-line);color:var(--dark-body)}
+
+  /* ---------- chips / item rows (evidence) — §5.5 ---------- */
+  .itemrow{display:flex;flex-wrap:wrap;gap:14px;margin-top:38px;max-width:880px}
+  .item{display:inline-flex;align-items:baseline;gap:12px;background:var(--card);
+    border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);
+    padding:12px 20px;font-family:var(--serif);font-weight:500;font-size:clamp(16px,1.7vw,20px);color:var(--ink)}
+  .item .who{font-family:var(--sans);font-weight:400;font-size:11px;letter-spacing:.06em;
+    color:var(--faint);text-transform:lowercase}
+  .item.cold{background:var(--well);box-shadow:none;color:var(--muted);border-style:dashed;border-color:var(--line-dash)}
+  .item.key{border:2px solid var(--clay)}
+  .item.key .who{color:var(--clay)}
+
+  /* ---------- carry → navigate ---------- */
+  .roles{display:flex;align-items:baseline;flex-wrap:wrap;gap:clamp(14px,3vw,30px);
+    font-family:var(--serif);font-weight:500;font-size:clamp(30px,5.2vw,62px);
+    letter-spacing:-.02em;margin-top:36px;color:var(--ink)}
+  .roles .gone{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--line-dash);text-decoration-thickness:3px}
+  .roles .arrow{color:var(--faint);font-size:.4em;font-family:var(--sans)}
+  .roles .now{color:var(--clay)}
+
+  /* ---------- the counterfactual triptych — the minds we could have built.
+     The two we DIDN'T build use the "absent" grammar (§5.4): dashed top rule,
+     dimmed, faint. The one we built is present; its label is the clay moment. */
+  .trip{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(20px,3vw,42px);margin-top:48px}
+  .tcard{border-top:1px solid var(--line);padding-top:24px}
+  .tcard.dim{border-top:1px dashed var(--line-dash);opacity:.62}
+  .tcard.live{border-top:2px solid var(--ink)}
+  .tlab{font-size:11px;font-weight:400;letter-spacing:.08em;text-transform:lowercase;color:var(--faint);margin-bottom:20px}
+  .tcard.live .tlab{color:var(--clay);font-weight:700}
+  .tcard .glyph{height:72px;margin-bottom:20px}
+  .tcard .glyph svg{height:100%;display:block;stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .tcard.dim .glyph svg{stroke:var(--line-dash)}
+  .tcard .nm{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.2vw,26px);letter-spacing:-.01em;color:var(--ink);line-height:1.1}
+  .tcard .ph{font-size:14.5px;color:var(--muted);line-height:1.55;margin-top:12px}
+  .tcard .role{font-size:11px;letter-spacing:.04em;text-transform:lowercase;
+    color:var(--faint);margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+  .tcard .role b{font-weight:700;color:var(--body)}
+  .tcard.live .role b{color:var(--ink)}
+
+  /* ---------- dot fields (lattice / released) ---------- */
+  .dotwrap{margin-top:42px;max-width:780px}
+  .dotwrap svg{display:block;width:100%;height:auto}
+  .dotcap{font-size:13px;color:var(--faint);margin-top:14px}
+
+  /* ---------- the divide (two columns; a hairline between them) ---------- */
+  .divide{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 clamp(22px,4vw,50px);margin-top:46px;align-items:start}
+  .divline{background:var(--line);width:1px;min-height:330px}
+  .side h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.2vw,27px);letter-spacing:-.01em;color:var(--ink)}
+  .side .def{font-size:11px;letter-spacing:.06em;text-transform:lowercase;color:var(--faint);margin-top:8px}
+  .side .chips{display:flex;flex-direction:column;gap:12px;margin-top:26px;align-items:flex-start}
+  .side .chip{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);
+    padding:11px 17px;font-family:var(--serif);font-weight:500;font-size:clamp(15px,1.6vw,18px);color:var(--ink)}
+  .side .chip .who{display:block;font-family:var(--sans);font-weight:400;font-size:10.5px;letter-spacing:.05em;color:var(--faint);text-transform:lowercase;margin-top:3px}
+  .side.left .chip{background:var(--well);box-shadow:none;color:var(--muted)}
+
+  /* ---------- rubric pair ---------- */
+  .qpair{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;max-width:880px}
+  .q{position:relative;background:var(--well);border:1px solid var(--line);
+    border-radius:var(--r-card);padding:36px 32px 30px;min-height:300px}
+  .q.real{background:var(--card);box-shadow:var(--shadow-card)}
+  .q .qt{font-family:var(--serif);font-weight:500;font-size:clamp(21px,2.4vw,28px);line-height:1.12;letter-spacing:-.01em;color:var(--ink)}
+  .checks{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+  .checks .c{display:flex;gap:11px;align-items:baseline;font-size:14.5px;color:var(--body)}
+  .checks .c::before{content:"✓";color:var(--moss);font-weight:700}
+  .q .blank{margin-top:30px;border:1px dashed var(--line-dash);border-radius:var(--r-thumb);
+    min-height:120px;display:flex;align-items:center;justify-content:center;padding:18px;text-align:center}
+  .q .blank span{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay)}
+
+  /* ---------- convention sliders (slop · dead centre) ---------- */
+  .sliders{margin-top:44px;display:flex;flex-direction:column;gap:24px;max-width:640px}
+  .srow{display:grid;grid-template-columns:minmax(150px,210px) 1fr;gap:22px;align-items:center}
+  .srow .lab2{font-size:clamp(14px,1.5vw,16.5px);color:var(--muted);text-align:right;font-family:var(--serif)}
+  .srow .track{position:relative;height:1px;background:var(--line)}
+  .srow .track::before,.srow .track::after{content:"";position:absolute;top:-4px;width:1px;height:9px;background:var(--line)}
+  .srow .track::before{left:0}
+  .srow .track::after{right:0}
+  .srow .thumb{position:absolute;top:-5px;left:50%;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:var(--ink)}
+  .sliders .ends{display:grid;grid-template-columns:minmax(150px,210px) 1fr;gap:22px}
+  .sliders .ends div{display:flex;justify-content:space-between;font-size:10.5px;
+    color:var(--faint);letter-spacing:.04em;text-transform:lowercase}
+
+  /* ---------- colour-vocabulary strip ---------- */
+  .swatches{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;margin-top:46px;max-width:880px}
+  .sw .box{height:clamp(72px,11vw,118px);border:1px solid rgba(0,0,0,.08);border-radius:var(--r-thumb)}
+  .sw .nm{font-family:var(--serif);font-style:italic;font-size:clamp(12px,1.3vw,15px);color:var(--muted);margin-top:11px;text-align:center}
+
+  /* ---------- probe series ---------- */
+  .probes{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:46px;max-width:920px}
+  .probe .frame{background:var(--card);border:1px solid var(--line);border-radius:var(--r-thumb);box-shadow:var(--shadow-card);
+    height:150px;padding:16px 14px;display:flex;flex-direction:column;gap:8px}
+  .probe .bar{height:7px;background:var(--well);border:1px solid var(--line);border-radius:3px}
+  .probe .bar.dkk{background:var(--line-dash)}
+  .probe .plab{font-size:11px;color:var(--faint);text-transform:lowercase;letter-spacing:.04em;margin-top:13px;text-align:center;font-family:var(--serif);font-style:italic}
+  .probe.over .frame{border-style:dashed;border-color:var(--line-dash);box-shadow:none}
+  .probe.over .plab{color:var(--clay)}
+
+  /* ---------- candidate row (you are the test user) ---------- */
+  .cands{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:46px;max-width:920px}
+  .cand .frame{background:var(--card);border:1px solid var(--line);border-radius:var(--r-thumb);box-shadow:var(--shadow-card);height:140px;padding:14px}
+  .cand svg{display:block;width:100%;height:100%}
+  .cand svg .sk{fill:var(--well);stroke:var(--line)}
+  .cand svg .ac{fill:var(--line-dash);stroke:var(--line-dash)}
+  .cand .verdict{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--muted);margin-top:13px;text-align:center}
+  .cand.no .frame{opacity:.5;border-style:dashed;box-shadow:none}
+  .cand.yes .frame{border:2px solid var(--clay)}
+  .cand.yes svg .ac{fill:var(--clay);stroke:var(--clay)}
+  .cand.yes .verdict{color:var(--clay)}
+
+  /* ---------- the articulation quote ---------- */
+  .bigquote{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(20px,2.6vw,30px);
+    line-height:1.4;max-width:30ch;color:var(--ink);margin-top:34px}
+
+  /* ---------- inversion bars (dark scene) ---------- */
+  .bars{margin-top:50px;display:flex;flex-direction:column;gap:44px;max-width:760px}
+  .bargroup .era{font-size:11px;letter-spacing:.06em;text-transform:lowercase;color:var(--dark-faint);margin-bottom:16px}
+  .brow{display:grid;grid-template-columns:minmax(160px,230px) 1fr;gap:18px;align-items:center;margin-bottom:14px}
+  .brow .blab{font-size:clamp(14px,1.5vw,16.5px);color:var(--dark-body);text-align:right}
+  .brow .bwrap{height:14px;border-radius:3px;overflow:hidden}
+  .brow .bfill{height:100%;background:var(--dark-line);width:0;border-radius:3px;
+    transition:width 1.1s cubic-bezier(.25,.6,.3,1);transition-delay:var(--bd,0s)}
+  .brow .bfill.scarce{background:var(--clay-dark)}
+  .scene.on .brow .bfill{width:var(--w)}
+  html:not(.js) .brow .bfill{width:var(--w)}
+  .bargroup .note2{font-size:13px;color:var(--dark-faint);margin-top:6px;font-family:var(--serif);font-style:italic;
+    padding-left:calc(min(230px,max(160px,22vw)) + 18px)}
+
+  /* ---------- the finale lesson ---------- */
+  .practice{margin-top:8px;display:grid;gap:34px}
+  .p-line{font-family:var(--serif);font-weight:500;font-size:clamp(22px,3vw,34px);
+    line-height:1.25;letter-spacing:-.01em;max-width:34ch;color:var(--ink);text-wrap:balance}
+  .p-line b{font-weight:500;color:var(--ink)}
+  .p-line b.key{color:var(--clay)}
+  .endnote{margin-top:62px;font-size:13px;color:var(--faint);max-width:72ch;line-height:1.7}
+
+  /* ---------- hand note (Caveat) — rationed, optional, deletable (§4.3) ---------- */
+  .hand{position:absolute;font-family:var(--hand);font-size:23px;line-height:1.3;
+    color:var(--pencil);transform:rotate(-2deg);max-width:16ch;z-index:3}
+  .hand.clay{color:var(--clay)}
+
+  /* ============================================================
+     STORY RAIL — the progressive argument outline (right side)
+     ============================================================ */
+  body{padding-right:300px}
+  .story-rail{position:fixed;right:0;top:0;bottom:0;width:300px;z-index:20;
+    background:rgba(251,250,246,.96);border-left:1px solid var(--line);
+    padding:34px 30px 34px 24px;overflow-y:auto;box-shadow:-2px 0 18px rgba(40,35,25,.035)}
+  .story-rail .thread{position:absolute;left:0;top:0;width:2px;height:var(--p,0%);background:var(--clay)}
+  .rail-kicker{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+  .rail-sub{margin-top:4px;font-size:10.5px;line-height:1.45;color:var(--faint)}
+  .rail-list{margin-top:26px;display:flex;flex-direction:column;gap:1px}
+  .rail-row{display:block;width:100%;border:0;background:transparent;text-align:left;cursor:pointer;color:var(--body);font-family:var(--sans)}
+  .rail-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height .5s cubic-bezier(.25,.6,.3,1),opacity .3s ease}
+  .rail-wrap.on{max-height:96px;opacity:1}
+  .rail-row.act{padding:15px 0 6px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+  .rail-row.beat{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:12.5px;line-height:1.45;font-weight:400}
+  .rail-row.beat::before{content:"";flex:0 0 6px;height:6px;margin-top:6px;background:var(--line-dash);border-radius:50%;transition:background .25s,transform .25s}
+  .rail-row.beat.active{color:var(--clay);font-weight:700}
+  .rail-row.beat.active::before{background:var(--clay);transform:scale(1.2)}
+  .rail-end{overflow:hidden;max-height:0;opacity:0;margin-top:20px;border-top:1px solid var(--ink);
+    padding-top:0;font-size:12px;font-weight:700;line-height:1.55;color:var(--ink);
+    transition:max-height .55s cubic-bezier(.25,.6,.3,1),opacity .35s,padding-top .35s}
+  .rail-end.on{max-height:160px;opacity:1;padding-top:14px}
+  .rail-top{display:block;width:100%;background:transparent;border:0;padding:0;text-align:left;font-family:var(--sans);cursor:default}
+  .rail-now,.rail-caret{display:none}
+
+  @media (max-width:1100px){
+    body{padding-right:0}
+    .story-rail{position:sticky;left:0;right:0;width:100%;max-height:none;overflow:visible;top:0;
+      border-left:0;border-bottom:1px solid var(--line);padding:0;box-shadow:0 2px 14px rgba(40,35,25,.04)}
+    .story-rail .thread{top:0;left:0;height:3px;width:var(--p,0%);max-width:100%}
+    .rail-top{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer}
+    .rail-sub{display:none}
+    .rail-now{display:block;flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--clay);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rail-caret{display:block;color:var(--faint);font-size:11px;transition:transform .3s ease}
+    .story-rail.open .rail-caret{transform:rotate(180deg)}
+    .rail-list{display:none;margin-top:0;padding:2px 18px 14px;max-height:46svh;overflow-y:auto}
+    .story-rail.open .rail-list{display:flex}
+    .story-rail:not(.open) .rail-end{display:none}
+    .rail-end{margin:0 18px 14px}
+    .scene{padding-left:clamp(26px,7vw,70px);padding-right:clamp(26px,7vw,70px)}
+    .cue{left:clamp(26px,7vw,70px)}
+  }
+
+  @media (max-width:900px){
+    .trip{grid-template-columns:1fr;gap:30px}
+    .tcard,.tcard.dim,.tcard.live{display:grid;grid-template-columns:66px 1fr;gap:0 22px;border-top:none;padding-top:0;opacity:1}
+    .tcard.dim .nm,.tcard.dim .ph,.tcard.dim .role{opacity:.62}
+    .tcard .tlab{grid-column:1/-1;border-top:1px solid var(--line);padding-top:16px}
+    .tcard.live .tlab{border-top:2px solid var(--ink)}
+    .tcard.dim .tlab{border-top:1px dashed var(--line-dash)}
+    .tcard .glyph{height:54px;margin:0;grid-row:2/span 3}
+    .qpair{grid-template-columns:1fr}
+    .divide{grid-template-columns:1fr;gap:34px}
+    .divline{display:none}
+    .side.right{border-top:1px solid var(--line);padding-top:28px}
+    .srow .lab2{text-align:left}
+    .srow,.sliders .ends{grid-template-columns:120px 1fr;gap:14px}
+    .swatches{grid-template-columns:repeat(4,1fr);gap:10px}
+    .probes,.cands{grid-template-columns:repeat(5,1fr);gap:9px}
+    .probe .frame{height:112px;padding:10px 8px}
+    .cand .frame{height:96px;padding:8px}
+    .cand .verdict{font-size:11px}
+    .brow{grid-template-columns:110px 1fr;gap:12px}
+    .brow .blab{font-size:12.5px}
+    .bargroup .note2{padding-left:0}
+    .hand{display:none}
+  }
+  @media (max-width:600px){
+    .swatches{grid-template-columns:repeat(2,1fr)}
+    .roles{font-size:clamp(28px,12vw,52px)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    html.js .fx{opacity:1;translate:0 0;transition:none}
+    html.js .cue{animation:none}
+    .brow .bfill{transition:none;width:var(--w)}
+  }
+</style>
+</head>
+<body>
+
+<aside class="story-rail" id="storyRail" aria-label="Story outline">
+  <div class="thread" id="railThread"></div>
+  <button class="rail-top" id="railToggle" type="button" aria-expanded="false">
+    <span class="rail-kicker">the argument so far</span>
+    <span class="rail-sub">assembles as you read · click to revisit</span>
+    <span class="rail-now" id="railNow"></span>
+    <span class="rail-caret">▾</span>
+  </button>
+  <div class="rail-list" id="railList"></div>
+  <div class="rail-end" id="railEnd">the answer is cheap now — so guard the generator: produce more than you consume.</div>
+</aside>
+
+<!-- ═══════════ TITLE ═══════════ -->
+<section class="scene light" id="s1">
+  <div class="inner">
+    <h1 class="assert fx" style="font-size:clamp(40px,7vw,82px);max-width:14ch">Types of Intelligence.</h1>
+    <hr class="rule fx" style="--d:.3s">
+    <p class="sub fx" style="--d:.45s">We built one kind of mind. You are another — and the difference is the most practical thing you can know about working with it. A continuous scroll; read it once, and the margin beside you will have written the summary.</p>
+  </div>
+  <div class="cue">scroll ↓</div>
+</section>
+
+<!-- ═══════════ ACT I · THE SHOCK ═══════════ -->
+<section class="scene light" id="s2">
+  <div class="inner">
+    <h2 class="assert fx">AI feels like a verdict on what people are for. It isn't.</h2>
+    <div class="itemrow">
+      <span class="item cold fx" style="--d:.25s">the engine took carrying</span>
+      <span class="item cold fx" style="--d:.32s">writing took remembering</span>
+      <span class="item cold fx" style="--d:.39s">the calculator took arithmetic</span>
+      <span class="item cold fx" style="--d:.46s">the press took copying</span>
+      <span class="item cold fx" style="--d:.53s">the spreadsheet took the ledgers</span>
+      <span class="item key fx" style="--d:.75s">AI takes — what, exactly? <span class="who">the open question</span></span>
+    </div>
+    <p class="sub fx" style="--d:.95s">Every powerful tool resets the line between the work we keep and the work we hand off — and every time, it feels like a referendum on what we are. It never is. It's a <b>negotiation</b>. The unease you feel about AI is that negotiation happening, not a verdict coming in.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s3">
+  <div class="inner">
+    <h2 class="assert fx">And the negotiation runs along the same <span class="hl">line</span> every time.</h2>
+    <p class="sub fx" style="--d:.3s">On one side, the work we can <b>spell out</b> — where we can say in advance exactly what done looks like. On the other, the work we can only <b>recognize once we see it</b>. Every tool we've ever made has eaten further into the first kind. AI just eats faster, and reaches higher up.</p>
+  </div>
+</section>
+
+<!-- ═══════════ ACT II · THE MIND WE BUILT ═══════════ -->
+<section class="scene light" id="s4">
+  <div class="inner">
+    <div class="artifact fx">
+      <span class="tag">working definition</span>
+      <p class="ptext">A large, centralized mind trained to pass every test we can think to write for it.</p>
+    </div>
+    <p class="sub fx" style="--d:.4s">This was a choice, not a discovery. We didn't summon intelligence in the abstract — we picked <b>one type to build</b>: a mind shaped to clear our bars. Reading, code, math, anything we could score. It is, almost literally, our expectations made executable.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s5">
+  <div class="inner">
+    <h2 class="assert fx">The technology changes. The role changes with it.</h2>
+    <div class="roles">
+      <span class="gone fx" style="--d:.3s">carry</span>
+      <span class="arrow fx" style="--d:.45s">→</span>
+      <span class="gone fx" style="--d:.55s">ride</span>
+      <span class="arrow fx" style="--d:.7s">→</span>
+      <span class="gone fx" style="--d:.8s">drive</span>
+      <span class="arrow fx" style="--d:.95s">→</span>
+      <span class="now fx" style="--d:1.1s">navigate</span>
+    </div>
+    <p class="sub fx" style="--d:1.35s">For most of history, part of the job was carrying things over distances. Horses, then engines, ended that — and the job became <b>deciding where to go</b>. The role we take up beside a tool is never only about us. It's about the shape of the thing we built.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s6">
+  <div class="inner">
+    <h2 class="assert fx">So which intelligence did we happen to get?</h2>
+    <div class="trip">
+      <div class="tcard dim fx" style="--d:.3s">
+        <div class="tlab">a mind we could have built</div>
+        <div class="glyph"><svg viewBox="0 0 80 80" aria-hidden="true">
+          <path d="M24 70 V44 a16 16 0 0 1 32 0 V70"/>
+          <path d="M28 38 L20 18 M40 34 L40 12 M52 38 L60 18"/>
+          <circle cx="20" cy="14" r="4"/><circle cx="40" cy="8" r="4"/><circle cx="60" cy="14" r="4"/>
+        </svg></div>
+        <div class="nm">The Hands</div>
+        <div class="ph">superb embodied robotics — dexterous, tireless, not much of a thinker.</div>
+        <div class="role">our role: <b>the minds of robotic factories</b></div>
+      </div>
+      <div class="tcard dim fx" style="--d:.45s">
+        <div class="tlab">a mind we could have built</div>
+        <div class="glyph"><svg viewBox="0 0 80 80" aria-hidden="true">
+          <path d="M16 46 a8 8 0 0 1 0 16 h36 a12 12 0 0 0 0 -16 z"/>
+          <path d="M58 50 h8 a7 7 0 0 1 0 12 h-6"/>
+          <path d="M28 38 q-4 -8 2 -14 M40 38 q-4 -10 2 -18"/>
+        </svg></div>
+        <div class="nm">The Grandmother</div>
+        <div class="ph">a mind that knows you, has lived, and cares how your day went.</div>
+        <div class="role">our role: <b>students of how to live</b></div>
+      </div>
+      <div class="tcard live fx" style="--d:.6s">
+        <div class="tlab">the mind we built</div>
+        <div class="glyph"><svg viewBox="0 0 80 80" aria-hidden="true">
+          <rect x="18" y="8" width="44" height="62" rx="2"/>
+          <path d="M26 22 l4 4 7-8 M42 22 h12"/>
+          <path d="M26 38 l4 4 7-8 M42 38 h12"/>
+          <path d="M26 54 l4 4 7-8 M42 54 h12"/>
+        </svg></div>
+        <div class="nm">The Test-Passer</div>
+        <div class="ph">everything we know how to test for, compressed into one copyable thing.</div>
+        <div class="role">our role: <b>?</b></div>
+      </div>
+    </div>
+    <p class="sub fx" style="--d:.85s">Our new role is <b>contingent on the particular kind of mind we happened to build</b>. We didn't get the hands, and we didn't get the grandmother. We got the third one — so build it a different way, and the whole story changes.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s7">
+  <div class="inner">
+    <h2 class="assert fx">One giant mind.</h2>
+    <div class="dotwrap fx" style="--d:.3s">
+      <svg id="onemind" viewBox="0 0 640 340" role="img" aria-label="A perfect lattice of hundreds of identical dots"></svg>
+      <div class="dotcap">a perfect lattice — every copy identical</div>
+    </div>
+    <p class="sub fx" style="--d:.6s">It doesn't know one trick — it knows <b>all of them</b>: every skill we could write a test for, concentrated in a single thing we copy at enormous scale. Every copy identical. A monument built entirely out of the expected.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s8">
+  <div class="inner">
+    <h2 class="assert fx">Now imagine the opposite design.</h2>
+    <div class="dotwrap fx" style="--d:.3s">
+      <svg id="manyminds" viewBox="0 0 640 340" role="img" aria-label="The same dots released from the lattice, each its own size and shade, one of them clay"></svg>
+      <div class="dotcap">released — each its own size, its own life</div>
+    </div>
+    <p class="sub fx" style="--d:.6s">A swarm of tiny minds, each trained on <b>a different life</b>. No single one knows everything; each knows its own corner deeply. An engineer can tell you what it's for: you build consensus when you know what you're looking for, and a diverse swarm when you don't.</p>
+  </div>
+  <span class="hand clay fx" style="--d:.9s;top:30%;right:7%">↙ one of these is you</span>
+</section>
+
+<section class="scene dark" id="s9">
+  <div class="inner">
+    <h2 class="assert fx">We never had to build that one. <span class="hl">It's you.</span></h2>
+    <p class="sub fx" style="--d:.4s">Your life is its training run — <b>a rollout no one else got</b>. You're not the giant mind with less data in it. You're the other architecture entirely: the one made of everything that couldn't be written down. <i>Yet.</i></p>
+  </div>
+</section>
+
+<!-- ═══════════ ACT III · THE DIVIDE ═══════════ -->
+<section class="scene light" id="s10">
+  <div class="inner">
+    <h2 class="assert fx">The labor splits along a new <span class="hl">divide</span>.</h2>
+    <div class="divide">
+      <div class="side left fx" style="--d:.3s">
+        <h3>the expected</h3>
+        <div class="def">known · testable · the machine's side</div>
+        <div class="chips">
+          <span class="chip">summarize the filing<span class="who">a rubric exists</span></span>
+          <span class="chip">write the unit tests<span class="who">a rubric exists</span></span>
+          <span class="chip">translate the deck<span class="who">a rubric exists</span></span>
+          <span class="chip">draft the boilerplate<span class="who">a rubric exists</span></span>
+        </div>
+      </div>
+      <div class="divline fx" style="--d:.5s"></div>
+      <div class="side right fx" style="--d:.65s">
+        <h3>the intended</h3>
+        <div class="def">unknown · untestable · yours</div>
+        <div class="chips">
+          <span class="chip">notice the pattern nobody named<span class="who">no rubric yet</span></span>
+          <span class="chip">decide it's worth doing<span class="who">no rubric yet</span></span>
+          <span class="chip">say “almost — but not quite”<span class="who">no rubric yet</span></span>
+        </div>
+      </div>
+    </div>
+    <p class="sub fx" style="--d:.9s">Not human work and machine work — that's sentiment. Two architectures, each doing what its shape is for. The giant mind is rewarded for the expected; you're rewarded for <b>the off-center coherence only one particular life can produce</b>.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s11">
+  <div class="inner">
+    <h2 class="assert fx">There's a quick test for which side you're on.</h2>
+    <div class="qpair">
+      <div class="q fx" style="--d:.3s">
+        <span class="tag neutral">the expected</span>
+        <div class="qt">“Summarize this filing.”</div>
+        <div class="checks">
+          <span class="c">covers every section</span>
+          <span class="c">under 300 words</span>
+          <span class="c">cites page numbers</span>
+          <span class="c">neutral tone throughout</span>
+        </div>
+      </div>
+      <div class="q real fx" style="--d:.55s">
+        <span class="tag">the intended</span>
+        <div class="qt">“Find what's worth building next.”</div>
+        <div class="blank"><span>you'll know it when you see it</span></div>
+      </div>
+    </div>
+    <p class="sub fx" style="--d:.85s">Can you write down, <b>in advance</b>, a rubric for what a good result looks like? If yes — write it, hand it over, let it run. If you'll only know it's right once you see it, the work is yours — because you're the only instrument that can score it.</p>
+  </div>
+</section>
+
+<section class="scene dark" id="s12">
+  <div class="inner">
+    <h2 class="assert fx">If you can write the rubric, it's no longer your <span class="hl">job</span>.</h2>
+    <p class="sub fx" style="--d:.35s">Living on the divide is a craft with two halves: you have to <b>transmit</b> a want to the machine — and, harder, <b>form</b> the want in the first place. Both are learnable. Here's how.</p>
+  </div>
+</section>
+
+<!-- ═══════════ ACT IV · THE CRAFT ═══════════ -->
+<section class="scene light" id="s13">
+  <div class="inner">
+    <h2 class="assert fx">Transmitting a want: genre is the handle.</h2>
+    <div class="artifact lite fx" style="--d:.25s">
+      <span class="tag">five words</span>
+      <p class="ptext">“Write me a research paper.”</p>
+    </div>
+    <div class="itemrow">
+      <span class="item fx" style="--d:.5s">an abstract <span class="who">came free</span></span>
+      <span class="item fx" style="--d:.58s">numbered sections <span class="who">came free</span></span>
+      <span class="item fx" style="--d:.66s">citations <span class="who">came free</span></span>
+      <span class="item fx" style="--d:.74s">a hedged, careful tone <span class="who">came free</span></span>
+    </div>
+    <p class="sub fx" style="--d:.95s">You and the machine share no life to point at, so you point at what you both already know: the <b>form</b>. Name the genre and a thousand defaults arrive for free. The familiar shape is the handle that steers a genuinely alien mind.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s14">
+  <div class="inner">
+    <h2 class="assert fx">Ask only for the genre, and you get its <span class="hl">dead center</span>.</h2>
+    <div class="sliders fx" style="--d:.35s">
+      <div class="ends"><span></span><div><span>subverted</span><span>default</span><span>exaggerated</span></div></div>
+      <div class="srow"><span class="lab2">the orphan hero</span><div class="track"><span class="thumb"></span></div></div>
+      <div class="srow"><span class="lab2">the hidden lineage</span><div class="track"><span class="thumb"></span></div></div>
+      <div class="srow"><span class="lab2">the mentor who dies</span><div class="track"><span class="thumb"></span></div></div>
+      <div class="srow"><span class="lab2">the dark lord</span><div class="track"><span class="thumb"></span></div></div>
+      <div class="srow"><span class="lab2">the prophecy</span><div class="track"><span class="thumb"></span></div></div>
+    </div>
+    <p class="sub fx" style="--d:.7s">“Write me a fantasy novel” → every convention at its default setting. Maximally on-genre, completely empty. <b>Slop isn't missing the genre — it's hitting nothing but the genre.</b> Everything worth doing is a deliberate departure from center.</p>
+  </div>
+  <span class="hand fx" style="--d:.95s;top:34%;right:5%">every dial at its default</span>
+</section>
+
+<section class="scene light" id="s15">
+  <div class="inner">
+    <h2 class="assert fx">The harder half: deciding what to want.</h2>
+    <div class="itemrow">
+      <span class="item fx" style="--d:.3s">notice <span class="who">see what only you can see</span></span>
+      <span class="item fx" style="--d:.45s">react <span class="who">put candidates in front of yourself</span></span>
+      <span class="item fx" style="--d:.6s">articulate <span class="who">give the almost a shape</span></span>
+    </div>
+    <p class="sub fx" style="--d:.85s">Transmitting a want you already have is the easy part. The deeper job is <b>forming</b> the want — and that turns out to be a trainable, three-move arc.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s16">
+  <div class="inner">
+    <h2 class="assert fx">Noticing can be trained. Start with <span class="hl">vocabulary</span>.</h2>
+    <div class="swatches">
+      <div class="sw fx" style="--d:.25s"><div class="box" style="background:#a73a2c"></div><div class="nm">madder</div></div>
+      <div class="sw fx" style="--d:.32s"><div class="box" style="background:#c2452c"></div><div class="nm">cinnabar</div></div>
+      <div class="sw fx" style="--d:.39s"><div class="box" style="background:#d9492f"></div><div class="nm">vermilion</div></div>
+      <div class="sw fx" style="--d:.46s"><div class="box" style="background:#c06243"></div><div class="nm">terracotta</div></div>
+      <div class="sw fx" style="--d:.53s"><div class="box" style="background:#d4683a"></div><div class="nm">persimmon</div></div>
+      <div class="sw fx" style="--d:.6s"><div class="box" style="background:#a4522f"></div><div class="nm">rust</div></div>
+      <div class="sw fx" style="--d:.67s"><div class="box" style="background:#d97757"></div><div class="nm">coral</div></div>
+    </div>
+    <p class="sub fx" style="--d:.95s">Knowing the words doesn't just let you <i>ask</i> for a color. It causes you to <b>notice distinctions you couldn't feel before</b>. The Bauhaus built its whole foundation course on this: train the eye as a faculty, don't deliver taste as content.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s17">
+  <div class="inner">
+    <h2 class="assert fx">Ask for things you would never ship.</h2>
+    <div class="probes">
+      <div class="probe fx" style="--d:.3s">
+        <div class="frame"><div class="bar dkk"></div><div class="bar"></div><div class="bar"></div><div class="bar dkk" style="width:70%"></div><div class="bar"></div><div class="bar" style="width:55%"></div><div class="bar dkk"></div><div class="bar" style="width:80%"></div></div>
+        <div class="plab">the draft</div>
+      </div>
+      <div class="probe fx" style="--d:.42s">
+        <div class="frame"><div class="bar dkk"></div><div class="bar"></div><div class="bar" style="width:70%"></div><div class="bar dkk" style="width:50%"></div><div class="bar" style="width:80%"></div></div>
+        <div class="plab">“calmer”</div>
+      </div>
+      <div class="probe fx" style="--d:.54s">
+        <div class="frame"><div class="bar dkk" style="width:75%"></div><div class="bar" style="width:55%"></div><div class="bar" style="width:65%"></div></div>
+        <div class="plab">“calmer”</div>
+      </div>
+      <div class="probe over fx" style="--d:.7s">
+        <div class="frame"><div class="bar dkk" style="width:45%"></div><div class="bar" style="width:30%"></div></div>
+        <div class="plab">caricature</div>
+      </div>
+      <div class="probe over fx" style="--d:.82s">
+        <div class="frame"><div class="bar" style="width:22%;margin:auto 0"></div></div>
+        <div class="plab">past useful</div>
+      </div>
+    </div>
+    <p class="sub fx" style="--d:1.05s">Push one dimension far past the point of usefulness — <b>on purpose</b>. The last two will never ship; that's their job. The exaggeration makes “calm” visible as a thing you can feel and steer. The artifact isn't the output. <b>It's a probe whose only job is to provoke a noticing.</b></p>
+  </div>
+</section>
+
+<section class="scene light" id="s18">
+  <div class="inner">
+    <h2 class="assert fx">You are the test user.</h2>
+    <div class="cands">
+      <div class="cand no fx" style="--d:.3s">
+        <div class="frame"><svg viewBox="0 0 100 100"><rect class="sk" x="8" y="8" width="84" height="26"/><rect class="sk" x="8" y="42" width="40" height="50"/><rect class="sk" x="56" y="42" width="36" height="50"/></svg></div>
+        <div class="verdict">no</div>
+      </div>
+      <div class="cand no fx" style="--d:.45s">
+        <div class="frame"><svg viewBox="0 0 100 100"><circle class="sk" cx="50" cy="32" r="22"/><rect class="sk" x="14" y="64" width="72" height="10"/><rect class="sk" x="24" y="80" width="52" height="10"/></svg></div>
+        <div class="verdict">no</div>
+      </div>
+      <div class="cand no fx" style="--d:.6s">
+        <div class="frame"><svg viewBox="0 0 100 100"><rect class="sk" x="8" y="8" width="26" height="84"/><rect class="sk" x="42" y="8" width="50" height="38"/><rect class="sk" x="42" y="54" width="50" height="38"/></svg></div>
+        <div class="verdict">wrong question</div>
+      </div>
+      <div class="cand fx" style="--d:.75s">
+        <div class="frame"><svg viewBox="0 0 100 100"><rect class="sk" x="8" y="8" width="84" height="50"/><rect class="ac" x="8" y="68" width="56" height="10"/><rect class="sk" x="8" y="84" width="36" height="8"/></svg></div>
+        <div class="verdict">almost…</div>
+      </div>
+      <div class="cand yes fx" style="--d:.95s">
+        <div class="frame"><svg viewBox="0 0 100 100"><rect class="sk" x="8" y="8" width="84" height="42"/><rect class="ac" x="8" y="60" width="84" height="12"/><rect class="sk" x="26" y="80" width="48" height="10"/></svg></div>
+        <div class="verdict">— that.</div>
+      </div>
+    </div>
+    <p class="sub fx" style="--d:1.15s">React like a test user: <i>that's not what I wanted</i> is real data — the reading off an instrument no one else owns. We're absolutely right about the “no,” and useless at saying how to fix it. The machine's real gift is <b>putting candidates in front of you</b> so you can react — and discover you were asking a different question all along.</p>
+  </div>
+  <span class="hand clay fx" style="--d:1.4s;top:12%;right:6%">some of this, some of that</span>
+</section>
+
+<section class="scene light" id="s19">
+  <div class="inner">
+    <h2 class="assert fx">Then give the almost a <span class="hl">shape</span>.</h2>
+    <p class="bigquote fx" style="--d:.35s">Articulating is finding an external structure that can hold together a coherence that until now was only an internal felt sense.</p>
+    <p class="sub fx" style="--d:.65s">That's the whole arc of forming intent: <b>notice</b> the thing only you can see, <b>react</b> to candidates until one almost fits, and <b>articulate</b> the one that holds. The moment you do, you've written the rubric — so hand it over.</p>
+  </div>
+</section>
+
+<!-- ═══════════ ACT V · THE LOOP ═══════════ -->
+<section class="scene dark" id="s20">
+  <div class="inner">
+    <h2 class="assert fx">The scarcity just <span class="hl">flipped</span>.</h2>
+    <div class="bars">
+      <div class="bargroup fx" style="--d:.3s">
+        <div class="era">for all of history</div>
+        <div class="brow"><span class="blab">things we want done</span><div class="bwrap"><div class="bfill" style="--w:88%;--bd:.4s"></div></div></div>
+        <div class="brow"><span class="blab">hands to do them</span><div class="bwrap"><div class="bfill scarce" style="--w:26%;--bd:.6s"></div></div></div>
+        <div class="note2">the binding constraint was the hands</div>
+      </div>
+      <div class="bargroup fx" style="--d:.9s">
+        <div class="era">now</div>
+        <div class="brow"><span class="blab">hands to do them</span><div class="bwrap"><div class="bfill" style="--w:100%;--bd:1.2s"></div></div></div>
+        <div class="brow"><span class="blab">things we know we want</span><div class="bwrap"><div class="bfill scarce" style="--w:22%;--bd:1.4s"></div></div></div>
+        <div class="note2">the binding constraint is the wanting</div>
+      </div>
+    </div>
+    <p class="sub fx" style="--d:1.7s">Capable labor is about to become vast — far larger than the supply of things we already know we want. The bottleneck is no longer the doing. It's the <b>wanting</b> — and the wanting is exactly what your kind of mind is built to make.</p>
+  </div>
+</section>
+
+<section class="scene light" id="s21">
+  <div class="inner">
+    <div class="practice">
+      <p class="p-line fx" style="--d:.15s">Learn the expected well enough to recognize it — <b>then stop, and hand it over</b>.</p>
+      <p class="p-line fx" style="--d:.45s;margin-left:10%">Ask for probes, not products — your “not quite” is the one reading no instrument but you can take.</p>
+      <p class="p-line fx" style="--d:.75s;margin-left:5%">Every want you write down becomes a rubric the machine absorbs. That's the loop working, not the machine winning.</p>
+      <p class="p-line fx" style="--d:1.05s;margin-left:15%">It can copy any answer you finish — never the life still making them. Produce more than you consume, and <b class="key">guard the generator</b>.</p>
+    </div>
+    <footer class="endnote fx" style="--d:1.35s">Adapted from “From a World of Expectation to a World of Intention,” June 2026. One giant mind that knows every trick we can test for; billions of small ones, each trained on a life no one else got. The outline beside you assembled itself while you read — read it top to bottom and you have the whole argument in five breaths.</footer>
+  </div>
+</section>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  /* ---------- dot fields ----------
+     One deterministic PRNG so both fields render identically every visit.
+     onemind: identical dots locked in a perfect lattice.
+     manyminds: the same dots released — scattered, each its own size and
+     warm-gray shade. Exactly one is clay (one of these is you). */
+  const mulberry32 = s => () => {
+    s |= 0; s = s + 0x6D2B79F5 | 0;
+    let t = Math.imul(s ^ s >>> 15, 1 | s);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+  const COLS = 34, ROWS = 22, N = COLS * ROWS;
+
+  function fillOneMind(){
+    const svg = document.getElementById('onemind'); if(!svg) return;
+    const parts = [];
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const x = 20 + c*(600/(COLS-1)), y = 20 + r*(300/(ROWS-1));
+      parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#211f1a"/>`);
+    }
+    svg.innerHTML = parts.join('');
+  }
+  function fillManyMinds(){
+    const svg = document.getElementById('manyminds'); if(!svg) return;
+    const rnd = mulberry32(7);
+    const grays = ['#211f1a','#56524a','#6e6a60','#9e998c'];
+    const redAt = Math.floor(N*0.62), parts = [];
+    for(let i=0;i<N;i++){
+      const x = 12 + rnd()*616, y = 12 + rnd()*316, r = 1.5 + rnd()*3.4;
+      if(i===redAt){
+        parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.6" fill="#c06243"/>`);
+      } else {
+        parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${grays[Math.floor(rnd()*grays.length)]}" opacity="${(0.5+rnd()*0.45).toFixed(2)}"/>`);
+      }
+    }
+    svg.innerHTML = parts.join('');
+  }
+  fillOneMind(); fillManyMinds();
+
+  /* ---------- story rail ---------- */
+  const scenes = [...document.querySelectorAll('.scene')];
+  const storyRail = document.getElementById('storyRail');
+  const railList = document.getElementById('railList');
+  const railThread = document.getElementById('railThread');
+  const railEnd = document.getElementById('railEnd');
+  const railNow = document.getElementById('railNow');
+  const railToggle = document.getElementById('railToggle');
+  const outline = [
+    {type:'act',  id:'s2',  label:'01 — the shock'},
+    {type:'beat', id:'s2',  label:'AI isn’t a verdict on people — it’s a negotiation we’ve run before'},
+    {type:'beat', id:'s3',  label:'and it runs along one line: what we can spell out vs only recognize'},
+    {type:'act',  id:'s4',  label:'02 — the mind we built'},
+    {type:'beat', id:'s4',  label:'a test-passer — our expectations, made executable'},
+    {type:'beat', id:'s5',  label:'every tool moves our role up a level — carry → navigate'},
+    {type:'beat', id:'s6',  label:'not the hands, not the grandmother: we got the test-passer'},
+    {type:'beat', id:'s7',  label:'one giant mind, copied identically'},
+    {type:'beat', id:'s8',  label:'imagine the opposite — a swarm, each trained on a different life'},
+    {type:'beat', id:'s9',  label:'that swarm already exists — it’s you'},
+    {type:'act',  id:'s10', label:'03 — the divide'},
+    {type:'beat', id:'s10', label:'the work splits: the expected vs the intended'},
+    {type:'beat', id:'s11', label:'the test — can you write the rubric in advance?'},
+    {type:'beat', id:'s12', label:'if you can write the rubric, it’s no longer your job'},
+    {type:'act',  id:'s13', label:'04 — the craft'},
+    {type:'beat', id:'s13', label:'transmit: genre is the handle'},
+    {type:'beat', id:'s14', label:'ask only for the genre and you get its dead center'},
+    {type:'beat', id:'s15', label:'the harder half — forming the want: notice, react, articulate'},
+    {type:'beat', id:'s16', label:'noticing trains on vocabulary'},
+    {type:'beat', id:'s17', label:'ask for probes you’d never ship'},
+    {type:'beat', id:'s18', label:'you are the test user — your reaction is data'},
+    {type:'beat', id:'s19', label:'articulate: give the almost a shape'},
+    {type:'act',  id:'s20', label:'05 — the loop'},
+    {type:'beat', id:'s20', label:'the scarcity flipped — wanting is the bottleneck now'},
+    {type:'beat', id:'s21', label:'guard the generator'}
+  ];
+
+  function smoothTo(el){
+    const target = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 28);
+    window.scrollTo({top:target, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  }
+
+  const entries = outline.map(item => {
+    const wrap = document.createElement('div');
+    wrap.className = 'rail-wrap';
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'rail-row ' + item.type;
+    button.textContent = item.label;
+    button.setAttribute('aria-label', 'Jump to ' + item.label);
+    button.addEventListener('click', () => {
+      const target = document.getElementById(item.id);
+      storyRail.classList.remove('open');
+      railToggle.setAttribute('aria-expanded', 'false');
+      if (target) smoothTo(target);
+    });
+    wrap.appendChild(button);
+    railList.appendChild(wrap);
+    return {...item, wrap, button, target:document.getElementById(item.id)};
+  });
+
+  /* reveal-on-enter drives .fx fade-ups and the bar fills */
+  const reveal = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, {rootMargin:'0px 0px -12% 0px', threshold:0});
+  scenes.forEach(s => reveal.observe(s));
+
+  function passed(el){ return el && el.getBoundingClientRect().top < window.innerHeight * 0.56; }
+
+  function updateRail(){
+    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    railThread.style.setProperty('--p', (Math.max(0, Math.min(1, window.scrollY / max)) * 100).toFixed(2) + '%');
+    let activeBeat = null;
+    entries.forEach(entry => {
+      const on = passed(entry.target);
+      entry.wrap.classList.toggle('on', on);
+      if (on && entry.type === 'beat') activeBeat = entry;
+    });
+    entries.forEach(entry => {
+      const active = entry === activeBeat;
+      entry.button.classList.toggle('active', active);
+      if (entry.type === 'beat') entry.button.setAttribute('aria-current', active ? 'location' : 'false');
+    });
+    railNow.textContent = activeBeat ? activeBeat.label : '';
+    railEnd.classList.toggle('on', passed(document.getElementById('s21')));
+  }
+
+  let ticking = false;
+  function schedule(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; updateRail(); });
+  }
+  window.addEventListener('scroll', schedule, {passive:true});
+  window.addEventListener('resize', schedule);
+  updateRail();
+
+  /* keyboard paging: arrow keys step through the story beats */
+  const navTargets = [...new Set(outline.map(item => item.id))]
+    .map(id => document.getElementById(id)).filter(Boolean);
+  window.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    let idx = -1;
+    navTargets.forEach((t, i) => { if (passed(t)) idx = i; });
+    if (e.key === 'ArrowUp' && idx >= 0 && navTargets[idx].getBoundingClientRect().top < -120){
+      smoothTo(navTargets[idx]); return;
+    }
+    const next = e.key === 'ArrowDown' ? Math.min(navTargets.length - 1, idx + 1) : Math.max(0, idx - 1);
+    smoothTo(navTargets[next]);
+  });
+
+  /* mobile rail: collapsed bar toggles open */
+  railToggle.addEventListener('click', () => {
+    if (!matchMedia('(max-width:1100px)').matches) return;
+    const open = storyRail.classList.toggle('open');
+    railToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+</body>
+</html>
