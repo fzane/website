@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- TITLE — shipped: "What Is AI?". Alt: "Types of Intelligence". -->
+<title>What Is AI?</title>
+<meta name="description" content="What Is AI — and who does that make us? One plane: artificial × intelligence, copyable × lived.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     "Quiet Bench" tokens. One object: THE PLANE.
+       vertical   = INTELLIGENCE  (testable ── lived)
+       horizontal = ARTIFICIAL    (unique ── copyable)
+     AI = copyable × testable (bottom-right, BLUE)
+     us = unique × lived       (top-left, CLAY)
+     ? = copyable × lived (top-right)   ·  AGI/ASI
+     ============================================================ */
+  :root{
+    --paper:#fbfaf6; --card:#ffffff; --well:#f2efe7; --line:#e5e1d6; --line-dash:#d8d3c4;
+    --ink:#211f1a; --body:#56524a; --muted:#6e6a60; --faint:#9e998c;
+    --blue:#44549e; --clay:#c06243; --moss:#5e7a4a; --gold:#b08c3d; --tag-neutral-bg:#efe9da;
+    --pencil:#8a8068;
+    --dark-bg:#26221b; --dark-card:#322d23; --dark-line:#46402f;
+    --dark-ink:#f3efe6; --dark-body:#c4b69b; --dark-faint:#8a7a5f;
+    --blue-dark:#9aa8e0; --clay-dark:#d99a76; --gold-dark:#d4b36a; --moss-dark:#a3bd86;
+    --serif:'Lora',Georgia,serif;
+    --sans:'Atkinson Hyperlegible',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    --hand:'Caveat',cursive; --mono:ui-monospace,Menlo,Consolas,monospace;
+    --r-card:10px; --r-tag:5px;
+    --shadow-card:0 2px 8px rgba(40,35,25,.05); --shadow-float:0 6px 22px rgba(40,35,25,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);font-size:18px;line-height:1.75;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+  .scene{position:relative}
+  .scene.light{background:var(--paper);color:var(--ink)}
+  .scene.dark{background:var(--dark-bg);color:var(--dark-ink)}
+  .scene.dark p{color:var(--dark-body)}
+  .inner{width:100%;max-width:1080px;margin:0 auto}
+
+  .assert{font-family:var(--serif);font-weight:500;font-size:clamp(36px,5.8vw,64px);
+    line-height:1.06;letter-spacing:-.015em;color:var(--ink);max-width:30ch;text-wrap:balance}
+  .dark .assert{color:var(--dark-ink)}
+  .assert .hl{color:var(--clay)} .dark .assert .hl{color:var(--clay-dark)}
+  .rule{border:none;border-top:2px solid var(--clay);width:240px;margin:24px 0 0 4px}
+  .sub{margin-top:26px;font-size:clamp(17px,1.6vw,20px);line-height:1.72;max-width:62ch;color:var(--body);text-wrap:pretty}
+  .subhead{margin-top:28px;font-family:var(--serif);font-weight:500;font-size:clamp(22px,2.7vw,33px);
+    line-height:1.18;letter-spacing:-.012em;color:var(--ink);max-width:24ch;text-wrap:balance}
+  .dark .subhead{color:var(--dark-ink)}
+  .dark .sub{color:var(--dark-body)}
+  .sub b{font-weight:700;color:var(--ink)} .dark .sub b{color:var(--dark-ink)} .sub i{font-style:italic}
+
+  html.js .fx{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;transition-delay:var(--d,0s)}
+  html.js .scene.on .fx{opacity:1;transform:none}
+
+  /* ---------- definition card ---------- */
+  .artifact{position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-card);box-shadow:var(--shadow-float);padding:36px 44px;max-width:760px;margin-top:20px}
+  .tag{position:absolute;top:-11px;left:30px;z-index:2;background:var(--blue);color:#fff;
+    font-family:var(--sans);font-size:11.5px;letter-spacing:.08em;padding:2px 11px;border-radius:var(--r-tag);text-transform:lowercase;white-space:nowrap}
+  .tag.neutral{background:var(--tag-neutral-bg);color:var(--muted)}
+  .splitword{display:flex;flex-wrap:wrap;gap:14px 30px;align-items:center}
+  .splitword .plus{font-family:var(--serif);font-size:34px;color:var(--faint)}
+  .splitword .w{flex:1 1 200px}
+  .splitword .w .lead{font-family:var(--serif);font-weight:500;font-size:clamp(28px,3.6vw,42px);letter-spacing:-.015em}
+  .splitword .w.a .lead{color:var(--blue)} .splitword .w.i .lead{color:var(--moss)}
+  .splitword .w .gloss{font-size:15px;color:var(--muted);margin-top:4px}
+  .splitword .w .gloss b{color:var(--ink)}
+
+  /* ---------- the reset: two-row grid ---------- */
+  .reset-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,2.2vw,30px);margin:8px 0 30px;max-width:840px}
+  .rcol{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+  .ricon{width:54px;height:54px}
+  .ricon svg{width:100%;height:100%;display:block}
+  .ric{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .rcol.ai .ric{stroke:var(--clay)}
+  .rtool{font-family:var(--serif);font-size:clamp(16px,1.7vw,20px);color:var(--ink);font-weight:500}
+  .rcol.ai .rtool{color:var(--clay)}
+  .rarrow{color:var(--faint);font-size:18px;line-height:1}
+  .rrole{font-family:var(--sans);font-size:clamp(13px,1.5vw,16px);color:var(--muted);
+    border-top:1px solid var(--line);padding-top:10px;width:100%}
+  .rcol.ai .rrole{color:var(--clay);font-weight:700;border-color:var(--clay)}
+  .reset-coda{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3.2vw,40px);
+    line-height:1.12;letter-spacing:-.015em;color:var(--ink);max-width:24ch;text-wrap:balance;margin-top:6px}
+  .reset-coda b{color:var(--clay);font-weight:500}
+
+  /* ============================================================
+     THE STAGE — sticky plane + stepped prose
+     ============================================================ */
+  .stage{position:relative;background:var(--paper)}
+  .stage-inner{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);
+    gap:clamp(28px,4vw,84px);max-width:1380px;margin:0 auto;padding:0 clamp(26px,4vw,64px)}
+  .stage-plane{position:relative}
+  .plane-sticky{position:sticky;top:0;height:100svh;display:flex;align-items:center;justify-content:center}
+  .plane-sticky .plane-box{width:100%}
+  .plane-sticky svg{width:100%;height:auto;max-height:90svh;display:block;overflow:visible}
+
+  /* sticky visual swap: plane → drives → navigate */
+  .plane-box{position:relative}
+  .stage-vis{transition:opacity .7s ease}
+  .vis-plane{position:relative;opacity:1}
+  .vis-drives,.vis-nav{position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%);opacity:0}
+  .stage.show-drives .vis-plane,.stage.show-nav .vis-plane{opacity:0}
+  .stage.show-drives .vis-drives{opacity:1}
+  .stage.show-nav .vis-nav{opacity:1}
+
+  .stage-steps{position:relative}
+  .step{min-height:96svh;display:flex;flex-direction:column;justify-content:center;padding:5svh 0}
+  html.js .step{opacity:.22;transition:opacity .45s ease}
+  html.js .step.active{opacity:1}
+  .step .kick{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--clay);margin-bottom:16px}
+  .step h3{font-family:var(--serif);font-weight:500;font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-.018em;color:var(--ink);text-wrap:balance}
+  .step h3 .hl{color:var(--clay)} .step h3 .blue{color:var(--blue)} .step h3 .moss{color:var(--moss)}
+  .step p{margin-top:20px;font-size:clamp(16.5px,1.55vw,19.5px);line-height:1.72;color:var(--body);max-width:46ch}
+  .step p b{color:var(--ink);font-weight:700} .step p + p{margin-top:14px}
+  .step p .qm{color:var(--clay);font-weight:700}
+
+  /* plane primitives */
+  .pl-frame{fill:none;stroke:var(--line);stroke-width:1.4}
+  .v-axis{fill:none;stroke:var(--moss);stroke-width:2} .v-head{fill:var(--moss)}
+  .h-axis{fill:none;stroke:var(--blue);stroke-width:2} .h-head{fill:var(--blue)}
+  .ax-name{font-family:var(--sans);font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+  .v-name{fill:var(--moss)} .h-name{fill:var(--blue)}
+  .pl-end{font-family:var(--serif);font-size:20px;fill:var(--ink)}
+  .pl-endsub{font-family:var(--sans);font-size:12.5px;fill:var(--muted)}
+  .pl-pt{stroke:#fff;stroke-width:2}
+  .pl-lbl{font-family:var(--serif);font-size:19px;fill:var(--ink)}
+  .pl-sub{font-family:var(--sans);font-size:13px;fill:var(--faint)}
+  .pl-ico{fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .pl-connector{stroke:var(--blue);stroke-width:1.8;stroke-dasharray:4 5;fill:none;opacity:.8}
+  .pl-future{stroke:var(--blue);stroke-width:1.6;stroke-dasharray:2 5;fill:none;opacity:.5}
+  .pl-cluster circle{fill:var(--blue);opacity:.55}
+  /* translucency via fill-opacity so the reveal's element-opacity (0→1) doesn't clobber it */
+  .box-human{fill:var(--clay);fill-opacity:.10;stroke:var(--clay);stroke-width:1.5;stroke-opacity:.5}
+  .box-ai{fill:var(--blue);fill-opacity:.10;stroke:var(--blue);stroke-width:1.5;stroke-opacity:.5}
+  .qmark{font-family:var(--serif);font-size:46px;fill:var(--faint);font-weight:500}
+
+  /* progressive reveal r0..r8 */
+  .stage .g{opacity:0;transition:opacity .6s ease,transform .6s ease}
+  .stage.r0 .g0,.stage.r1 .g1,.stage.r2 .g2,.stage.r3 .g3,.stage.r4 .g4,
+  .stage.r5 .g5,.stage.r6 .g6,.stage.r7 .g7,.stage.r8 .g8{opacity:1}
+  /* the straight-A student copy travels right when the AIs appear */
+  .stage .ai-dot{transform:translateX(-253px);transition:transform 1.1s cubic-bezier(.5,.08,.3,1),opacity .6s ease}
+  .stage.r7 .ai-dot{transform:translateX(0)}
+
+  /* ---------- the human-corner zoom ---------- */
+  .zoomwrap{display:grid;grid-template-columns:minmax(0,.95fr) 1fr;gap:clamp(28px,4vw,64px);align-items:center;margin-top:26px}
+  .zoomwrap svg{width:100%;height:auto;display:block;overflow:visible}
+  .facets{display:flex;flex-direction:column;gap:20px}
+  .facet{border-left:3px solid var(--clay);padding-left:18px}
+  .facet h4{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clay)}
+  .facet p{margin-top:6px;font-family:var(--serif);font-size:clamp(18px,1.9vw,22px);line-height:1.34;color:var(--ink)}
+  .zb-frame{fill:var(--clay);fill-opacity:.05;stroke:var(--clay);stroke-width:2;rx:12}
+  .zb-lbl{font-family:var(--serif);font-size:18px;fill:var(--clay);font-weight:600}
+  .zb-sub{font-family:var(--sans);font-size:12.5px;fill:var(--muted)}
+  .nv-dot{fill:var(--faint)} .nv-lean{fill:var(--clay)} .nv-vec{stroke:var(--clay);stroke-width:2;fill:none}
+  .nv-cap{font-family:var(--sans);font-size:11.5px;fill:var(--muted);text-anchor:middle}
+
+  /* mini 2x2 locator */
+  .loc{width:42px;height:42px;flex:0 0 42px}
+  .loc rect.fr{fill:none;stroke:var(--line);stroke-width:1.5}
+  .loc line{stroke:var(--line-dash);stroke-width:1}
+  .loc rect.hl-human{fill:var(--clay);opacity:.85}
+  .loc rect.hl-ai{fill:var(--blue);opacity:.85}
+
+  /* ---------- closing distributions ---------- */
+  .dists{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,40px);margin-top:44px;max-width:1000px}
+  .dist{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:22px 26px 22px}
+  .dist.ai{border-top:3px solid var(--blue)} .dist.you{border-top:3px solid var(--clay)}
+  .dist svg.plot{width:100%;height:auto;display:block}
+  .dist-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .dist .dh{font-family:var(--serif);font-weight:500;font-size:22px;color:var(--ink)}
+  .dist.ai .dh{color:var(--blue)} .dist.you .dh{color:var(--clay)}
+  .dist .ds{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.55}
+  .dpt{fill:var(--faint)} .dpt.center{fill:var(--blue)} .dpt.win{fill:var(--moss)} .dpt.here{fill:var(--clay)}
+  @media (max-width:680px){.dists{grid-template-columns:1fr}}
+
+  /* ---------- final collaboration ---------- */
+  .collab{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(14px,2.6vw,36px);margin-top:42px;max-width:980px}
+  .collab-panel{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--clay);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:20px 24px 22px}
+  .collab-panel.drive{border-top-color:var(--blue)}
+  .collab-panel svg{width:100%;height:auto;display:block;overflow:visible}
+  .collab-cap{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--clay);margin-bottom:6px}
+  .collab-panel.drive .collab-cap{color:var(--blue)}
+  .collab-cap .sub{display:block;margin:2px 0 0;font-family:var(--sans);font-size:13px;color:var(--muted)}
+  .collab-link{font-family:var(--serif);font-size:34px;color:var(--faint);text-align:center;line-height:1}
+  @media (max-width:680px){.collab{grid-template-columns:1fr}.collab-link{transform:rotate(90deg)}}
+
+  /* ---------- closing cards ---------- */
+  .close-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px 22px;margin-top:48px;max-width:920px}
+  .close-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:32px 30px 28px}
+  .close-card p{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.1vw,26px);line-height:1.34;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+  .close-card b.key{color:var(--clay);font-weight:500}
+  .dark .close-card{background:var(--dark-card);border-color:var(--dark-line)}
+  .dark .close-card p{color:var(--dark-ink)} .dark .close-card b.key{color:var(--clay-dark)}
+
+  /* ---------- rail ---------- */
+  body{padding-left:300px}
+  .scene{padding:clamp(84px,13vh,138px) clamp(44px,8vw,120px) clamp(92px,14vh,150px);scroll-margin-top:36px}
+  .scene:first-of-type{min-height:86svh;display:flex;align-items:center}
+  .scene.dark{box-shadow:inset 0 1px 0 var(--dark-line),inset 0 -1px 0 var(--dark-line)}
+  .stage{padding:clamp(40px,7vh,90px) 0}
+
+  .story-rail{position:fixed;left:0;top:0;bottom:0;width:300px;z-index:20;background:rgba(251,250,246,.96);
+    border-right:1px solid var(--line);padding:34px 24px 34px 30px;overflow-y:auto;box-shadow:2px 0 18px rgba(40,35,25,.035)}
+  .story-rail .thread{position:absolute;left:0;top:0;width:2px;height:var(--p,0%);background:var(--clay)}
+  .rail-kicker{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+  .rail-sub{margin-top:4px;font-size:10.5px;line-height:1.45;color:var(--faint)}
+  .rail-list{margin-top:26px;display:flex;flex-direction:column;gap:1px}
+  .rail-row{display:block;width:100%;border:0;background:transparent;text-align:left;cursor:pointer;color:var(--body);font-family:var(--sans)}
+  .rail-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height .5s cubic-bezier(.25,.6,.3,1),opacity .3s ease}
+  .rail-wrap.on{max-height:96px;opacity:1}
+  .rail-row.act{padding:15px 0 6px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+  .rail-row.beat{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:12.5px;line-height:1.45;font-weight:400}
+  .rail-row.beat::before{content:"";flex:0 0 6px;height:6px;margin-top:6px;background:var(--line-dash);border-radius:50%;transition:background .25s,transform .25s}
+  .rail-row.beat.active{color:var(--clay);font-weight:700}
+  .rail-row.beat.active::before{background:var(--clay);transform:scale(1.2)}
+  .rail-end{overflow:hidden;max-height:0;opacity:0;margin-top:20px;border-top:1px solid var(--ink);padding-top:0;
+    font-size:12px;font-weight:700;line-height:1.55;color:var(--ink);transition:max-height .55s cubic-bezier(.25,.6,.3,1),opacity .35s,padding-top .35s}
+  .rail-end.on{max-height:160px;opacity:1;padding-top:14px}
+  .rail-top{display:block;width:100%;background:transparent;border:0;padding:0;text-align:left;font-family:var(--sans);cursor:default}
+  .rail-now,.rail-caret{display:none}
+
+  @media (max-width:1100px){
+    body{padding-left:0}
+    .story-rail{position:sticky;top:0;width:100%;max-height:none;border-right:0;border-bottom:1px solid var(--line);padding:0;overflow:visible;box-shadow:0 2px 14px rgba(40,35,25,.04)}
+    .story-rail .thread{top:0;left:0;height:3px;width:var(--p,0%);max-width:100%}
+    .rail-top{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer}
+    .rail-sub{display:none}
+    .rail-now{display:block;flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--clay);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rail-caret{display:block;color:var(--faint);font-size:11px;transition:transform .3s ease}
+    .story-rail.open .rail-caret{transform:rotate(180deg)}
+    .rail-list{display:none;margin-top:0;padding:2px 18px 14px;max-height:46svh;overflow-y:auto}
+    .story-rail.open .rail-list{display:flex}
+    .story-rail:not(.open) .rail-end{display:none}
+    .rail-end{margin:0 18px 14px}
+    .scene{padding-left:clamp(26px,7vw,70px);padding-right:clamp(26px,7vw,70px)}
+    .zoomwrap{grid-template-columns:1fr;gap:30px}
+  }
+  @media (max-width:900px){
+    .stage-inner{display:block;padding:0 clamp(22px,6vw,40px)}
+    .stage-plane{position:sticky;top:46px;z-index:6;background:var(--paper);padding:12px 0 8px;border-bottom:1px solid var(--line)}
+    .plane-sticky{position:static;height:auto;display:block}
+    .plane-sticky svg{max-height:46svh}
+    html.js .step{opacity:1;min-height:auto;padding:30px 0}
+    .step:first-child{padding-top:18px}
+    .step p{max-width:none}
+  }
+  @media (max-width:680px){.reset-grid{grid-template-columns:repeat(2,1fr);row-gap:26px}}
+  @media (prefers-reduced-motion:reduce){
+    html.js .fx,html.js .step{opacity:1;transform:none;transition:none}
+    .stage .g,.stage .ai-dot{transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+<aside class="story-rail" id="storyRail" aria-label="Story outline">
+  <div class="thread" id="railThread"></div>
+  <button class="rail-top" id="railToggle" type="button" aria-expanded="false">
+    <span class="rail-kicker">the story so far</span>
+    <span class="rail-sub">assembles as you read · click to revisit</span>
+    <span class="rail-now" id="railNow"></span>
+    <span class="rail-caret">▾</span>
+  </button>
+  <div class="rail-list" id="railList"></div>
+  <div class="rail-end" id="railEnd">we navigate in a new way — because the machine can drive.</div>
+</aside>
+
+<!-- ACT I · THE RESET -->
+
+<section class="scene light" id="s1">
+  <div class="inner">
+    <h1 class="assert fx" style="font-size:clamp(42px,7.4vw,82px)">What Is AI?</h1>
+    <hr class="rule fx" style="--d:.3s">
+    <p class="sub fx" style="--d:.45s">And who does that make us?</p>
+  </div>
+</section>
+
+<section class="scene light" id="s3">
+  <div class="inner">
+    <h2 class="assert fx">AI is a <span class="hl">two-word</span> compound noun.</h2>
+    <div class="artifact fx" style="--d:.4s">
+      <div class="splitword">
+        <div class="w a"><div class="lead">Artificial</div><div class="gloss">digital — and digital means <b>copyable</b></div></div>
+        <span class="plus">+</span>
+        <div class="w i"><div class="lead">Intelligence</div><div class="gloss">learning from <b>an environment</b></div></div>
+      </div>
+    </div>
+    <p class="subhead fx" style="--d:.6s">Two independent words. Let's look at each.</p>
+  </div>
+</section>
+
+<!-- ACT II–IV · THE STAGE -->
+
+<section class="stage" id="stage" data-stage="0">
+  <div class="stage-inner">
+    <div class="stage-plane">
+      <div class="plane-sticky">
+        <div class="plane-box">
+          <!-- THE PLANE.  viewBox 0 0 680 660.  plot x:160..600  y:120..540 -->
+          <svg class="stage-vis vis-plane" viewBox="0 0 680 660" role="img" aria-label="A plane. Vertical axis: intelligence, from testable to lived. Horizontal axis: artificial, from unique to copyable. AI sits at copyable times testable; people at unique times lived; the top-right copyable-and-lived corner is a question mark.">
+            <!-- the two semi-transparent quadrant boxes (under everything) (g8) -->
+            <rect class="g g8 box-human" x="160" y="120" width="220" height="210"/>
+            <rect class="g g8 box-ai" x="380" y="330" width="220" height="210"/>
+            <text class="g g8 qmark" x="490" y="240" text-anchor="middle">?</text>
+
+            <!-- vertical axis = INTELLIGENCE (g0) -->
+            <g class="g g0">
+              <rect class="pl-frame" x="160" y="120" width="440" height="420"/>
+              <line class="v-axis" x1="160" y1="540" x2="160" y2="100"/>
+              <polygon class="v-head" points="160,100 155,111 165,111"/>
+              <text class="ax-name v-name" x="60" y="330" text-anchor="middle" transform="rotate(-90 60 330)">intelligence</text>
+            </g>
+            <!-- vertical end labels (g1) -->
+            <g class="g g1">
+              <text class="pl-end y-end" x="150" y="186" text-anchor="end">lived</text>
+              <text class="pl-endsub" x="150" y="204" text-anchor="end">no answer key</text>
+              <text class="pl-end y-end" x="150" y="486" text-anchor="end">testable</text>
+              <text class="pl-endsub" x="150" y="504" text-anchor="end">right answers</text>
+            </g>
+
+            <!-- grandmother (top-left, lived — aligned with the ? across the plane) (g2) -->
+            <g class="g g2">
+              <circle class="pl-pt" cx="250" cy="224" r="9" fill="var(--ink)"/>
+              <g class="pl-ico" transform="translate(206,216)"><circle cx="8" cy="5" r="5"/><path d="M1,20 a7,7 0 0 1 14,0"/></g>
+              <text class="pl-lbl" x="266" y="194">grandmother</text>
+              <text class="pl-sub" x="266" y="212">a whole life</text>
+            </g>
+            <!-- gymnast (lower-left, embodied but scorable) (g3) -->
+            <g class="g g3">
+              <circle class="pl-pt" cx="250" cy="398" r="9" fill="var(--ink)"/>
+              <g class="pl-ico" transform="translate(208,390)"><circle cx="7" cy="3" r="3.4"/><path d="M2,20 Q9,8 16,14 M7,7 Q4,14 2,20 M16,14 Q14,19 11,21"/></g>
+              <text class="pl-lbl" x="266" y="368">gymnast</text>
+              <text class="pl-sub" x="266" y="386">a body in the world</text>
+            </g>
+            <!-- straight-A student (bottom-left, testable) (g4) -->
+            <g class="g g4">
+              <circle class="pl-pt" cx="250" cy="470" r="9" fill="var(--ink)"/>
+              <g class="pl-ico" transform="translate(208,461)"><rect x="2" y="0" width="15" height="18" rx="2"/><path d="M6,9 l2.5,3 l4.5,-6"/></g>
+              <text class="pl-lbl" x="266" y="424">straight-A</text>
+              <text class="pl-lbl" x="266" y="442">student</text>
+              <text class="pl-sub" x="266" y="460">a corpus of tests</text>
+            </g>
+
+            <!-- horizontal axis = ARTIFICIAL (g5) -->
+            <g class="g g5">
+              <line class="h-axis" x1="160" y1="540" x2="624" y2="540"/>
+              <polygon class="h-head" points="624,540 613,535 613,545"/>
+              <text class="ax-name h-name" x="392" y="624" text-anchor="middle">artificial</text>
+            </g>
+            <!-- horizontal end labels (g6) -->
+            <g class="g g6">
+              <text class="pl-end x-end" x="180" y="572" text-anchor="start">unique</text>
+              <text class="pl-endsub" x="180" y="590" text-anchor="start">one of one</text>
+              <text class="pl-end x-end" x="600" y="572" text-anchor="end">copyable</text>
+              <text class="pl-endsub" x="600" y="590" text-anchor="end">at any scale</text>
+            </g>
+
+            <!-- the AI + robotics-future (g7) -->
+            <g class="g g7">
+              <!-- future: gymnast → robotics (now in the lower-right quadrant) -->
+              <path class="pl-future" d="M262,398 H498"/>
+              <circle class="pl-pt" cx="510" cy="398" r="8" fill="var(--blue)" opacity=".45"/>
+              <text class="pl-sub" x="526" y="396" fill="var(--blue)" opacity=".8">robotics</text>
+              <text class="pl-sub" x="526" y="412">soon…</text>
+              <!-- the copy of the straight-A student travels right to a single dot -->
+              <g class="ai-dot">
+                <path class="pl-connector" d="M262,470 H498"/>
+                <circle class="pl-pt" cx="512" cy="470" r="9" fill="var(--blue)"/>
+                <text class="pl-lbl" x="530" y="475" style="fill:var(--blue);font-weight:600">AI</text>
+              </g>
+            </g>
+          </svg>
+
+          <!-- swap-in: THE MACHINE DRIVES — the blue (copyable × testable) quadrant -->
+          <svg class="stage-vis vis-drives" viewBox="0 0 680 660" role="img" aria-label="The copyable-times-testable quadrant: a tight cluster converging on a single center. Best practice, at scale.">
+            <text class="pl-lbl" x="120" y="96" style="fill:var(--blue);font-weight:600">the machine drives</text>
+            <text class="pl-sub" x="120" y="120">best practice, at scale</text>
+            <!-- locator: bottom-right (copyable × testable) highlighted blue -->
+            <g transform="translate(494,72)">
+              <rect x="0" y="0" width="56" height="56" fill="none" stroke="var(--line)" stroke-width="1.6"/>
+              <line x1="28" y1="0" x2="28" y2="56" stroke="var(--line-dash)"/><line x1="0" y1="28" x2="56" y2="28" stroke="var(--line-dash)"/>
+              <rect x="29" y="29" width="26" height="26" fill="var(--blue)" opacity=".85"/>
+            </g>
+            <!-- the quadrant box, blue like the plane -->
+            <rect class="box-ai" x="120" y="150" width="430" height="400" rx="16"/>
+            <line x1="160" y1="470" x2="510" y2="470" stroke="var(--line)" stroke-width="1.4"/>
+            <circle class="dpt center" cx="335" cy="360" r="15"/>
+            <circle class="dpt" cx="300" cy="378" r="9"/><circle class="dpt" cx="370" cy="350" r="9"/>
+            <circle class="dpt" cx="316" cy="342" r="9"/><circle class="dpt" cx="356" cy="386" r="9"/>
+            <circle class="dpt" cx="296" cy="358" r="9"/><circle class="dpt" cx="376" cy="376" r="9"/>
+            <circle class="dpt" cx="340" cy="330" r="9"/>
+            <text class="pl-sub" x="335" y="518" text-anchor="middle">converges on the “right” answer</text>
+          </svg>
+
+          <!-- swap-in: YOU NAVIGATE — the clay (unique × lived) quadrant -->
+          <svg class="stage-vis vis-nav" viewBox="0 0 680 660" role="img" aria-label="The unique-times-lived quadrant: a wide spread with a few winners and one marked 'you are here'. Many destinations, most wrong.">
+            <text class="pl-lbl" x="120" y="96" style="fill:var(--clay);font-weight:600">we navigate</text>
+            <text class="pl-sub" x="120" y="120">many destinations, most wrong</text>
+            <!-- locator: top-left (unique × lived) highlighted clay -->
+            <g transform="translate(494,72)">
+              <rect x="0" y="0" width="56" height="56" fill="none" stroke="var(--line)" stroke-width="1.6"/>
+              <line x1="28" y1="0" x2="28" y2="56" stroke="var(--line-dash)"/><line x1="0" y1="28" x2="56" y2="28" stroke="var(--line-dash)"/>
+              <rect x="1" y="1" width="26" height="26" fill="var(--clay)" opacity=".85"/>
+            </g>
+            <!-- the quadrant box, clay like the plane -->
+            <rect class="box-human" x="120" y="150" width="430" height="400" rx="16"/>
+            <line x1="160" y1="478" x2="510" y2="478" stroke="var(--line)" stroke-width="1.4"/>
+            <circle class="dpt" cx="190" cy="372" r="8"/><circle class="dpt" cx="500" cy="356" r="8"/>
+            <circle class="dpt" cx="270" cy="300" r="8"/><circle class="dpt" cx="430" cy="392" r="8"/>
+            <circle class="dpt" cx="226" cy="396" r="8"/><circle class="dpt" cx="466" cy="318" r="8"/>
+            <circle class="dpt win" cx="330" cy="268" r="10"/><circle class="dpt win" cx="486" cy="300" r="10"/>
+            <circle class="dpt here" cx="292" cy="356" r="12"/>
+            <line x1="292" y1="356" x2="292" y2="478" stroke="var(--clay)" stroke-width="1.2" stroke-dasharray="3 4"/>
+            <text class="pl-sub" x="292" y="502" text-anchor="middle" style="fill:var(--clay)">you are here</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage-steps">
+      <div class="step" id="stp0" data-stage="0">
+        <span class="kick">the vertical axis · intelligence</span>
+        <h3>Start with <span class="moss">intelligence</span>.</h3>
+        <p><b>Learning from an environment</b> — but which environment?</p>
+      </div>
+      <div class="step" id="stp1" data-stage="1">
+        <span class="kick">still the vertical axis</span>
+        <h3>There's no intelligence <i>in general</i>.</h3>
+        <p>On one end, <b>testable</b> — right answers. On the other, <b>lived</b> — no answer key.</p>
+      </div>
+      <div class="step" id="stp2" data-stage="2">
+        <span class="kick">high on the axis</span>
+        <h3>A whole life → a <span class="moss">grandmother</span>.</h3>
+        <p>Many life lessons, accumulated over time.</p>
+      </div>
+      <div class="step" id="stp3" data-stage="3">
+        <span class="kick">lower down</span>
+        <h3>A body in the world → a <span class="moss">gymnast</span>.</h3>
+        <p>Balance and timing, learned by doing. Embodied, but scorable.</p>
+      </div>
+      <div class="step" id="stp4" data-stage="4">
+        <span class="kick">at the bottom</span>
+        <h3>A corpus of tests → a <span class="moss">straight-A student</span>.</h3>
+        <p>Questions with known answers — a fully <b>testable</b> world.</p>
+      </div>
+      <div class="step" id="stp5" data-stage="5">
+        <span class="kick">the horizontal axis · artificial</span>
+        <h3>Now the other word: <span class="blue">artificial</span>.</h3>
+        <p>It mostly means <b>digital</b>. Why does that matter?</p>
+      </div>
+      <div class="step" id="stp6" data-stage="6">
+        <span class="kick">still horizontal</span>
+        <h3>Digital means <span class="blue">copyable</span>.</h3>
+        <p>We teach individuals — one at a time. Copyable flips it: teach once, then <b>clone</b> endlessly, every copy identical.</p>
+      </div>
+      <div class="step" id="stp7" data-stage="7">
+        <span class="kick">what we actually built</span>
+        <h3>We copied the <span class="blue">straight-A student</span>.</h3>
+        <p>Make the test-taker digital and you get <b>AI</b>: copyable × testable, the lower-right corner.</p>
+        <p>Copy the gymnast next and you get <b>robotics</b> — still arriving.</p>
+      </div>
+      <div class="step" id="stp8" data-stage="8">
+        <span class="kick">four quadrants</span>
+        <h3>Two corners we have. Two we don't.</h3>
+        <p><b>Unique and testable</b> is what we've known so far.</p>
+        <p><b>Copyable and lived</b> would be wisdom at scale.</p>
+        <p>What is that? AGI? ASI? <span class="qm">For now, who knows.</span></p>
+        <p>Let's look at the <b>other two corners</b>.</p>
+      </div>
+      <div class="step" id="stp9" data-stage="9">
+        <span class="kick">the interesting cases · the machine</span>
+        <h3>The machine <span class="blue">drives</span>.</h3>
+        <p><b>Best practice, at scale.</b></p>
+        <p>AI is the “right” answer, cloned again and again.</p>
+        <p>It might be standard or generic, but it's correct.</p>
+      </div>
+      <div class="step" id="stp10" data-stage="10">
+        <span class="kick">the interesting cases · us</span>
+        <h3>We <span class="hl">navigate</span>.</h3>
+        <p>Unique and lived is <b style="color:var(--clay)">us</b>.</p>
+        <p>Let's look at those words.</p>
+        <p><b>Unique:</b> a distinctive individual perspective.</p>
+        <p><b>Lived:</b> not one-off answers but a coherent viewpoint.</p>
+        <p>We can figure out where it's worth going.</p>
+        <p>It might be wrong, but it is different and interesting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL · THE COLLABORATION (light) -->
+
+<section class="scene light" id="sNav">
+  <div class="inner">
+    <h2 class="assert fx">One corner <span style="color:var(--blue)">drives</span>. One <span class="hl">navigates</span>.</h2>
+    <p class="subhead fx" style="--d:.3s;max-width:30ch">Like all tools, AI does something we once did — and asks us what we do now, working with the tool.</p>
+    <div class="collab fx" style="--d:.5s">
+      <div class="collab-panel nav">
+        <div class="collab-cap">we navigate<span class="sub">pick the destination worth reaching</span></div>
+        <svg viewBox="0 0 360 240" role="img" aria-label="A person looking toward a chosen star.">
+          <g transform="translate(284,76)"><path d="M0,-15 L4,-4 L15,-4 L6,3 L9,14 L0,7 L-9,14 L-6,3 L-15,-4 L-4,-4 Z" fill="var(--clay)" opacity=".9"/></g>
+          <line x1="116" y1="104" x2="264" y2="82" stroke="var(--clay)" stroke-width="2" stroke-dasharray="5 5"/>
+          <polygon points="264,82 252,80 256,91" fill="var(--clay)"/>
+          <g fill="none" stroke="var(--clay)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="94" cy="100" r="18"/>
+            <path d="M64,170 a30,24 0 0 1 60,0"/>
+          </g>
+          <text x="94" y="206" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--clay)">a vision, off-center, only yours</text>
+        </svg>
+      </div>
+      <div class="collab-link" aria-hidden="true">+</div>
+      <div class="collab-panel drive">
+        <div class="collab-cap">AI drives<span class="sub">lays the route to it</span></div>
+        <svg viewBox="0 0 360 240" role="img" aria-label="Among many destinations, one is chosen, and a path is driven to it.">
+          <line x1="24" y1="206" x2="336" y2="206" stroke="var(--line)" stroke-width="1"/>
+          <circle class="dpt" cx="70" cy="150" r="5"/><circle class="dpt" cx="300" cy="120" r="5"/>
+          <circle class="dpt" cx="150" cy="98" r="5"/><circle class="dpt" cx="232" cy="158" r="5"/>
+          <circle class="dpt" cx="104" cy="172" r="5"/>
+          <circle class="dpt win" cx="270" cy="86" r="6"/>
+          <circle class="dpt here" cx="196" cy="60" r="8"/>
+          <text x="196" y="42" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--clay)">where to go</text>
+          <path d="M48,196 C92,152 150,118 188,70" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round"/>
+          <polygon points="188,70 184,82 195,79" fill="var(--blue)"/>
+          <circle cx="48" cy="196" r="4" fill="var(--blue)"/>
+          <text x="96" y="220" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--blue)">drives the route there</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.documentElement.classList.add('js');
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+  const storyRail = document.getElementById('storyRail');
+  const railList = document.getElementById('railList');
+  const railThread = document.getElementById('railThread');
+  const railEnd = document.getElementById('railEnd');
+  const railNow = document.getElementById('railNow');
+  const railToggle = document.getElementById('railToggle');
+
+  const outline = [
+    {type:'act', id:'s1', label:'what is AI?'},
+    {type:'beat', id:'s3', label:'a two-word compound — artificial + intelligence → two axes'},
+    {type:'act', id:'stp0', label:'intelligence'},
+    {type:'beat', id:'stp0', label:'intelligence = learning from an environment (the vertical axis)'},
+    {type:'beat', id:'stp1', label:'no intelligence in general — testable vs lived'},
+    {type:'beat', id:'stp2', label:'a whole life → a grandmother'},
+    {type:'beat', id:'stp3', label:'a body in the world → a gymnast'},
+    {type:'beat', id:'stp4', label:'a corpus of tests → a straight-A student'},
+    {type:'act', id:'stp5', label:'artificial'},
+    {type:'beat', id:'stp5', label:'the other word — artificial = digital (the horizontal axis)'},
+    {type:'beat', id:'stp6', label:'digital means copyable; its opposite, unique'},
+    {type:'beat', id:'stp7', label:'we copied the student → AI (robotics next)'},
+    {type:'beat', id:'stp8', label:'two corners we have, two we don’t — boring vs wisdom at scale'},
+    {type:'act', id:'stp9', label:'the interesting cases'},
+    {type:'beat', id:'stp9', label:'the machine drives — best practice at scale'},
+    {type:'beat', id:'stp10', label:'we navigate — unique and lived is us'},
+    {type:'beat', id:'sNav', label:'a collaboration of two intelligences — navigate because it drives'}
+  ];
+
+  function smoothTo(el){
+    const target = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 28);
+    window.scrollTo({top:target, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  }
+
+  const entries = outline.map(item => {
+    const wrap = document.createElement('div'); wrap.className = 'rail-wrap';
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'rail-row ' + item.type; button.textContent = item.label;
+    button.addEventListener('click', () => {
+      const target = document.getElementById(item.id);
+      storyRail.classList.remove('open'); railToggle.setAttribute('aria-expanded','false');
+      if (target) smoothTo(target);
+    });
+    wrap.appendChild(button); railList.appendChild(wrap);
+    return {...item, wrap, button, target:document.getElementById(item.id)};
+  });
+
+  const scenes = [...document.querySelectorAll('.scene')];
+  const revealObserver = new IntersectionObserver(obs => {
+    obs.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('on'); });
+  }, {rootMargin:'-18% 0px -18% 0px', threshold:0});
+  scenes.forEach(scene => revealObserver.observe(scene));
+
+  function passed(el){ return el && el.getBoundingClientRect().top < window.innerHeight * 0.5; }
+
+  function updateRail(){
+    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    railThread.style.setProperty('--p', (clamp(window.scrollY / max, 0, 1) * 100).toFixed(2) + '%');
+    let activeBeat = null;
+    entries.forEach(entry => {
+      const on = passed(entry.target);
+      entry.wrap.classList.toggle('on', on);
+      if (on && entry.type === 'beat') activeBeat = entry;
+    });
+    entries.forEach(entry => entry.button.classList.toggle('active', entry === activeBeat));
+    railNow.textContent = activeBeat ? activeBeat.label : '';
+    railEnd.classList.toggle('on', passed(document.getElementById('sNav')));
+  }
+
+  const stage = document.getElementById('stage');
+  const steps = [...stage.querySelectorAll('.step')];
+  function setStage(i){
+    stage.dataset.stage = i;
+    steps.forEach(s => s.classList.toggle('active', +s.dataset.stage === i));
+    for (let k=0;k<=8;k++) stage.classList.toggle('r'+k, k<=i);
+    stage.classList.toggle('show-drives', i===9);
+    stage.classList.toggle('show-nav', i>=10);
+  }
+  const stepObserver = new IntersectionObserver(obs => {
+    obs.forEach(e => { if (e.isIntersecting) setStage(+e.target.dataset.stage); });
+  }, {rootMargin:'-45% 0px -45% 0px', threshold:0});
+  steps.forEach(s => stepObserver.observe(s));
+  setStage(0);
+
+  let ticking = false;
+  function schedule(){ if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; updateRail(); }); }
+  window.addEventListener('scroll', schedule, {passive:true});
+  window.addEventListener('resize', schedule);
+  updateRail();
+
+  const navTargets = [...new Set(outline.map(i => i.id))].map(id => document.getElementById(id)).filter(Boolean);
+  window.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    let idx = -1; navTargets.forEach((t,i)=>{ if (passed(t)) idx = i; });
+    if (e.key === 'ArrowUp' && idx >= 0 && navTargets[idx].getBoundingClientRect().top < -120){ smoothTo(navTargets[idx]); return; }
+    const next = e.key === 'ArrowDown' ? Math.min(navTargets.length-1, idx+1) : Math.max(0, idx-1);
+    smoothTo(navTargets[next]);
+  });
+
+  railToggle.addEventListener('click', () => {
+    if (!matchMedia('(max-width:1100px)').matches) return;
+    const open = storyRail.classList.toggle('open');
+    railToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+</body>
+</html>

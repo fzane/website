@@ -5,11 +5,12 @@
   },
   "pieces": [
     {
-      "slug": "/projects/types-of-intelligence/",
-      "title": "Types of Intelligence",
+      "slug": "/projects/what-is-ai/",
+      "title": "What Is AI?",
       "tag": "theory",
-      "description": "We built one kind of mind. You're the other — and the difference is the most practical thing you can know about working with it. The whole case, as one continuous scroll.",
-      "date": "2026-06"
+      "description": "Every powerful tool forces us to reflect on who we are. AI makes that question practical by showing us different types of intelligence: copyable, testable, lived, and uniquely ours.",
+      "date": "2026-06",
+      "thumb": "/projects/what-is-ai/img/quadrants-thumb.svg"
     },
     {
       "slug": "/projects/who-picked-the-headphones/",

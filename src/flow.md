@@ -3,7 +3,7 @@
 A layout system for long-form scroll pages that present an argument in
 staged beats — the territory usually claimed by slide decks — while
 behaving like a document. Developed in
-`drafts/types-of-intelligence/index-v7.html`; this file records the
+`drafts/types-of-intelligence/index.html`; this file records the
 structural rules so the style can be applied consistently to other
 pages. It deliberately excludes visual styling (color, type families,
 decoration): those belong to each page's own design system.

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 528" role="img" aria-labelledby="title desc">
+  <title id="title">Four-quadrant intelligence plane</title>
+  <desc id="desc">A simplified plane with intelligence on the vertical axis and artificial on the horizontal axis. The unique-lived human corner and copyable-testable AI corner are highlighted.</desc>
+  <defs>
+    <style>
+      .paper{fill:#fbfaf6}
+      .frame{fill:#fffdf8;stroke:#e5e1d6;stroke-width:3}
+      .grid{stroke:#d8d3c4;stroke-width:2;stroke-dasharray:8 10}
+      .axis-blue{stroke:#44549e}
+      .axis-moss{stroke:#5e7a4a}
+      .human{fill:#c06243;fill-opacity:.14;stroke:#c06243;stroke-width:3}
+      .ai{fill:#44549e;fill-opacity:.14;stroke:#44549e;stroke-width:3}
+      .dot-human{fill:#c06243}
+      .dot-ai{fill:#44549e}
+      .dot-muted{fill:#8a8068;opacity:.45}
+      .serif{font-family:Lora, Georgia, serif}
+      .sans{font-family:"Atkinson Hyperlegible", Arial, sans-serif}
+      .label{fill:#211f1a;font-size:33px;font-weight:500}
+      .sub{fill:#6e6a60;font-size:19px}
+      .axis-label{font-size:18px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+      .blue{fill:#44549e}
+      .moss{fill:#5e7a4a}
+      .faint{fill:#9e998c}
+    </style>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#44549e"/>
+    </marker>
+    <marker id="arrow-moss" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#5e7a4a"/>
+    </marker>
+  </defs>
+
+  <rect class="paper" width="900" height="528"/>
+  <rect class="frame" x="168" y="76" width="548" height="360" rx="12"/>
+  <line class="grid" x1="442" y1="76" x2="442" y2="436"/>
+  <line class="grid" x1="168" y1="256" x2="716" y2="256"/>
+
+  <rect class="human" x="168" y="76" width="274" height="180" rx="12"/>
+  <rect class="ai" x="442" y="256" width="274" height="180" rx="12"/>
+
+  <line class="axis-moss" x1="168" y1="436" x2="168" y2="54" stroke-width="4" marker-end="url(#arrow-moss)"/>
+  <line class="axis-blue" x1="168" y1="436" x2="743" y2="436" stroke-width="4" marker-end="url(#arrow-blue)"/>
+
+  <text class="sans axis-label moss" x="82" y="264" text-anchor="middle" transform="rotate(-90 82 264)">intelligence</text>
+  <text class="sans axis-label blue" x="442" y="493" text-anchor="middle">artificial</text>
+
+  <text class="serif label" x="145" y="126" text-anchor="end">lived</text>
+  <text class="sans sub" x="145" y="153" text-anchor="end">no answer key</text>
+  <text class="serif label" x="145" y="375" text-anchor="end">testable</text>
+  <text class="sans sub" x="145" y="402" text-anchor="end">right answers</text>
+
+  <text class="serif label" x="185" y="471">unique</text>
+  <text class="serif label" x="700" y="471" text-anchor="end">copyable</text>
+
+  <circle class="dot-human" cx="305" cy="166" r="15"/>
+  <text class="serif label" x="330" y="158">us</text>
+  <text class="sans sub" x="330" y="187">unique + lived</text>
+
+  <circle class="dot-muted" cx="304" cy="348" r="10"/>
+  <circle class="dot-muted" cx="356" cy="330" r="8"/>
+
+  <circle class="dot-ai" cx="579" cy="348" r="15"/>
+  <text class="serif label blue" x="604" y="357">AI</text>
+  <text class="sans sub" x="604" y="385">copyable + testable</text>
+
+  <circle class="dot-muted" cx="568" cy="164" r="9"/>
+  <text class="serif label faint" x="601" y="176">?</text>
+</svg>
