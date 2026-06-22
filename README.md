@@ -7,7 +7,7 @@ one manifest, and a tiny script.
 ## Principles
 
 - **One folder per piece, named by a permanent slug.** The URL is the folder
-  (`/projects/who-picked-the-headphones/`). Slugs never change, even when
+  (`projects/who-picked-the-headphones/`). Slugs never change, even when
   content does — dates, categories, and versions live in metadata, not paths.
 - **Every piece is self-contained.** Its `index.html` references only files
   inside its own folder (`./img/...`), so a piece can be moved, copied, or
@@ -15,7 +15,7 @@ one manifest, and a tiny script.
 - **`manifest.json` is the single source of truth** for what exists: slug,
   title, description, date, tags (newest first).
 - **Pieces keep their own bespoke design.** The only site-wide intrusion is one
-  line: `<script src="/nav.js" defer></script>`, which injects a corner nav
+  line: `<script src="../../nav.js" defer></script>`, which injects a corner nav
   (home / older / newer) into an isolated shadow root.
 - **Two pages in the top nav.** The chrome is just the wordmark (home) and
   About. The front page (`index.html`) shows the most recent pieces plus a
@@ -44,7 +44,7 @@ about/  404.html
 
 1. Create `projects/<slug>/` with an `index.html`; keep all its assets inside
    the folder, referenced by relative paths.
-2. Add `<script src="/nav.js" defer></script>` before `</body>`.
+2. Add `<script src="../../nav.js" defer></script>` before `</body>`.
 3. Add an entry at the appropriate position in `manifest.json` (newest first).
 4. Run `node build.mjs` to refresh the index pages.
 
@@ -67,8 +67,7 @@ error-page support, so a bad URL looking generic locally is expected, not a bug.
 
 ## Publishing
 
-1. Create a GitHub repo named `<username>.github.io` and push this directory
-   to `main`.
+1. Create a GitHub repo and push this directory to `main`.
 2. Repo Settings → Pages → deploy from branch `main`, root `/`.
 3. Update `site.url` in `manifest.json`.
 4. Optional but recommended: add a custom domain (Settings → Pages → custom

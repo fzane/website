@@ -5,6 +5,7 @@
 // the static index pages. Pieces are listed in manifest order (newest
 // first); "thumb" is an optional image path rendered beside the row.
 import { readFileSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
 
 const manifest = JSON.parse(readFileSync('manifest.json', 'utf8'));
 const esc = s => String(s)
@@ -19,13 +20,22 @@ const fmtDate = d => {
   return m ? `${MONTHS[+m[2] - 1]} ${m[1]}` : esc(d);
 };
 
-const row = (p, i) => {
+const relUrl = (fromFile, target) => {
+  const fromDir = path.posix.dirname(fromFile);
+  const cleanTarget = String(target).replace(/^\/+/, '');
+  const hasTrailingSlash = cleanTarget.endsWith('/');
+  const relative = path.posix.relative(fromDir === '.' ? '' : fromDir, cleanTarget);
+  const url = relative || '.';
+  return hasTrailingSlash && !url.endsWith('/') ? `${url}/` : url;
+};
+
+const row = (p, i, fromFile) => {
   const num = String(i + 1).padStart(2, '0');
   const thumb = p.thumb
     ? `
-            <span class="rthumb"><img src="${esc(p.thumb)}" alt="" loading="lazy"></span>`
+            <span class="rthumb"><img src="${esc(relUrl(fromFile, p.thumb))}" alt="" loading="lazy"></span>`
     : '';
-  return `      <a class="row${p.thumb ? '' : ' nothumb'}" href="${esc(p.slug)}">
+  return `      <a class="row${p.thumb ? '' : ' nothumb'}" href="${esc(relUrl(fromFile, p.slug))}">
             <span class="rbody">
               <span class="rtag">${esc(p.tag || `project ${num}`)}</span>
               <span class="rtitle">${esc(p.title)}</span>
@@ -35,14 +45,13 @@ const row = (p, i) => {
           </a>`;
 };
 
-const list = manifest.pieces.map(row).join('\n');
-
 for (const file of ['index.html', 'projects/index.html']) {
   const src = readFileSync(file, 'utf8');
   if (!src.includes('<!-- pieces:start -->')) {
     console.warn(`skipped ${file}: no pieces markers`);
     continue;
   }
+  const list = manifest.pieces.map((p, i) => row(p, i, file)).join('\n');
   const out = src.replace(
     /(<!-- pieces:start -->)[\s\S]*?(<!-- pieces:end -->)/,
     `$1\n${list}\n      $2`

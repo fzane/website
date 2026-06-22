@@ -1,5 +1,5 @@
 /* Site-wide nav overlay for project pages.
-   Each self-contained page adds exactly one line:  <script src="/nav.js" defer></script>
+   Each self-contained page adds exactly one line:  <script src="../../nav.js" defer></script>
    The overlay is rendered inside a shadow root so the page's CSS and the nav's CSS
    cannot affect each other, and it is position:fixed so it occupies no space in the
    page's layout. White text + mix-blend-mode:difference keeps it legible on light
@@ -9,15 +9,20 @@
   if (window.__siteNav) return;
   window.__siteNav = true;
 
-  fetch('/manifest.json')
+  var script = document.currentScript;
+  var baseUrl = script ? new URL('.', script.src) : new URL('./', location.href);
+  var href = function (p) { return new URL(p, baseUrl).href; };
+  var pathOf = function (p) { return new URL(p, baseUrl).pathname; };
+
+  fetch(href('manifest.json'))
     .then(function (r) { return r.json(); })
     .then(function (m) {
-      var norm = function (p) { return p.replace(/index\.html$/, ''); };
+      var norm = function (p) { return p.replace(/index\.html$/, '').replace(/\/$/, '/'); };
       var here = norm(location.pathname);
       var pieces = m.pieces || [];
       var i = -1;
       for (var k = 0; k < pieces.length; k++) {
-        if (norm(pieces[k].slug) === here) { i = k; break; }
+        if (norm(pathOf(pieces[k].slug)) === here) { i = k; break; }
       }
       // manifest is ordered newest-first
       var newer = i > 0 ? pieces[i - 1] : null;
@@ -53,9 +58,9 @@
         root.appendChild(div);
       };
 
-      corner('home', '/', '⌂ ' + (m.site && m.site.title || 'index'));
-      if (older) corner('older', older.slug, '← ' + older.title, 'older: ' + older.title, 'prev');
-      if (newer) corner('newer', newer.slug, newer.title + ' →', 'newer: ' + newer.title, 'next');
+      corner('home', baseUrl.href, '⌂ ' + (m.site && m.site.title || 'index'));
+      if (older) corner('older', href(older.slug), '← ' + older.title, 'older: ' + older.title, 'prev');
+      if (newer) corner('newer', href(newer.slug), newer.title + ' →', 'newer: ' + newer.title, 'next');
 
       if (document.body) document.body.appendChild(host);
     })

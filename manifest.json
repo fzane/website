@@ -1,24 +1,24 @@
 {
   "site": {
     "title": "Francis Zane",
-    "url": "https://USERNAME.github.io"
+    "url": "https://fzane.github.io/website/"
   },
   "pieces": [
     {
-      "slug": "/projects/what-is-ai/",
+      "slug": "projects/what-is-ai/",
       "title": "What Is AI?",
       "tag": "theory",
       "description": "Every powerful tool forces us to reflect on who we are. AI makes that question practical by showing us different types of intelligence: copyable, testable, lived, and uniquely ours.",
       "date": "2026-06",
-      "thumb": "/projects/what-is-ai/img/quadrants-thumb.svg"
+      "thumb": "projects/what-is-ai/img/quadrants-thumb.svg"
     },
     {
-      "slug": "/projects/who-picked-the-headphones/",
+      "slug": "projects/who-picked-the-headphones/",
       "title": "Who Picked the Headphones",
       "tag": "experiment",
       "description": "Six AIs, one two-sentence request. Watch where the details in the output actually come from — and find the gap where your intention was supposed to go.",
       "date": "2026-06",
-      "thumb": "/projects/who-picked-the-headphones/img/opus-01.png"
+      "thumb": "projects/who-picked-the-headphones/img/opus-01.png"
     }
   ]
 }
