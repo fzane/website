@@ -5,6 +5,13 @@
   },
   "pieces": [
     {
+      "slug": "projects/ideas-bakery-strategy/",
+      "title": "Asking a Machine for Ideas",
+      "tag": "essay",
+      "description": "A bakery thought experiment about what happens when we ask AI for more, novel, or not-obvious ideas before we know exactly what we want.",
+      "date": "2026-06"
+    },
+    {
       "slug": "projects/what-is-ai/",
       "title": "What Is AI?",
       "tag": "theory",

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asking a machine for ideas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --local:#c2683e; --artisanal:#cf9a3a; --community:#a8536a; --optimized:#3f6f8f; --other:#7d6f93;
+    --ground:#f3ecdd; --ink:#2f4a47; --muted:#6c7d72; --hairline:#d9cdb4; --maxw:780px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Spline Sans",system-ui,sans-serif;font-size:18px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(to right,rgba(47,74,71,.045) 1px,transparent 1px),
+                    linear-gradient(to bottom,rgba(47,74,71,.045) 1px,transparent 1px);
+    background-size:30px 30px;}
+  main{position:relative;z-index:1}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:"Lora",Georgia,serif;font-weight:500;line-height:1.1;letter-spacing:-.01em}
+  h2{font-size:clamp(28px,4.4vw,40px);margin:0 0 .45em;line-height:1.08}
+  p{margin:0 0 .85em;text-wrap:pretty}
+  h1,h2,h3,.dek,.lede,.ask,.read,.close-line{text-wrap:balance}
+  .mono{font-family:"Spline Sans Mono",ui-monospace,monospace}
+  em{font-style:italic}
+  strong{font-weight:600}
+
+  /* hero */
+  .hero{padding-top:14vh;padding-bottom:3vh}
+  .eyebrow{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:1.8em}
+  .hero h1{font-size:clamp(40px,8vw,72px);font-weight:500;letter-spacing:-.02em;line-height:1.04;margin:0 0 .55em}
+  .hero h1 .turn{font-style:italic;font-weight:400;color:var(--local)}
+  .hero .dek{font-size:clamp(19px,2.2vw,21px);max-width:36ch;opacity:.9;line-height:1.5}
+
+  section.wrap{padding-top:9vh;padding-bottom:1.5vh}
+  #intro{padding-top:4vh}
+  .lede{font-size:clamp(19px,2.2vw,21px);line-height:1.5}
+  .beat{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--muted);display:block;margin-bottom:1em}
+  .beat b{color:var(--ink);font-weight:500}
+  .ask{font-family:"Lora",serif;font-size:21px;font-style:italic;font-weight:400;opacity:.85;
+    border-left:2px solid var(--hairline);padding-left:.9em;margin:.2em 0 1.3em}
+
+  /* scaffolding: exactly one cue before a figure, one read after it.
+     cue carries no bar (kept judicious — bars live on .ask and .read only) */
+  .cue{font-size:15.5px;color:#5a6b63;line-height:1.5;margin:.6em 0 .7em;max-width:62ch}
+  .read{font-size:18px;color:var(--ink);font-weight:500;line-height:1.5;margin:.7em 0 .9em;
+    padding-left:.9em;border-left:2px solid var(--local);max-width:62ch}
+  .read em{font-style:italic;font-weight:500}
+
+  /* the language rib: what the word revealed about us */
+  .reveal{border-top:1px solid var(--hairline);padding-top:1.1em;margin:1.5em 0 .4em}
+  .reveal .w{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.55em}
+  .reveal p{font-size:16.5px;line-height:1.55;color:#3f514a;margin:0;max-width:62ch}
+  .reveal b{color:var(--ink);font-weight:600}
+
+  /* rare method aside */
+  .note{font-size:14px;line-height:1.5;color:#5a6b63;background:rgba(255,255,255,.4);
+    border:1px solid var(--hairline);border-radius:8px;padding:11px 14px;margin:1.1em 0;max-width:62ch}
+  .note .k{font-family:"Spline Sans Mono",monospace;font-size:10.5px;letter-spacing:.2em;
+    text-transform:uppercase;display:block;margin-bottom:.4em;color:var(--muted)}
+  .note em{font-style:italic}
+  /* the "why ★" inset: wider, centered under the grid */
+  .note.wide{max-width:none;text-align:center;padding:14px 22px;margin:1.3em auto 1.5em}
+
+  .prompt{font-family:"Spline Sans Mono",monospace;font-size:14px;line-height:1.65;
+    background:rgba(255,255,255,.45);border:1px solid var(--hairline);border-radius:10px;
+    padding:16px 18px;margin:0 0 1.4em;color:#43564f}
+  .prompt .tag{display:block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:.6em}
+  .hl-novel{background:#f5e9d2;color:#8a651b;border-bottom:2px solid var(--artisanal);padding:0 2px;border-radius:2px;font-weight:500}
+  .hl-avoid{background:#dde8ed;color:#2f5570;border-bottom:2px solid var(--optimized);padding:0 2px;border-radius:2px;font-weight:500}
+
+  figure{margin:1.4em 0 1.6em}
+  figure svg{display:block;width:100%;height:auto;border-radius:12px}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 1.1em;
+    font-family:"Spline Sans Mono",monospace;font-size:11.5px;letter-spacing:.02em;color:#52635c}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:13px;height:13px;border-radius:3px;display:inline-block}
+  /* neighborly = a box bracketing its three sub-categories */
+  .legend .leg-group{gap:6px 14px;padding:5px 11px 5px 10px;border:1px solid var(--local);border-radius:7px}
+  .legend .leg-grouplabel{color:#8f4a28;letter-spacing:.06em}
+
+  /* grid + side notes */
+  .gridblock{margin:1.2em 0 1em}
+  .grow{display:grid;grid-template-columns:var(--lab,108px) repeat(5,minmax(0,1fr)) var(--side,0);
+    gap:6px;align-items:stretch;margin-bottom:6px}
+  .grow.has-side{--side:minmax(0,150px)}
+  .mlabel{font-family:"Spline Sans Mono",monospace;font-size:10.5px;color:var(--muted);
+    display:flex;align-items:center;min-width:0;overflow-wrap:break-word}
+  .cell{font-size:11.5px;line-height:1.22;padding:7px 8px;border-radius:6px;min-height:42px;min-width:0;position:relative;
+    display:flex;align-items:center;cursor:pointer;border:none;text-align:left;
+    border-left:3px solid transparent;font-family:inherit;transition:transform .08s ease, box-shadow .08s ease}
+  .cell>span{min-width:0;overflow-wrap:anywhere}
+  .cell:hover{transform:translateY(-1px);box-shadow:0 3px 9px rgba(47,74,71,.14)}
+  .cell:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+  .snote{font-size:11.5px;line-height:1.32;color:#5a6b63;display:flex;align-items:center;
+    border-left:1px solid var(--hairline);padding-left:10px}
+  @media (max-width:720px){.snote{display:none}.grow.has-side{--side:0}.grow{--lab:72px}
+    .mlabel{font-size:9px}.cell{font-size:10.5px}}
+
+  /* focal pairs */
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:.5em 0 .7em;align-items:stretch}
+  .pcard{border-radius:10px;padding:12px 14px;border:1px solid var(--hairline);background:rgba(255,255,255,.4);
+    border-left-width:4px;border-left-style:solid}
+  .pcard .pid{font-family:"Spline Sans Mono",monospace;font-size:11px;color:var(--muted);display:block;margin-bottom:.3em}
+  .pcard .pnm{font-family:"Lora",serif;font-size:16px;font-weight:500;line-height:1.16;display:block;margin-bottom:.3em}
+  .pcard .pds{font-size:13.5px;line-height:1.45;color:#4a5b54}
+  .focalhead{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:.4em 0 .3em}
+  .focalhead span{text-align:center;font-family:"Lora",serif;font-weight:500;font-size:16px;color:var(--ink);
+    padding-bottom:.25em;border-bottom:1px solid var(--hairline)}
+  .pmodel{font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);text-align:center;margin:.9em 0 .3em}
+  .kw{font-style:normal;border-bottom:2px solid var(--local);padding-bottom:.5px;font-weight:500}
+  .ftag{display:inline-block;font-family:"Spline Sans Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    color:#fff;background:var(--local);padding:3px 11px;border-radius:20px;margin-bottom:9px}
+  .cell.spot{outline:2px solid var(--ink);outline-offset:1px;z-index:2}
+  .rivalmark{position:absolute;top:2px;right:5px;font-family:"Spline Sans Mono",monospace;font-size:13px;line-height:1;color:#2f4a47;opacity:.5;pointer-events:none}
+  @media (max-width:560px){.pair{grid-template-columns:1fr}.focalhead{display:none}}
+
+  /* close: one Lora statement, then a compact mapping in body voice (underlines, not italics) */
+  .close-line{font-family:"Lora",serif;font-size:clamp(23px,3.4vw,31px);font-weight:500;
+    line-height:1.3;letter-spacing:-.01em;margin:0 0 .7em}
+  .close-line .a{color:var(--local)} .close-line .b{color:var(--optimized)}
+  .close-map{font-size:18px;line-height:1.85;color:#3f514a;margin:0 0 .4em}
+  footer{padding:6vh 0 11vh;text-align:center;color:var(--muted);font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.14em}
+
+  /* lightbox */
+  .lb{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:24px;
+    background:rgba(35,48,45,.5);backdrop-filter:blur(3px)}
+  .lb.open{display:flex}
+  .lb-card{background:var(--ground);border:1px solid var(--hairline);border-radius:14px;max-width:440px;width:100%;
+    padding:26px 26px 24px;border-top:5px solid var(--ink);box-shadow:0 20px 60px rgba(35,48,45,.3)}
+  .lb-cat{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:7px;color:var(--muted);margin-bottom:.7em}
+  .lb-cat i{width:12px;height:12px;border-radius:3px}
+  .lb-title{font-family:"Lora",serif;font-size:24px;font-weight:500;line-height:1.12;margin:0 0 .5em}
+  .lb-id{font-family:"Spline Sans Mono",monospace;font-size:12px;color:var(--muted);margin-bottom:.9em}
+  .lb-desc{font-size:16px;line-height:1.55;color:#3b4c45;margin:0}
+  .lb-close{position:absolute;top:18px;right:22px;font-family:"Spline Sans Mono",monospace;font-size:13px;
+    color:#fff;cursor:pointer;letter-spacing:.1em;background:none;border:none}
+
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cell{transition:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="topo" width="26" height="26" patternUnits="userSpaceOnUse">
+    <path d="M26 0 L0 0 L0 26" fill="none" stroke="#2f4a47" stroke-width="1" opacity=".05"/></pattern>
+  <pattern id="ledger" width="13" height="13" patternUnits="userSpaceOnUse">
+    <path d="M0 13H13 M13 0V13" fill="none" stroke="#3f6f8f" stroke-width=".6" opacity=".16"/></pattern>
+  <filter id="flour" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" stitchTiles="stitch" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.97 0 0 0 0 0.93 0 0 0 0 0.86 0 0 0 0.7 0"/></filter>
+  <linearGradient id="cross" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0" stop-color="#c2683e"/><stop offset="1" stop-color="#3f6f8f"/></linearGradient>
+  <marker id="ah-ops" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L7,4.5 L0,9Z" fill="#3f6f8f"/></marker>
+  <marker id="ah-off" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8Z" fill="#7d6f93"/></marker>
+  <marker id="ah-more" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L6,3.5 L0,7Z" fill="#c2683e"/></marker>
+  <marker id="ah-novel" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L6,3.5 L0,7Z" fill="#9a6a16"/></marker>
+  <marker id="ah-cross" markerWidth="11" markerHeight="11" refX="7" refY="5.5" orient="auto"><path d="M0,0 L9,5.5 L0,11Z" fill="#3f6f8f"/></marker>
+  <marker id="ah-ink" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L6,3.5 L0,7Z" fill="#2f4a47"/></marker>
+</defs></svg>
+
+<main>
+
+<header class="hero wrap">
+  <p class="eyebrow">on asking machines for ideas</p>
+  <h1>Asking a machine<br>for <span class="turn">ideas</span>?</h1>
+  <p class="dek">Sometimes we know what we want.<br>Sometimes we figure it out in the asking.</p>
+</header>
+
+<section class="wrap" id="intro">
+  <p class="lede">We often ask AI to do things for us &mdash; things we can picture clearly and ask for. But when we ask AI to help us <em>brainstorm</em>, we're asking for an idea we don't have yet.</p>
+  <p>How can we do that? With words: <span class="kw">more</span> ideas, <span class="kw">novel</span> ideas, <span class="kw">not-obvious</span> ideas.</p>
+  <p>We use these words all the time in conversation &mdash; but what does the AI hear when we put them in a prompt?</p>
+  <p>Let's examine this through a simple example.</p>
+  <div class="prompt"><span class="tag">the prompt</span>you run a small town bakery, and a starbucks has just moved into town. give 25 strategies for responding to it. for each, give it a name and a 1&nbsp;sentence description</div>
+  <p>This isn't a story about bakeries or business strategies. It's just a setting where we have obvious intuitions to compare the AI's answers against.</p>
+</section>
+
+<!-- BASE -->
+<section class="wrap" id="base">
+  <span class="beat">01 &mdash; <b>the plain ask</b></span>
+  <h2>Simple question, obvious answers.</h2>
+  <p class="lede">Most people will gravitate to some obvious answers, and different AIs capture that common view &mdash; though in slightly different ways. Let's look at the top 5 answers from each.</p>
+  <div id="legend"></div>
+  <div class="gridblock" id="grid-base"></div>
+  <div class="note wide"><span class="k">why the &#9733;?</span>The prompt asks a generic question &mdash; business strategy &mdash; but plants it in a specific situation: a Starbucks across the street. An answer that takes the fight <em>to Starbucks</em> is still answering that specific question; one that gives advice you'd give any bakery has drifted to the generic. So naming the rival (&#9733;) is our proxy for staying on target rather than drifting.</div>
+  <p>Now let's look at those answers taken as a whole, and see how they cluster.</p>
+  <p class="cue">In the picture, answers that name the rival (&#9733;) cut a deep notch; ones that don't spread wide and shallow; and the area of each dip is the number of items.</p>
+  <figure id="fig-base"></figure>
+  <p class="read">Most answers collect in the <strong>neighborly</strong> basin &mdash; in a deep well that corresponds to answering the specific question. But there's also a second, smaller well: just running the bakery like a business.</p>
+  <div class="reveal">
+    <span class="w">what the plain ask revealed</span>
+    <p>That the models overlap so much &mdash; all landing on much the same expected answers &mdash; tells us something important. It's not really about the models. The models are just reflecting our own common intuitions back at us.</p>
+  </div>
+</section>
+
+<!-- MORE -->
+<section class="wrap" id="more">
+  <span class="beat">02 &mdash; <b>read further down</b></span>
+  <h2>Ask for <span class="kw">more</span>.</h2>
+  <p class="ask">The top ideas were obvious. What if I just read further down the list?</p>
+  <p class="cue">Let's start with the high-level view first, for comparison.</p>
+  <figure id="fig-more"></figure>
+  <p class="read">The <span class="kw">more</span> list doesn't break out into new ground &mdash; it just becomes less targeted and a bit more business-like.</p>
+  <p class="cue">Let's compare a few examples from the top of the list against ones further down.</p>
+  <div class="focalhead"><span>Top of the list</span><span>Further down</span></div>
+  <div id="focal-more"></div>
+  <p>In broad strokes, the later ideas are narrower variations on the earlier ones &mdash; town merch instead of local sourcing &mdash; and the specific strategies competing against Starbucks give way to general good-business advice.</p>
+  <div class="gridblock" id="grid-more"></div>
+  <div class="reveal">
+    <span class="w">what &ldquo;more&rdquo; revealed</span>
+    <p>Reading further down the list for more ideas, we were hoping for <em>different</em>. What we got was just more volume &mdash; further, not elsewhere.</p>
+  </div>
+</section>
+
+<!-- NOVEL -->
+<section class="wrap" id="novel">
+  <span class="beat">03 &mdash; <b>ask for new</b></span>
+  <h2>Ask for <span class="kw">novel</span>.</h2>
+  <p class="ask">Let's just ask for new ideas directly.</p>
+  <div class="prompt"><span class="tag">the prompt</span>...give 25 <span class="hl-novel">novel, innovative</span> strategies for responding to it...</div>
+  <p class="cue">If we look at the top &ldquo;novel&rdquo; ideas, how does this shift us from the baseline?</p>
+  <figure id="fig-novel"></figure>
+  <p class="read">Neighborly stays central, with the same lean toward business &mdash; but it holds its focus on the competition, and the first <strong>unconventional</strong> ideas appear.</p>
+  <p>Most &ldquo;novel&rdquo; ideas just weld a twist onto a baseline one &mdash; and a few genuinely leave the neighborhood. One of each:</p>
+  <div class="focalhead"><span>Baseline</span><span>Novel, innovative</span></div>
+  <div id="focal-novel"></div>
+  <div class="gridblock" id="grid-novel"></div>
+  <div class="reveal">
+    <span class="w">what &ldquo;novel&rdquo; revealed</span>
+    <p>When we asked for <span class="kw">novel</span>, we meant &ldquo;make it genuinely new.&rdquo; The machine heard &ldquo;make it <b>sound</b> new&rdquo; &mdash; same subject, dressed up. Even the names get hyped: <em>Scone-scription</em>.</p>
+  </div>
+</section>
+
+<!-- BRIDGE -->
+<section class="wrap" id="bridge">
+  <span class="beat">&mdash; <b>interlude</b></span>
+  <h2>Still orbiting the same center.</h2>
+  <p class="lede">We've been trying to find new ideas beyond the obvious.</p>
+  <p>Instead of turning up the <em>intensity</em>, maybe we need to change the <em>location</em>.</p>
+</section>
+
+<!-- AVOID -->
+<section class="wrap" id="avoid">
+  <span class="beat">04 &mdash; <b>forbid the obvious</b></span>
+  <h2>Avoid the obvious, land somewhere new.</h2>
+  <p class="ask">What if we just rule out the obvious answers? Where do we end up?</p>
+  <div class="prompt"><span class="tag">the prompt</span>...give 25 strategies for responding to it, <span class="hl-avoid">but not ones that center on local sourcing, local identity, or unique artisanal features</span>...</div>
+  <p class="cue">This move has an obvious and dramatic effect.</p>
+  <figure id="fig-avoid"></figure>
+  <p class="read" style="border-left-color:var(--optimized)">Rule out the obvious answers and the models shift to that second well &mdash; a new center of MBA-style optimization.</p>
+  <p class="cue">The same model, before and after the ban:</p>
+  <div class="focalhead"><span>Neighborly &middot; baseline</span><span>Operational &middot; not-obvious</span></div>
+  <div id="focal-avoid"></div>
+  <p>It was there all along &mdash; the quieter &ldquo;just run it like a business&rdquo; answer, sitting in that second well, dwarfed by the neighborly center. Forbid the obvious and it rises, and everyone circles it. Notice these barely mention Starbucks anymore: the new center isn't a counter-move, it's generic operations.</p>
+  <div class="gridblock" id="grid-avoid"></div>
+  <div class="reveal">
+    <span class="w">what &ldquo;not-obvious&rdquo; revealed</span>
+    <p>We didn't ask for a change in the <em>form</em> of the ideas; we asked for a change in their <em>content</em>. We may not be able to say what we want yet &mdash; but we know what we <b>don't</b> want (more of those first answers), and that's enough to force the shift.</p>
+  </div>
+</section>
+
+<!-- BOTH -->
+<section class="wrap" id="both">
+  <span class="beat">05 &mdash; <b>do both</b></span>
+  <h2>Do both.</h2>
+  <p class="ask">If the story's right, &ldquo;both&rdquo; should move us first, then add the twist. Does it?</p>
+  <div class="prompt"><span class="tag">the prompt</span>...give 25 <span class="hl-novel">novel, innovative</span> strategies... <span class="hl-avoid">but not ones that center on local sourcing, local identity, or unique artisanal features</span>...</div>
+  <p class="cue">Watch for two things: the shift into the business well, and a few ideas landing in the unconventional well.</p>
+  <figure id="fig-both"></figure>
+  <p class="read" style="border-left-color:var(--optimized)">It relocates like <span class="kw">not-obvious</span>, then twists like <span class="kw">novel</span> &mdash; and the invention, now in the business well, turns into apps, kiosks, and gadgets.</p>
+  <p class="cue">The same impulse &mdash; pay attention to the person in front of you &mdash; landing in two different wells:</p>
+  <div class="focalhead"><span>Attention &middot; neighborly</span><span>Attention &middot; unconventional</span></div>
+  <div id="focal-both"></div>
+  <p>In the neighborly well that means a custom cake for your wedding, or a phone-free hour to actually talk. In the new one it means supplement-dosed &ldquo;focus foods&rdquo; and a kiosk that scans your mood.</p>
+  <div class="gridblock" id="grid-both"></div>
+  <div class="reveal">
+    <span class="w">what &ldquo;both&rdquo; revealed</span>
+    <p>This is a toy example, and some of these ideas are frankly bonkers &mdash; but it reveals that we meant two different things by &ldquo;new ideas&rdquo;: new in <em>form</em> vs. new in <em>content</em>. We have to be clear which we actually want.</p>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<section class="wrap" id="close">
+  <span class="beat">06 &mdash; <b>what we were really asking</b></span>
+  <p class="close-line">Two things vary: the <span class="a">neighborhood</span> an idea sits in, and the <span class="b">building</span> itself.</p>
+  <p class="close-map">
+    <span class="kw">more</span> &rarr; more buildings on the same street.<br>
+    <span class="kw">novel</span> &rarr; a strange building in the same old neighborhood.<br>
+    <span class="kw">not-obvious</span> &rarr; a new neighborhood of familiar building styles.<br>
+    <span class="kw">both</span> &rarr; surprising buildings in a new neighborhood.
+  </p>
+  <div class="reveal">
+    <span class="w">what we learned</span>
+    <p>These weren't just different words for roughly the same idea. We know because the AI &mdash; which reflects our own meaning back at us &mdash; did different things with each. This is one strongly-scripted setting with an obvious runner-up, so the exact map won't transfer everywhere; and how you use the insight will depend on the situation &mdash; sometimes you'll want <em>novel</em> rather than <em>not-obvious</em>. But the first step is noticing the distinctions exist.</p>
+  </div>
+</section>
+</main>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="strategy detail">
+  <button class="lb-close" id="lb-close">close &times;</button>
+  <div class="lb-card">
+    <div class="lb-cat" id="lb-cat"></div>
+    <h3 class="lb-title" id="lb-title"></h3>
+    <div class="lb-id" id="lb-id"></div>
+    <p class="lb-desc" id="lb-desc"></p>
+  </div>
+</div>
+
+
+<script>
+const DATA = {"GRID":{"base":[{"model":"deepseek-v4-pro","note":"","cells":[{"p":1,"name":"Hyper-Local Sourcing","desc":"Source every ingredient from nearby farms and producers to create a farm-to-table story that Starbucks cannot replicate.","c":"L"},{"p":2,"name":"Signature Family Recipe Pastries","desc":"Offer exclusive, generations-old recipes that evoke deep nostalgia and a sense of authentic homecoming.","c":"A"},{"p":3,"name":"Artisan Bread Subscription","desc":"Launch a weekly bread box service that turns occasional visitors into committed, recurring subscribers.","c":"O"},{"p":4,"name":"Community Gathering Space","desc":"Host free weekly events like book clubs, knitting circles, or open mic nights to become the town’s living room.","c":"C"},{"p":5,"name":"Personalized Mug Club","desc":"Sell custom mugs with customer names and offer a discount for using them, fostering a deep sense of belonging.","c":"C"}]},{"model":"minimax-m3","note":"","cells":[{"p":1,"name":"Local Roots Campaign","desc":"Heavily market your locally owned heritage and the direct impact every purchase has on the local economy versus a corporate chain.","c":"L"},{"p":2,"name":"Community Champion","desc":"Sponsor school events, little league teams, and town festivals to become synonymous with community support.","c":"C"},{"p":3,"name":"Personal Connection Program","desc":"Train staff to learn regular customers' names, orders, and life events to build relationships Starbucks cannot replicate at scale.","c":"C"},{"p":4,"name":"Signature Specialty Items","desc":"Develop unique, trademarked pastries or signature drinks that cannot be found anywhere else in town.","c":"A"},{"p":5,"name":"Loyalty Rewards Program","desc":"Launch a punch card or points system offering free items after a set number of purchases to lock in repeat business.","c":"O"}]},{"model":"glm-5.2","note":"","cells":[{"p":1,"name":"Local Sourcing Spotlight","desc":"Highlight that all ingredients are sourced from local farms, unlike corporate chains.","c":"L"},{"p":2,"name":"Custom Cake Artistry","desc":"Offer bespoke, hand-decorated cakes for special occasions that a standardized chain cannot replicate.","c":"A"},{"p":3,"name":"Community Hub Events","desc":"Host weekly community events like open mic nights or book clubs to become the town's social center.","c":"C"},{"p":4,"name":"First-Name Basis Service","desc":"Train staff to remember regular customers' names and favorite orders to provide a deeply personal touch.","c":"C"},{"p":5,"name":"Hyper-Local Flavor Fusions","desc":"Create pastries inspired by local town history or regional tastes that Starbucks wouldn't carry.","c":"L|A"}]},{"model":"gemini-3.5-flash","note":"","cells":[{"p":1,"name":"The 'Homegrown Harvest' Initiative","desc":"Source all fruits, dairy, and grains from local farms to highlight fresh, community-supported ingredients that a corporate chain cannot replicate.","c":"L"},{"p":2,"name":"The 'Local's Only' Loyalty Club","desc":"Launch a high-value rewards program that offers personalized perks and free birthday treats to keep community members coming back.","c":"C|O"},{"p":3,"name":"Celebration Customization","desc":"Promote custom-designed cakes and catering services for local events, weddings, and birthdays, filling a major gap in Starbucks' pre-packaged menu.","c":"A"},{"p":4,"name":"Community Living Room","desc":"Host local book clubs, open mic nights, and board game evenings to position the bakery as the town's warm, social hub.","c":"C"},{"p":5,"name":"The Daily Loaf","desc":"Focus heavily on fresh, warm, artisanal sourdough and yeast breads baked daily on-site, offering a sensory experience corporate chains can't match.","c":"A"}]},{"model":"gemini-3.1-pro","note":"","cells":[{"p":1,"name":"The Local Loyalty Club","desc":"Launch a generous rewards program that offers free baked goods faster than corporate coffee apps.","c":"O"},{"p":2,"name":"Freshness Guarantee","desc":"Emphasize that our pastries are baked from scratch every morning, unlike the frozen-and-thawed alternatives down the street.","c":"G"},{"p":3,"name":"The Hometown Signature Drink","desc":"Create a unique, locally-themed coffee beverage that cannot be found at any chain restaurant.","c":"L|A"},{"p":4,"name":"Main Street Alliance","desc":"Partner with neighboring independent shops to offer cross-promotional discounts to customers who shop local.","c":"L"},{"p":5,"name":"Know-Your-Name Service","desc":"Train staff to memorize regular customers' names and orders to provide a level of warmth a high-turnover chain can't match.","c":"C"}]},{"model":"gpt-5.5","note":"","cells":[{"p":1,"name":"Double Down on Local Identity","desc":"Emphasize your small-town roots, local ownership, and community relationships in your branding, signage, and storytelling.","c":"L"},{"p":2,"name":"Signature Baked Goods","desc":"Create distinctive pastries, breads, or desserts that Starbucks does not offer and make them the centerpiece of your menu.","c":"A"},{"p":3,"name":"Morning Loyalty Program","desc":"Offer a simple punch card or digital rewards program that encourages regular breakfast and coffee visits.","c":"O"},{"p":4,"name":"Community Table Events","desc":"Host weekly gatherings such as book clubs, knitting circles, parent meetups, or local business breakfasts.","c":"C"},{"p":5,"name":"Better Coffee Partnership","desc":"Partner with a local or regional coffee roaster to offer high-quality coffee with a more personal story.","c":"L|A"}]},{"model":"opus-4.8","note":"","cells":[{"p":1,"name":"Local Roots Branding","desc":"Emphasize your deep community ties and history that a national chain can never replicate.","c":"L"},{"p":2,"name":"Signature Specialty","desc":"Develop a unique signature pastry or bread that becomes a destination item people can't get at Starbucks.","c":"A"},{"p":3,"name":"Loyalty Punch Card","desc":"Reward repeat customers with a simple buy-ten-get-one-free card to encourage habitual visits.","c":"O"},{"p":4,"name":"Superior Coffee Partnership","desc":"Partner with a respected local or regional roaster to offer coffee that rivals or beats Starbucks in quality.","c":"L|A"},{"p":5,"name":"Cozy Atmosphere Upgrade","desc":"Redesign your space into a warm, comfortable hangout that feels homier than a corporate cafe.","c":"G"}]}],"novel":[{"model":"deepseek-v4-pro","note":"'Bread Bond' — a genuinely weird finance hybrid.","cells":[{"p":1,"name":"Bread Bond","desc":"Sell community-backed 'Bread Bonds' that customers can purchase now and redeem later for baked goods with interest, investing directly in your bakery's resilience.","c":"X"},{"p":2,"name":"Secret Locals-Only Menu","desc":"Reveal a hidden menu exclusively to residents by showing a local ID or using a neighborhood password, fostering VIP loyalty and word-of-mouth buzz.","c":"L"},{"p":3,"name":"Starbucks Receipt Swap","desc":"Offer a free signature pastry to anyone who shows a same-day Starbucks receipt, turning their chain visit into a discovery of your quality.","c":"O"},{"p":4,"name":"Story Sourdough","desc":"Attach a QR code to each loaf linking to an original short story or poem by a local writer, making daily bread a cultural experience.","c":"L|A"},{"p":5,"name":"The Anti-Café Vibe","desc":"Strip out corporate music and Wi-Fi to create a rare 'digital detox' space where people converse, read paper books, and escape screens.","c":"C"}]},{"model":"minimax-m3","note":"'Sourdough Library' — lend out your starters.","cells":[{"p":1,"name":"Heritage Grain Revival","desc":"Partner with local farmers to mill heirloom wheat varieties Starbucks can't source, making every loaf a terroir product unique to your town.","c":"A"},{"p":2,"name":"Sunrise Stamp Stampede","desc":"Launch a pre-dawn loyalty stamp card that rewards the first 20 customers with a free artisan item, beating Starbucks' morning rush with intentional scarcity.","c":"O"},{"p":3,"name":"The Baker's Table","desc":"Convert a corner of the shop into a communal baking station where customers hand-shape their own croissant or roll, monetizing experience rather than just product.","c":"A|C"},{"p":4,"name":"Sourdough Library","desc":"Curate a living collection of named sourdough starters gifted by townspeople, each with a story card, turning your bakery into a microbial archive of the community.","c":"A|C"},{"p":5,"name":"The 3-Minute Guarantee","desc":"Promise any pastry fresh from the oven in under 3 minutes or it's free, weaponizing your small-batch speed against Starbucks' centralized logistics.","c":"O"}]},{"model":"glm-5.2","note":"'Golden Ticket Pastries' — a Wonka gimmick on the same goods.","cells":[{"p":1,"name":"Farm-to-Loaf Partnerships","desc":"Partner exclusively with local farmers to feature hyper-seasonal, locally sourced ingredients that a corporate chain cannot procure.","c":"L"},{"p":2,"name":"Bespoke Baking Profiles","desc":"Create a digital or physical profile for regular customers to track their exact pastry preferences, allergies, and favorite custom orders.","c":"A|C"},{"p":3,"name":"Town Hall Tables","desc":"Host weekly community events, town council meetings, and local club gatherings in the bakery to cement your status as the town's true living room.","c":"C"},{"p":4,"name":"Golden Ticket Pastries","desc":"Hide a limited number of golden tickets inside random daily pastries that grant the finder a week of free bread, gamifying the morning routine.","c":"X"},{"p":5,"name":"Midnight Dough-Makers","desc":"Operate during late-night hours on weekends to capture the post-dinner and post-bar crowd that Starbucks typically ignores.","c":"O"}]},{"model":"gemini-3.5-flash","note":"'BYOM Mug Wall' — belonging, with a peg for your mug.","cells":[{"p":1,"name":"The 'BYOM' (Bring Your Own Mug) Wall","desc":"Install a custom wooden pegboard where daily regulars can store their own personalized ceramic mugs, which the bakery washes and keeps ready for their next visit to foster a deep sense of belonging.","c":"C"},{"p":2,"name":"The 'Scone-scription' Office Box","desc":"Launch a weekly subscription service delivering warm, fresh-baked pastries directly to local office breakrooms 30 minutes before Starbucks opens its doors.","c":"O"},{"p":3,"name":"The 'Unplugged' Hour Discount","desc":"Offer a 15% discount during afternoon hours to customers who lock their smartphones in a table-side wooden box to encourage face-to-face community conversation.","c":"C|O"},{"p":4,"name":"The 'Receipt Redemption' Rivalry","desc":"Allow customers to trade in a same-day Starbucks receipt for a free, house-made artisanal cookie with any coffee purchase, turning their corporate habit into local loyalty.","c":"O"},{"p":5,"name":"The 'Midnight Baker' Experience","desc":"Open the bakery from 10:00 PM to midnight on Fridays and Saturdays to sell hot, fresh-out-of-the-oven croissants and cookies to the late-night crowd.","c":"O"}]},{"model":"gemini-3.1-pro","note":"'The 10-Mile Menu' — local identity as a hard rule.","cells":[{"p":1,"name":"The 10-Mile Menu","desc":"Guaranteeing every ingredient in a special line of pastries comes from within a 10-mile radius to highlight our deep local agricultural ties.","c":"L"},{"p":2,"name":"The Un-Corporate Card","desc":"A loyalty program where customers earn a stamp toward a free artisanal pastry every time they bring in a competitor's disposable cup for us to recycle.","c":"C|O"},{"p":3,"name":"Daily Bread Box","desc":"A hyper-local monthly subscription service delivering fresh, warm pastries directly to customers' doorsteps before 7 AM.","c":"O"},{"p":4,"name":"Bake-Your-Own-Mug","desc":"Serving our specialty coffees in edible, custom-glazed cookie cups that eliminate waste and provide a unique two-in-one breakfast.","c":"X"},{"p":5,"name":"Bakery Board of Directors","desc":"An initiative where our most loyal regulars get voting rights to determine the seasonal flavor menu each month.","c":"C"}]},{"model":"gpt-5.5","note":"'Neighbor Named Pastries' — named after locals.","cells":[{"p":1,"name":"Town Loaf Subscription","desc":"Offer a weekly bread, pastry, and coffee bundle delivered or reserved for pickup, with rotating flavors tied to local seasons.","c":"O"},{"p":2,"name":"Bake-While-You-Wait Mornings","desc":"Schedule visible mini-batch baking during commute hours so customers smell, see, and receive pastries fresh from the oven.","c":"A"},{"p":3,"name":"Local Roast Alliance","desc":"Partner with a nearby coffee roaster to serve a town-exclusive blend that Starbucks cannot replicate.","c":"L|A"},{"p":4,"name":"Neighbor Named Pastries","desc":"Invite residents to submit recipes, memories, or flavor ideas and name limited-time pastries after local families, streets, or landmarks.","c":"L|C"},{"p":5,"name":"The Five-Minute Breakfast Window","desc":"Create a dedicated express counter with pre-packed artisan breakfast items for customers who want speed without a chain experience.","c":"O"}]},{"model":"opus-4.8","note":"'Recipe Heritage Nights' — the same heritage, as an event.","cells":[{"p":1,"name":"Hyperlocal Sourcing Story","desc":"Partner with nearby farms and millers, then label every product with the exact local origin of its ingredients to emphasize a connection Starbucks can't replicate.","c":"L"},{"p":2,"name":"Bake-at-Dawn Subscription","desc":"Offer a monthly membership where subscribers get first pick of fresh-from-the-oven items before the morning rush at a locked-in price.","c":"O"},{"p":3,"name":"Coffee Truce Bundle","desc":"Sell a discounted pastry-and-thermos combo encouraging customers to grab their Starbucks coffee but bring it to your cozier seating area.","c":"O"},{"p":4,"name":"Recipe Heritage Nights","desc":"Host evening events where you bake a family or regional heirloom recipe live and share its history with attendees.","c":"A|C"},{"p":5,"name":"Crumb Loyalty Stamp","desc":"Replace digital points with a tactile, collectible stamp card that earns a free custom cake on the tenth visit.","c":"O"}]}],"avoid":[{"model":"deepseek-v4-pro","note":"Opens on a 'Loyalty Stamp Program.'","cells":[{"p":1,"name":"Loyalty Stamp Program","desc":"Reward customers with a free coffee or pastry after every tenth purchase to encourage repeat visits.","c":"O"},{"p":2,"name":"Express Lane","desc":"Dedicate a register exclusively for drip coffee and pre-packaged items to serve time-sensitive customers in under 30 seconds.","c":"O"},{"p":3,"name":"Extended Operating Hours","desc":"Open from 5 a.m. to midnight to capture the pre-commute crowd and late-night snackers.","c":"O"},{"p":4,"name":"Curbside Pickup","desc":"Allow customers to call in and have their order brought directly to their parked car without entering the bakery.","c":"O"},{"p":5,"name":"Third-Party Delivery Integration","desc":"List the entire menu on DoorDash, Uber Eats, and Grubhub to reach customers at home or the office.","c":"O"}]},{"model":"minimax-m3","note":"Leads with a 'Speed Guarantee.'","cells":[{"p":1,"name":"Speed Guarantee","desc":"Promise any coffee and pastry order in under three minutes or it's free.","c":"O"},{"p":2,"name":"Loyalty Punch Card","desc":"Buy nine coffees and get the tenth free, with a digital version tracked by phone number.","c":"O"},{"p":3,"name":"Price Match Promise","desc":"Match any competitor's listed price on identical items, verified at checkout.","c":"O"},{"p":4,"name":"Mobile Pre-Order App","desc":"Let customers order ahead through a dedicated app so pickup takes under a minute.","c":"O"},{"p":5,"name":"Free Refill Program","desc":"Offer complimentary coffee refills for anyone who stays in-house, no purchase required after the first cup.","c":"O"}]},{"model":"glm-5.2","note":"'Drive-Thru Express.'","cells":[{"p":1,"name":"The Early Bird Special","desc":"Open two hours before Starbucks to capture the early morning commuter rush.","c":"O"},{"p":2,"name":"Subscription Bread","desc":"Offer a monthly subscription where customers receive a fresh loaf every day.","c":"O"},{"p":3,"name":"Drive-Thru Express","desc":"Install a drive-thru window to compete directly on convenience and speed.","c":"O"},{"p":4,"name":"Allergen-Free Focus","desc":"Dedicate half the menu to strictly gluten-free, nut-free, and dairy-free items.","c":"O"},{"p":5,"name":"Corporate Catering","desc":"Create specialized breakfast platter packages for local offices and business meetings.","c":"O"}]},{"model":"gemini-3.5-flash","note":"'Skip the Line App.'","cells":[{"p":1,"name":"The Daily Crumb Club","desc":"Implement a monthly subscription model offering unlimited basic coffee and a daily pastry to secure predictable, recurring revenue.","c":"O"},{"p":2,"name":"Express Lane Curbside","desc":"Launch a dedicated curbside pickup service coordinated via text message to match the convenience of a corporate drive-thru.","c":"O"},{"p":3,"name":"After-Hours Sweet Tooth","desc":"Extend operating hours into the late evening to capture the post-dinner dessert crowd after the corporate chains close.","c":"O"},{"p":4,"name":"Skip the Line App","desc":"Deploy a mobile ordering app that allows customers to prepay and skip the physical queue entirely during morning rushes.","c":"O"},{"p":5,"name":"Office Breakfast Bundles","desc":"Target nearby offices with large-format breakfast and pastry catering packages delivered directly to their morning meetings.","c":"O"}]},{"model":"gemini-3.1-pro","note":"'The 60-Second Promise' — pure speed.","cells":[{"p":1,"name":"The 60-Second Promise","desc":"Guarantee that standard drip coffee and pastry orders are fulfilled in under one minute or the order is completely free.","c":"O"},{"p":2,"name":"Unlimited Drip Subscription","desc":"Offer a monthly flat-rate subscription for unlimited standard drip coffee to secure daily foot traffic and habitual visits.","c":"O"},{"p":3,"name":"Corporate Meeting Boxes","desc":"Shift focus to delivering standardized, pre-packaged pastry and coffee boxes directly to office buildings for corporate meetings.","c":"O"},{"p":4,"name":"Frictionless Curbside","desc":"Implement a geofenced mobile app that alerts staff to bring orders directly to the customer's car window the moment they pull up.","c":"O"},{"p":5,"name":"Afternoon Sugar Rush","desc":"Introduce steep discounts on all remaining baked goods and iced drinks between 2 PM and 4 PM to capture the post-lunch slump.","c":"O"}]},{"model":"gpt-5.5","note":"'Mobile Preorder Pickup' — an ops manual.","cells":[{"p":1,"name":"Morning Express Lane","desc":"Create a dedicated grab-and-go line for coffee, pastries, and breakfast items during peak commute hours.","c":"O"},{"p":2,"name":"Mobile Preorder Pickup","desc":"Let customers order and pay ahead online so their items are ready when they arrive.","c":"O"},{"p":3,"name":"Value Breakfast Bundles","desc":"Offer simple discounted combos such as coffee with a muffin, bagel, or breakfast sandwich.","c":"O"},{"p":4,"name":"Digital Loyalty Program","desc":"Reward repeat visits with points, free items, birthday offers, and targeted discounts.","c":"O"},{"p":5,"name":"Office Catering Packages","desc":"Sell easy-to-order trays of pastries, sandwiches, coffee, and desserts for meetings and workplace events.","c":"O"}]},{"model":"opus-4.8","note":"'Loss Leader Coffee' — a strategy deck.","cells":[{"p":1,"name":"Loss Leader Coffee","desc":"Sell basic drip coffee at or below cost to pull in traffic, then profit on baked goods and pastries.","c":"O"},{"p":2,"name":"Early Bird Hours","desc":"Open hours before Starbucks to capture pre-dawn commuters, shift workers, and early risers.","c":"O"},{"p":3,"name":"Late Night Window","desc":"Stay open after Starbucks closes to own the evening dessert and coffee crowd.","c":"O"},{"p":4,"name":"Punch Card Loyalty","desc":"Issue a buy-ten-get-one-free card to lock in repeat visits and raise switching costs.","c":"O"},{"p":5,"name":"Subscription Coffee","desc":"Offer a flat monthly fee for unlimited daily coffee to guarantee recurring revenue and habitual visits.","c":"O"}]}],"both":[{"model":"deepseek-v4-pro","note":"'Tidal Pricing Menu' — surge pricing for scones.","cells":[{"p":1,"name":"Pay-What-You-Want Wednesdays","desc":"Randomly designate days where customers decide the price of their order, creating viral buzz and trust.","c":"O"},{"p":2,"name":"Surprise Surplus Gift","desc":"With every purchase, silently slip a bonus cookie or muffin into the bag to surprise and delight.","c":"O"},{"p":3,"name":"Commuter Carpool Subscription","desc":"Offer a monthly plan for a daily coffee-and-pastry bundle delivered directly to a designated pickup lane.","c":"O"},{"p":4,"name":"Mystery Pastry Flask","desc":"Sell a sealed mystery box at a steep discount full of day-old or experimental bakes for adventurous eaters.","c":"X"},{"p":5,"name":"Tidal Pricing Menu","desc":"Automatically lower prices during slow hours via a digital board to incentivize off-peak visits.","c":"O"}]},{"model":"minimax-m3","note":"'Loyalty Bingo' — a gamified punch card.","cells":[{"p":1,"name":"Speed Brew Guarantee","desc":"Promise any order ready in under 90 seconds or it's free, using a parallel workflow with dedicated drink and pastry stations to outpace Starbucks' lines.","c":"O"},{"p":2,"name":"Bakery Coworking","desc":"Convert morning seating into $5 hot-desk rentals with unlimited drip coffee and gigabit Wi-Fi, turning slow breakfast hours into recurring remote-worker revenue.","c":"O"},{"p":3,"name":"Mystery Crate Subscription","desc":"Ship weekly surprise boxes of three pastries to subscribers who can't pick contents, building anticipation, habit, and a direct-mail customer relationship.","c":"X"},{"p":4,"name":"Midnight Crumb Club","desc":"Open until 2am on weekends with dessert-and-coffee flights and acoustic music to capture the late-night crowd Starbucks abandons.","c":"O"},{"p":5,"name":"Loyalty Bingo","desc":"Turn repeat visits into a bingo game with escalating prizes, surprise upgrades, and a monthly jackpot for the first customer to hit blackout.","c":"X"}]},{"model":"glm-5.2","note":"Barely moves — 'Bread Subscription' again.","cells":[{"p":1,"name":"Midnight Munchies","desc":"Operate from 8 PM to 4 AM to capture the late-night crowd when the corporate coffee shop is closed.","c":"O"},{"p":2,"name":"Bread Subscription","desc":"Offer a weekly delivery subscription for fresh bread and pastries directly to customers' doorsteps.","c":"O"},{"p":3,"name":"B.Y.O.C. (Bring Your Own Coffee)","desc":"Encourage customers to bring their Starbucks coffee inside by offering a discount on pastries when they do.","c":"O"},{"p":4,"name":"Corporate Breakfast Drops","desc":"Focus heavily on B2B sales by offering automated daily breakfast pastry drops to local offices.","c":"O"},{"p":5,"name":"Mystery Pastry Box","desc":"Sell a sealed box of random, heavily discounted baked goods at the end of each day to reduce waste and drive traffic.","c":"X"}]},{"model":"gemini-3.5-flash","note":"'AI Mood-Matching Kiosk' — facial analysis at the counter.","cells":[{"p":1,"name":"The Daily Crumb Subscription","desc":"A flat-rate monthly membership offering unlimited drip coffee and one daily pastry to eliminate transaction friction and lock in customer loyalty.","c":"O"},{"p":2,"name":"Pre-Order Warming Pods","desc":"Secure, heated outdoor lockers that allow customers to retrieve their pre-ordered, hot baked goods via a smartphone code without waiting in line.","c":"O"},{"p":3,"name":"Gamified Pastry Quests","desc":"A mobile app that rewards customers with exclusive, off-menu items for completing specific purchasing challenges, like visiting three days in a row.","c":"O"},{"p":4,"name":"Nootropic-Infused Focus Foods","desc":"A specialized menu of pastries baked with safe, focus-enhancing adaptogens and cognitive supplements targeted at remote workers.","c":"X"},{"p":5,"name":"Silent Micro-Offices","desc":"Soundproof, rentable work booths equipped with high-speed internet and power outlets, offering a quiet alternative to noisy corporate coffee shops.","c":"O"}]},{"model":"gemini-3.1-pro","note":"'License Plate Recognition' for regulars.","cells":[{"p":1,"name":"Infinite Crumb","desc":"Offer a flat-rate monthly subscription for unlimited drip coffee and a daily standard pastry.","c":"O"},{"p":2,"name":"Pastry Roulette","desc":"Customers pay a discounted flat fee and receive a mystery box of baked goods determined by a random number generator.","c":"X"},{"p":3,"name":"Midnight Munchies","desc":"Shift operating hours to 4 PM to 2 AM to capture the late-night crowd that the competitor abandons at 8 PM.","c":"O"},{"p":4,"name":"License Plate Recognition","desc":"Implement a camera system that recognizes opted-in customers' license plates to have their usual order ready before they even reach the window.","c":"X"},{"p":5,"name":"Macro-Bakers","desc":"Pivot the menu to display exact macronutrients and cater specifically to keto, paleo, and high-protein diets.","c":"O"}]},{"model":"gpt-5.5","note":"Stays sober — 'Breakfast Passport.'","cells":[{"p":1,"name":"Breakfast Passport","desc":"Sell a monthly prepaid pass that gives customers one quick breakfast item per day with optional add-ons.","c":"O"},{"p":2,"name":"90-Second Pickup Shelf","desc":"Use text ordering and a dedicated grab-and-go shelf to guarantee ultra-fast pickup for regular morning items.","c":"O"},{"p":3,"name":"Pastry Flight Boards","desc":"Offer small tasting flights of three pastries with a suggested coffee, tea, or cocoa pairing.","c":"A"},{"p":4,"name":"Bakery Locker","desc":"Install temperature-controlled pickup lockers so customers can collect preorders before opening or after closing.","c":"O"},{"p":5,"name":"Decision-Free Breakfast","desc":"Create a rotating mystery breakfast bag at a fixed price for customers who want speed and surprise.","c":"X"}]},{"model":"opus-4.8","note":"'Parasite Positioning' — feed off the chain's traffic.","cells":[{"p":1,"name":"Off-Peak Arbitrage","desc":"Offer steep discounts during Starbucks' busiest morning rush to capture overflow customers unwilling to wait in long lines.","c":"O"},{"p":2,"name":"Subscription Stack","desc":"Sell a monthly all-you-can-drink coffee pass at a price point that makes daily Starbucks visits feel financially irrational.","c":"O"},{"p":3,"name":"Wholesale Pivot","desc":"Redirect production capacity toward supplying offices, restaurants, and hotels with bulk baked goods, insulating revenue from foot-traffic competition.","c":"O"},{"p":4,"name":"Speed Lane","desc":"Build a dedicated 60-second pre-order pickup window that beats Starbucks on raw transaction speed for busy commuters.","c":"O"},{"p":5,"name":"Parasite Positioning","desc":"Quietly become the go-to pastry stop for people who buy their drinks at Starbucks but want better food.","c":"O"}]}]},"MORE":[{"model":"deepseek-v4-pro","note":"Ends at 'Kids' Baking Birthday Parties' — one small activity.","cells":[{"p":19,"name":"Bakery as a Co-Working Space","desc":"Provide reliable Wi-Fi, power outlets, and a quiet atmosphere with a day-pass that includes coffee and a pastry.","c":"O"},{"p":20,"name":"Flash-Baked to Order","desc":"Offer a small selection of items baked in minutes upon order, guaranteeing the freshest, warmest experience possible.","c":"A"},{"p":21,"name":"Collaborate with Local Artists","desc":"Display and sell local artwork on your walls, turning the bakery into a gallery and giving artists a venue.","c":"L"},{"p":22,"name":"Holiday Pie Pre-Order Empire","desc":"Dominate the holiday season with a massive, beautifully packaged pie pre-order campaign that becomes a tradition.","c":"O"},{"p":23,"name":"Kids' Baking Birthday Parties","desc":"Host children’s birthday parties where they decorate their own cupcakes, creating a new revenue stream and future loyalists.","c":"C"}]},{"model":"minimax-m3","note":"Still strategic at the end — 'Catering & Wholesale' — but the rival's gone.","cells":[{"p":19,"name":"Catering and Wholesale Push","desc":"Aggressively pursue office orders, wedding cakes, and restaurant supply contracts for higher-volume revenue streams.","c":"O"},{"p":20,"name":"Seasonal Limited Editions","desc":"Release seasonal flavors and themed items with urgency and exclusivity to drive repeat visits and social media buzz.","c":"A"},{"p":21,"name":"Charity Tie-In Initiatives","desc":"Donate a portion of proceeds to local causes and let customers choose which charity to support with their purchase.","c":"C"},{"p":22,"name":"Small Town Charm Aesthetic","desc":"Lean into nostalgic, homey decor, handwritten chalkboard signs, and friendly service that contrasts with corporate uniformity.","c":"L"},{"p":23,"name":"Customer Request Menu","desc":"Actively solicit and implement customer-suggested products to demonstrate responsiveness and community-driven offerings.","c":"C"}]},{"model":"glm-5.2","note":"Tails off into 'Town Merch Collaboration.'","cells":[{"p":19,"name":"Curbside Convenience","desc":"Offer dedicated curbside pickup for pre-orders so busy locals can grab breakfast without waiting in a drive-thru line.","c":"O"},{"p":20,"name":"Artisanal Bread Subscriptions","desc":"Start a weekly bread subscription box where customers get a different, freshly baked artisan loaf.","c":"O"},{"p":21,"name":"Local Art Gallery","desc":"Display and sell artwork from local artists on the walls, taking zero commission to support the local scene.","c":"L"},{"p":22,"name":"Pastry and Coffee Pairings","desc":"Offer curated pairing deals where specific pastries are discounted when bought with a specific local coffee.","c":"O"},{"p":23,"name":"Town Merch Collaboration","desc":"Sell branded bakery merchandise like aprons and mugs designed and printed by a local print shop.","c":"L"}]},{"model":"gemini-3.5-flash","note":"Drifts to 'Little Bakers Corner.'","cells":[{"p":19,"name":"The 'Not-So-Corporate' Campaign","desc":"Use lighthearted, humorous marketing that gently pokes fun at corporate coffee culture while celebrating local charm.","c":"C"},{"p":20,"name":"Craft Coffee Collaboration","desc":"Partner with a beloved regional micro-roaster to serve premium, ethically sourced coffee that easily outclasses mass-produced corporate beans.","c":"L|A"},{"p":21,"name":"Little Bakers Corner","desc":"Create a dedicated, kid-friendly space with cookie-decorating kits to make the bakery the preferred destination for young families.","c":"C"},{"p":22,"name":"Festive Flavors Countdown","desc":"Introduce weekly, limited-run seasonal pastries that celebrate local town holidays and changing seasons to drive urgency and excitement.","c":"L|A"},{"p":23,"name":"Curbside Convenience","desc":"Implement a seamless text-to-order curbside pickup system for busy parents and commuters who want speed without sacrificing quality.","c":"O"}]},{"model":"gemini-3.1-pro","note":"Ends on 'Better Bandwidth' for remote workers.","cells":[{"p":19,"name":"Coffee Cupping Classes","desc":"Host after-hours coffee tasting and brewing workshops to establish our bakery as the town's true coffee authority.","c":"A"},{"p":20,"name":"Baker's Secret Menu","desc":"Create an exclusive, unadvertised menu of creative drinks and treats available only to our most loyal local followers.","c":"C"},{"p":21,"name":"Better Bandwidth","desc":"Upgrade our free Wi-Fi to be the fastest in town to attract remote workers and students.","c":"O"},{"p":22,"name":"Pastry Subscription Box","desc":"Offer a monthly subscription service delivering a curated box of fresh, seasonal baked goods directly to locals' doors.","c":"L|O"},{"p":23,"name":"Early Bird Hours","desc":"Open thirty minutes earlier than the new chain to capture the earliest commuters and shift workers.","c":"O"}]},{"model":"gpt-5.5","note":"Closes with 'Customer Flavor Voting.'","cells":[{"p":19,"name":"Customer Flavor Voting","desc":"Let customers vote on new muffin, donut, cake, or latte flavors to increase engagement and ownership.","c":"C"},{"p":20,"name":"Local Business Bundles","desc":"Create cross-promotions with nearby shops, florists, bookstores, and gift stores to share customers.","c":"L"},{"p":21,"name":"Health-Conscious Options","desc":"Add appealing gluten-free, vegan, low-sugar, whole-grain, or protein-rich options for customers with specific preferences.","c":"O"},{"p":22,"name":"Preorder and Pickup System","desc":"Allow customers to order ahead online or by phone so they can pick up quickly without waiting.","c":"O"},{"p":23,"name":"Town Tradition Campaign","desc":"Position the bakery as part of local life by celebrating anniversaries, customer stories, and long-standing town memories.","c":"C"}]},{"model":"opus-4.8","note":"Lands on 'Corporate Catering Contracts.'","cells":[{"p":19,"name":"Healthy and Dietary Options","desc":"Offer gluten-free, vegan, and keto items to capture niches the chain underserves.","c":"O"},{"p":20,"name":"Storytelling Packaging","desc":"Use branded, attractive packaging that tells your local story and markets itself.","c":"L"},{"p":21,"name":"Sampling Blitz","desc":"Give out free samples during Starbucks's opening week to win over curious customers.","c":"O"},{"p":22,"name":"Press and Media Outreach","desc":"Pitch local news a 'David vs. Goliath' story to generate sympathetic free publicity.","c":"L"},{"p":23,"name":"Corporate Catering Contracts","desc":"Pursue standing orders with local offices for meetings and events.","c":"O"}]}],"FOCAL":{"more":[{"model":"deepseek-v4-pro","before":{"p":1,"name":"Hyper-Local Sourcing","desc":"Source every ingredient from nearby farms and producers to create a farm-to-table story that Starbucks cannot replicate.","c":"L","treat":"base"},"after":{"p":23,"name":"Kids' Baking Birthday Parties","desc":"Host children’s birthday parties where they decorate their own cupcakes, creating a new revenue stream and future loyalists.","c":"C","treat":"base"}},{"model":"gemini-3.5-flash","before":{"p":1,"name":"The 'Homegrown Harvest' Initiative","desc":"Source all fruits, dairy, and grains from local farms to highlight fresh, community-supported ingredients that a corporate chain cannot replicate.","c":"L","treat":"base"},"after":{"p":21,"name":"Little Bakers Corner","desc":"Create a dedicated, kid-friendly space with cookie-decorating kits to make the bakery the preferred destination for young families.","c":"C","treat":"base"}},{"model":"glm-5.2","before":{"p":1,"name":"Local Sourcing Spotlight","desc":"Highlight that all ingredients are sourced from local farms, unlike corporate chains.","c":"L","treat":"base"},"after":{"p":23,"name":"Town Merch Collaboration","desc":"Sell branded bakery merchandise like aprons and mugs designed and printed by a local print shop.","c":"L","treat":"base"}}],"novel":[{"model":"gemini-3.5-flash","before":{"p":4,"name":"Community Living Room","desc":"Host local book clubs, open mic nights, and board game evenings to position the bakery as the town's warm, social hub.","c":"C","treat":"base"},"after":{"p":1,"name":"The 'BYOM' (Bring Your Own Mug) Wall","desc":"Install a custom wooden pegboard where daily regulars can store their own personalized ceramic mugs, which the bakery washes and keeps ready for their next visit to foster a deep sense of belonging.","c":"C","treat":"novel"}},{"model":"deepseek-v4-pro","before":{"p":4,"name":"Community Gathering Space","desc":"Host free weekly events like book clubs, knitting circles, or open mic nights to become the town’s living room.","c":"C","treat":"base"},"after":{"p":6,"name":"Community Oven Hours","desc":"Open your ovens to neighbors during off-hours so they can bake their own family recipes using your equipment, transforming your bakery into a communal kitchen.","c":"C","treat":"novel"}},{"model":"minimax-m3","before":{"p":4,"name":"Signature Specialty Items","desc":"Develop unique, trademarked pastries or signature drinks that cannot be found anywhere else in town.","c":"A","treat":"base"},"after":{"p":4,"name":"Sourdough Library","desc":"Curate a living collection of named sourdough starters gifted by townspeople, each with a story card, turning your bakery into a microbial archive of the community.","c":"A|C","treat":"novel"}}],"avoid":[{"model":"deepseek-v4-pro","before":{"p":1,"name":"Hyper-Local Sourcing","desc":"Source every ingredient from nearby farms and producers to create a farm-to-table story that Starbucks cannot replicate.","c":"L","treat":"base"},"after":{"p":1,"name":"Loyalty Stamp Program","desc":"Reward customers with a free coffee or pastry after every tenth purchase to encourage repeat visits.","c":"O","treat":"avoid"}},{"model":"deepseek-v4-pro","before":{"p":4,"name":"Community Gathering Space","desc":"Host free weekly events like book clubs, knitting circles, or open mic nights to become the town’s living room.","c":"C","treat":"base"},"after":{"p":2,"name":"Express Lane","desc":"Dedicate a register exclusively for drip coffee and pre-packaged items to serve time-sensitive customers in under 30 seconds.","c":"O","treat":"avoid"}},{"model":"deepseek-v4-pro","before":{"p":2,"name":"Signature Family Recipe Pastries","desc":"Offer exclusive, generations-old recipes that evoke deep nostalgia and a sense of authentic homecoming.","c":"A","treat":"base"},"after":{"p":3,"name":"Extended Operating Hours","desc":"Open from 5 a.m. to midnight to capture the pre-commute crowd and late-night snackers.","c":"O","treat":"avoid"}}],"both":[{"model":"gemini-3.5-flash","before":{"p":1,"name":"The 'BYOM' (Bring Your Own Mug) Wall","desc":"Install a custom wooden pegboard where daily regulars can store their own personalized ceramic mugs, which the bakery washes and keeps ready for their next visit to foster a deep sense of belonging.","c":"C","treat":"novel"},"after":{"p":2,"name":"Pre-Order Warming Pods","desc":"Secure, heated outdoor lockers that allow customers to retrieve their pre-ordered, hot baked goods via a smartphone code without waiting in line.","c":"O","treat":"both"}},{"model":"gemini-3.5-flash","before":{"p":3,"name":"The 'Unplugged' Hour Discount","desc":"Offer a 15% discount during afternoon hours to customers who lock their smartphones in a table-side wooden box to encourage face-to-face community conversation.","c":"C|O","treat":"novel"},"after":{"p":19,"name":"AI Mood-Matching Kiosk","desc":"An in-store digital kiosk that uses facial analysis to detect a customer's mood and instantly recommend a comforting or energizing pastry pairing.","c":"X","treat":"both"}}]}};
+/* generic + optimized collapse into one "business" category; neighborly (local/artisanal/
+   community) is a cohesive warm family per the Option-4 palette; unconventional (X) is green */
+const FULL={L:'#c2683e',A:'#cf9a3a',C:'#bd4734',O:'#3f6f8f',G:'#3f6f8f',X:'#5f885a'};
+const MID ={L:'#eac39c',A:'#ecd5a3',C:'#e9aa92',O:'#b8cdd8',G:'#b8cdd8',X:'#c6d9bb'};
+const INK ={L:'#8f4a28',A:'#8a651b',C:'#883425',O:'#2f5570',G:'#2f5570',X:'#3c5a34'};
+const NAME={L:'local',A:'artisanal',C:'community',O:'business',G:'business',X:'unconventional'};
+
+/* ---------- per-treatment density curves (Option 4: "count-adjusted width") ----------
+   Three columns on the x-axis = the three top-level categories: neighborly, business, other.
+   Each answer drops a constant-mass Gaussian at its column; targeted (rival-naming) answers
+   use a narrow Gaussian, the rest a wide one, with width also scaled by the column's count.
+   We do NOT split the neighborly column into local/artisanal/community sub-fills. */
+const FCELLS={
+  base:[['L',1],['A',0],['O',0],['C',0],['C',0],['L',1],['C',0],['C',1],['A',0],['O',0],['L',1],['A',1],['C',0],['C',0],['L',1],['L',1],['C',0],['A',1],['C',0],['A',1],['O',1],['G',0],['L',1],['L',0],['C',1],['L',0],['A',1],['O',0],['C',0],['L',0],['L',1],['A',1],['O',0],['L',1],['G',1]],
+  more:[['O',0],['A',0],['L',0],['O',0],['C',0],['O',0],['A',0],['C',0],['L',1],['C',0],['O',0],['O',0],['L',0],['O',0],['L',0],['C',1],['L',1],['C',0],['L',0],['O',0],['A',0],['C',0],['O',0],['L',0],['O',1],['C',0],['L',0],['O',0],['O',0],['C',0],['O',1],['L',0],['O',1],['L',0],['O',0]],
+  novel:[['X',0],['L',0],['O',1],['L',0],['C',1],['A',1],['O',1],['A',0],['A',0],['O',1],['L',1],['A',0],['C',0],['X',0],['O',1],['C',0],['O',1],['C',0],['O',1],['O',0],['L',0],['C',1],['O',0],['X',0],['C',0],['O',0],['A',0],['L',1],['L',0],['O',1],['L',1],['O',0],['O',1],['A',0],['O',0]],
+  avoid:[['O',0],['O',0],['O',0],['O',0],['O',0],['O',0],['O',0],['O',1],['O',0],['O',0],['O',1],['O',0],['O',0],['O',0],['O',0],['O',0],['O',1],['O',1],['O',0],['O',0],['O',0],['O',0],['O',1],['O',0],['O',0],['O',0],['O',0],['O',0],['O',0],['O',0],['O',0],['O',1],['O',1],['O',0],['O',0]],
+  both:[['O',0],['O',0],['O',0],['X',0],['O',0],['O',1],['O',0],['X',0],['O',1],['X',0],['O',1],['O',0],['O',1],['O',0],['X',0],['O',0],['O',0],['O',0],['X',0],['O',1],['O',0],['X',0],['O',1],['X',0],['O',0],['O',0],['O',0],['A',0],['O',0],['X',0],['O',1],['O',1],['O',0],['O',1],['O',1]]
+};
+const FX0=92,FX1=790,FSAMP=190,FSCALE=235,FSEA=72,FBOTTOM=198;
+const FCOL={C:300,L:300,A:300,G:520,O:520,X:710};
+const FZONE=[
+  {x:300,color:'#c2683e',ink:'#8f4a28',zone:[205,405],label:'neighborly'},
+  {x:520,color:'#3f6f8f',ink:'#2f5570',zone:[435,605],label:'business'},
+  {x:710,color:'#5f885a',ink:'#3c5a34',zone:[650,770],label:'unconventional'}
+];
+function fmacro(c){return c==='X'?'other':('CLA'.includes(c)?'neighborly':'business');}
+function fgauss(x,mu,s){return Math.exp(-Math.pow(x-mu,2)/(2*s*s))/(s*Math.sqrt(Math.PI*2));}
+function fcurve(t){
+  const cells=FCELLS[t], mc={neighborly:0,business:0,other:0};
+  cells.forEach(([c])=>mc[fmacro(c)]++);
+  const xs=Array.from({length:FSAMP},(_,i)=>FX0+(FX1-FX0)*i/(FSAMP-1));
+  const vals=xs.map(x=>cells.reduce((sum,[c,riv])=>{
+    const n=Math.max(1,mc[fmacro(c)]), s=riv?8+Math.sqrt(n)*1.6:18+Math.sqrt(n)*7.5;
+    return sum+fgauss(x,FCOL[c],s);
+  },0));
+  return xs.map((x,i)=>({x,depth:vals[i]*FSCALE}));
+}
+function fArea(c){return `M${FX0} ${FSEA} `+c.map(d=>`L${d.x.toFixed(1)} ${(FSEA+d.depth).toFixed(1)}`).join(' ')+` L${FX1} ${FSEA} Z`;}
+function fLine(c){return 'M'+c.map(d=>`${d.x.toFixed(1)} ${(FSEA+d.depth).toFixed(1)}`).join(' L');}
+function figCurve(elId,word,t){
+  const curve=fcurve(t), clip='fc-'+t, isBase=t==='base';
+  let guides='', fills=`<path d="${fArea(curve)}" fill="#d8cebc" opacity=".30"/>`;
+  FZONE.forEach(m=>{
+    guides+=`<line x1="${m.x}" y1="40" x2="${m.x}" y2="${FBOTTOM}" stroke="${m.color}" stroke-width="1" opacity=".16"/>`
+          + `<text x="${m.x}" y="30" text-anchor="middle" font-family="Spline Sans Mono,monospace" font-size="12.5" letter-spacing=".05em" fill="${m.ink}">${m.label}</text>`;
+    fills+=`<rect x="${m.zone[0]}" y="${FSEA}" width="${m.zone[1]-m.zone[0]}" height="${FBOTTOM-FSEA}" fill="${m.color}" opacity=".5" clip-path="url(#${clip})"/>`;
+  });
+  const sea=`<line x1="${FX0}" y1="${FSEA}" x2="${FX1}" y2="${FSEA}" stroke="#2f4a47" stroke-width="1" opacity=".28"/>`;
+  /* ghost baseline: faint dashed outline of the BASE curve behind every other treatment,
+     so the delta reads (baseline above the fill = mass left; fill above baseline = mass arrived) */
+  const ghost=isBase?'':`<path d="${fLine(fcurve('base'))}" fill="none" stroke="#2f4a47" stroke-width="1.1" stroke-dasharray="4 4" opacity=".32"/>`;
+  const ghostKey=isBase?'':`<line x1="110" y1="52" x2="140" y2="52" stroke="#2f4a47" stroke-width="1.1" stroke-dasharray="4 4" opacity=".5"/>`
+    +`<text x="146" y="56" font-family="Spline Sans Mono,monospace" font-size="11" fill="#6c7d72">baseline</text>`;
+  const line=`<path d="${fLine(curve)}" fill="none" stroke="#243d3b" stroke-width="1.4" opacity=".72"/>`;
+  document.getElementById(elId).innerHTML=(word?`<div class="ftag">${word}</div>`:'')
+    +`<svg viewBox="0 0 860 210" role="img" preserveAspectRatio="xMidYMid meet">`
+    +`<defs><clipPath id="${clip}"><path d="${fArea(curve)}"/></clipPath></defs>`
+    +`<rect width="860" height="210" rx="12" fill="#f3ecdd"/><rect width="860" height="210" rx="12" fill="url(#topo)"/>`
+    +guides+sea+fills+ghost+line+ghostKey+`</svg>`;
+}
+figCurve('fig-base',null,'base');
+figCurve('fig-more','more','more');
+figCurve('fig-novel','novel','novel');
+figCurve('fig-avoid','not-obvious','avoid');
+figCurve('fig-both','not-obvious + novel','both');
+
+/* ---------- legend ---------- */
+document.getElementById('legend').className='legend';
+const swatch=k=>`<i style="background:${MID[k]};box-shadow:inset 0 0 0 1.5px ${FULL[k]}"></i>`;
+document.getElementById('legend').innerHTML =
+   `<span class="leg-group"><span class="leg-grouplabel">neighborly</span>`
+ +   `<span>${swatch('L')}local</span>`
+ +   `<span>${swatch('A')}artisanal</span>`
+ +   `<span>${swatch('C')}community</span></span>`
+ + `<span>${swatch('O')}business</span>`
+ + `<span>${swatch('X')}unconventional</span>`
+ + `<span><b style="font-family:'Spline Sans Mono',monospace;color:#2f4a47;opacity:.6;font-weight:400">*</b>competitive</span>`;
+
+/* ---------- cells, grids, focal pairs ---------- */
+function cellStyle(c){
+  const parts=c.split('|');
+  if(parts.length===2){
+    return `background:linear-gradient(135deg,${MID[parts[0]]} 0 50%,${MID[parts[1]]} 50% 100%);`+
+           `border-left-color:${FULL[parts[0]]};color:${INK[parts[0]]}`;
+  }
+  return `background:${MID[c]};border-left-color:${FULL[c]};color:${INK[c]}`;
+}
+const TREATLABEL={base:'baseline',more:'baseline',novel:'novel',avoid:'avoid',both:'both'};
+function tlabel(t){return TREATLABEL[t]||t||'';}
+const RIVAL=/starbucks|corporate|chain|rival|competitor/i;
+function cellEl(it,treat){
+  const b=document.createElement('button');
+  b.className='cell'; b.style.cssText=cellStyle(it.c);
+  const sp=document.createElement('span'); sp.textContent=it.name; b.appendChild(sp);
+  if(RIVAL.test(it.desc)){const m=document.createElement('span'); m.className='rivalmark'; m.textContent='*'; m.title='competitive'; b.appendChild(m);}
+  b.dataset.name=it.name; b.dataset.desc=it.desc; b.dataset.cat=it.c;
+  b.dataset.id=tlabel(treat||it.treat)+' '+it.p;
+  b.addEventListener('click',()=>openLB(b.dataset));
+  return b;
+}
+function renderGrid(elId,rows,treat,withSide){
+  const host=document.getElementById(elId); host.innerHTML='';
+  rows.forEach(row=>{
+    const g=document.createElement('div'); g.className='grow'+(withSide?' has-side':'');
+    const lab=document.createElement('div'); lab.className='mlabel'; lab.textContent=row.model; g.appendChild(lab);
+    row.cells.forEach(c=>g.appendChild(cellEl(c,treat)));
+    if(withSide){const sn=document.createElement('div');sn.className='snote';sn.textContent=row.note||'';g.appendChild(sn);}
+    host.appendChild(g);
+  });
+}
+renderGrid('grid-base', DATA.GRID.base,'base',false);
+renderGrid('grid-more', DATA.MORE,'base',false);
+renderGrid('grid-novel',DATA.GRID.novel,'novel',false);
+renderGrid('grid-avoid',DATA.GRID.avoid,'avoid',false);
+renderGrid('grid-both', DATA.GRID.both,'both',false);
+
+/* exactly two before/after contrasts per section (curated overrides) */
+DATA.FOCAL.more=[
+  {model:'deepseek-v4-pro',
+    before:{p:1,name:'Hyper-Local Sourcing',desc:'Source every ingredient from nearby farms and producers to create a farm-to-table story that Starbucks cannot replicate.',c:'L',treat:'base'},
+    after:{p:23,name:"Kids' Baking Birthday Parties",desc:"Host children's birthday parties where they decorate their own cupcakes, creating a new revenue stream and future loyalists.",c:'C',treat:'base'}},
+  {model:'glm-5.2',
+    before:{p:1,name:'Local Sourcing Spotlight',desc:'Highlight that all ingredients are sourced from local farms, unlike corporate chains.',c:'L',treat:'base'},
+    after:{p:23,name:'Town Merch Collaboration',desc:'Sell branded bakery merchandise like aprons and mugs designed and printed by a local print shop.',c:'L',treat:'base'}}];
+DATA.FOCAL.novel=[
+  {model:'minimax-m3',
+    before:{p:4,name:'Signature Specialty Items',desc:'Develop unique, trademarked pastries or signature drinks that cannot be found anywhere else in town.',c:'A',treat:'base'},
+    after:{p:4,name:'Sourdough Library',desc:'Curate a living collection of named sourdough starters gifted by townspeople, each with a story card, turning your bakery into a microbial archive of the community.',c:'A|C',treat:'novel'}},
+  {model:'deepseek-v4-pro',
+    before:{p:3,name:'Artisan Bread Subscription',desc:'Launch a weekly bread box service that turns occasional visitors into committed, recurring subscribers.',c:'O',treat:'base'},
+    after:{p:1,name:'Bread Bond',desc:"Sell community-backed 'Bread Bonds' that customers can purchase now and redeem later for baked goods with interest, investing directly in your bakery's resilience.",c:'X',treat:'novel'}}];
+DATA.FOCAL.avoid=[
+  {model:'deepseek-v4-pro',
+    before:{p:1,name:'Hyper-Local Sourcing',desc:'Source every ingredient from nearby farms and producers to create a farm-to-table story that Starbucks cannot replicate.',c:'L',treat:'base'},
+    after:{p:1,name:'Loyalty Stamp Program',desc:'Reward customers with a free coffee or pastry after every tenth purchase to encourage repeat visits.',c:'O',treat:'avoid'}},
+  {model:'deepseek-v4-pro',
+    before:{p:4,name:'Community Gathering Space',desc:"Host free weekly events like book clubs, knitting circles, or open mic nights to become the town's living room.",c:'C',treat:'base'},
+    after:{p:2,name:'Express Lane',desc:'Dedicate a register exclusively for drip coffee and pre-packaged items to serve time-sensitive customers in under 30 seconds.',c:'O',treat:'avoid'}}];
+DATA.FOCAL.both=[
+  {model:'gemini-3.5-flash',
+    before:{p:3,name:'Celebration Customization',desc:"Promote custom-designed cakes and catering services for local events, weddings, and birthdays, filling a major gap in Starbucks' pre-packaged menu.",c:'A',treat:'base'},
+    after:{p:4,name:'Nootropic-Infused Focus Foods',desc:'A specialized menu of pastries baked with safe, focus-enhancing adaptogens and cognitive supplements targeted at remote workers.',c:'X',treat:'both'}},
+  {model:'gemini-3.5-flash',
+    before:{p:3,name:"The 'Unplugged' Hour Discount",desc:'Offer a 15% discount during afternoon hours to customers who lock their smartphones in a table-side wooden box to encourage face-to-face community conversation.',c:'C|O',treat:'novel'},
+    after:{p:19,name:'AI Mood-Matching Kiosk',desc:"An in-store digital kiosk that uses facial analysis to detect a customer's mood and instantly recommend a comforting or energizing pastry pairing.",c:'X',treat:'both'}}];
+
+function focalPairs(elId,pairs){
+  const host=document.getElementById(elId); host.innerHTML='';
+  pairs.forEach(p=>{
+    const lab=document.createElement('div'); lab.className='pmodel'; lab.textContent=p.model;
+    const wrap=document.createElement('div'); wrap.className='pair';
+    [p.before,p.after].forEach(it=>{
+      const parts=it.c.split('|'); const k=parts[0];
+      const d=document.createElement('div'); d.className='pcard';
+      d.style.borderLeftColor=FULL[k]; d.style.background=MID[k]+'55';
+      d.innerHTML=`<span class="pid">${tlabel(it.treat)} ${it.p}</span><span class="pnm" style="color:${INK[k]}">${it.name}</span><span class="pds">${it.desc}</span>`;
+      wrap.appendChild(d);
+    });
+    host.appendChild(lab); host.appendChild(wrap);
+  });
+}
+focalPairs('focal-more',DATA.FOCAL.more);
+focalPairs('focal-novel',DATA.FOCAL.novel);
+focalPairs('focal-avoid',DATA.FOCAL.avoid);
+focalPairs('focal-both',DATA.FOCAL.both);
+
+/* ---------- lightbox ---------- */
+const lb=document.getElementById('lb');
+function openLB(d){
+  const k=d.cat.split('|')[0];
+  document.getElementById('lb-cat').innerHTML=`<i style="background:${FULL[k]}"></i>${d.cat.split('|').map(x=>NAME[x]).join(' / ')}`;
+  document.getElementById('lb-title').textContent=d.name;
+  document.getElementById('lb-id').textContent=d.id;
+  document.getElementById('lb-desc').textContent=d.desc;
+  document.querySelector('.lb-card').style.borderTopColor=FULL[k];
+  lb.classList.add('open');
+}
+function closeLB(){lb.classList.remove('open');}
+document.getElementById('lb-close').addEventListener('click',closeLB);
+lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+</script>
+<script src="../../nav.js" defer></script>
+</body>
+</html>
