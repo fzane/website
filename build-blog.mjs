@@ -304,4 +304,28 @@ ${rows}
 `;
 writeFileSync(path.join(OUT, 'index.html'), index);
 
+// ── landing page: inject the 3 most recent post cards ─────────────────────────
+// Same marker-replacement pattern build.mjs uses for the projects list, so the
+// front-page Writing section stays in sync without hand-editing.
+const LANDING = 'index.html';
+if (existsSync(LANDING)) {
+  const src = readFileSync(LANDING, 'utf8');
+  if (src.includes('<!-- writing:start -->')) {
+    const cards = posts.slice(0, 3).map((p) => `      <a class="row nothumb" href="${OUT}/${p.slug}/">
+            <span class="rbody">
+              <span class="rtitle">${esc(p.meta.title)}</span>
+              <span class="rdesc">${esc(p.meta.description || '')}</span>
+              <span class="rmeta"><span class="rdate">${fmtMonth(p.date)}</span></span>
+            </span>
+          </a>`).join('\n');
+    const out = src.replace(
+      /(<!-- writing:start -->)[\s\S]*?(<!-- writing:end -->)/,
+      `$1\n${cards}\n      $2`);
+    writeFileSync(LANDING, out);
+    console.log(`updated ${LANDING} (3 recent writing cards)`);
+  } else {
+    console.warn(`skipped ${LANDING}: no writing markers`);
+  }
+}
+
 console.log(`built ${posts.length} posts + index into ${OUT}/`);
