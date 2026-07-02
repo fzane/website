@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Thinking in Its Head to Thinking with Its Hands — Francis Zane</title>
+<meta name="description" content="Modern AI is getting better not just at reasoning internally but at doing — running code, using tools, learning through trial. It's thinking by doing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
+<style>
+  body{background:var(--paper)}
+  .post{max-width:none;padding:0}
+  .post-head{margin-top:64px}
+  .post-kicker{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay);margin:0 0 14px}
+  .post-title{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+  .post-sub{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--muted);margin:16px 0 0;max-width:44ch}
+  .post-body{margin-top:44px}
+  .post-body p{margin:0 0 1.15em;max-width:64ch}
+  .post-body h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,32px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin:48px 0 14px;text-wrap:balance}
+  .post-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,25px);
+    line-height:1.25;color:var(--ink);margin:38px 0 12px}
+  .post-body h4{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--ink);margin:30px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.4em;max-width:64ch}
+  .post-body li{margin:0 0 .5em;color:var(--body)}
+  .post-body strong{color:var(--ink);font-weight:700}
+  .post-body blockquote{margin:28px 0;padding-left:24px;border-left:2px solid var(--clay);
+    color:var(--muted);max-width:60ch}
+  .post-body blockquote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6}
+  .post-body blockquote strong{color:var(--ink);font-style:normal}
+  .post-body hr{border:none;border-top:1px solid var(--line);margin:44px auto;width:180px}
+  .post-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+    background:var(--well);padding:1px 5px;border-radius:4px}
+  .post-body a{color:var(--blue);font-weight:700;text-decoration:none}
+  .post-body a:hover{text-decoration:underline;text-underline-offset:3px}
+  .post-nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);margin-top:72px;padding-top:26px}
+  .pn{display:flex;flex-direction:column;gap:4px;text-decoration:none;max-width:46%}
+  .pn-newer{margin-left:auto;text-align:right}
+  .pn-dir{font-size:13px;color:var(--muted)}
+  .pn-t{font-family:var(--serif);font-size:18px;color:var(--ink);line-height:1.25}
+  .pn:hover .pn-t{color:var(--clay)}
+  .back{display:inline-block;margin-top:8px;font-size:14.5px}
+  @media(max-width:560px){.pn{max-width:100%}.pn-newer{text-align:left;margin-left:0}}
+</style>
+</head>
+<body>
+
+  <div style="width:100%;padding:30px var(--pad-x) 0">
+    <div style="max-width:1080px;margin:0 auto">
+      <header class="site">
+        <a class="mark" href="../../">FZ<b>*</b></a>
+        <div class="site-right">
+          <nav class="nav">
+            <a href="../../about/" style="--nav-c:var(--moss)">About</a>
+          </nav>
+          <div class="social"><a href="mailto:francis@francis-zane.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.6 2L12 11.7 19.4 7H4.6ZM20 8.5l-7.4 4.7a1 1 0 0 1-1.2 0L4 8.5V17h16V8.5Z"/></svg></a><a href="https://www.linkedin.com/in/francis-zane-ba75521/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.4 8.5h3.1V21H3.4V8.5Zm5.06 0h2.97v1.71h.04c.41-.78 1.43-1.6 2.94-1.6 3.14 0 3.72 2.07 3.72 4.76V21h-3.1v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H8.46V8.5Z"/></svg></a><a href="https://throughthecontextwindow.substack.com" target="_blank" rel="noopener" aria-label="Substack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2.6H4V4Zm0 4.6h16v2.6H4V8.6Zm0 4.6h16L12 20.4 4 13.2Z"/></svg></a></div>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <main class="page">
+    <article class="post">
+      <div class="post-head">
+        <p class="post-kicker">June 9, 2025</p>
+        <h1 class="post-title">From Thinking in Its Head to Thinking with Its Hands</h1>
+      </div>
+      <div class="post-body">
+<p>If you’ve tried coding with AI tools, you’ve probably encountered the classic debugging loop: you ask ChatGPT to generate some Python code, run it, hit an error, paste the error message back into the chat, and watch as the AI quickly fixes its own mistake. This isn’t just a workflow quirk—it’s the first glimpse of something profound. It’s like the difference between trying to solve a jigsaw puzzle in your head versus spreading the pieces on a table and moving them around.  Modern AI is improving at both “thinking” (reasoning through problems internally) and “doing” (manipulating external tools and environments). The result? Thinking by doing.</p>
+<p>This shift echoes the “extended mind” thesis from cognitive science. The famous thought experiment asks us to consider Otto, who has Alzheimer’s and relies on a notebook for memory. When Otto writes “The museum is on 53rd Street” and later consults his notebook to find the museum, philosophers Andy Clark and David Chalmers argued the notebook has become part of Otto’s cognitive system—it’s not just a tool but a genuine extension of his mind. But for AI, the extension goes beyond memory to active manipulation. Watch a child solve a shape-sorting toy—they don’t mentally rotate each piece through every angle. They pick it up, try it, feel it doesn’t fit, rotate it, try again. The knowledge comes through the hands. AI models now do something similar—when running code, querying tools, or experimenting in simulations, they are discovering through trial what they couldn’t deduce through reasoning alone.</p>
+<p>Users had long wanted AI to operate beyond the chat window. At first, this meant custom plug-ins, hardcoded search tools, or sandboxed code execution. Anthropic’s Model Context Protocol (MCP) standardized these patterns—making tool use easier, more reliable, and more broadly adopted. This shared interface for models to interact with APIs, databases, or simulations as part of a generalized tool-use layer has led to an explosion of both new tools and interfaces to existing services.</p>
+<p>To understand how this also links to reasoning, we need to split what we mean by “thinking.” On one hand, there’s <strong>internal reasoning</strong>—what people usually imagine when they talk about AI getting smarter. Prompting models to “think step by step” lets them simulate solutions, one token at a time. Reinforcement learning on math, logic, and coding tasks—where correct answers are known—made them better at this kind of structured thought. It’s how we get better test scores.</p>
+<p>But there’s another kind: <strong>embedded reasoning</strong>, also called <strong>tool use</strong>. This is the kind of intelligence emerging in agentic models, where the system makes decisions not just about <em>what</em> to think, but <em>what to do next</em>. And these capabilities are also growing rapidly.  If you use Claude 4.0 in Cursor, you will routinely see an alert reminding you that it has taken 25 actions—running tests, checking edge cases, retrying with modified inputs, verifying assumptions—since it last checked with you. These aren’t just outputs—they’re thinking steps executed externally. This kind of reasoning happens in real time, through interaction. Yet it doesn’t replace internal reasoning—it <em>depends</em> on it. To use a tool effectively, the model must first reason about what the tool does, what result it expects, and how to interpret the output. Embedded reasoning <em>extends</em> internal reasoning into action.</p>
+<p>AI simulations at training time serve as laboratories—sealed worlds where models build internal intuitions. In Minecraft, SimCity, or StarCraft-like environments, they learn spatial reasoning, resource tradeoffs, and long-term planning. These lessons are distilled into statistical patterns: better “mental” models of cause and effect. But this is still <em>thinking in the head</em>. No matter how much the model saw during training, when it’s deployed, it no longer <em>touches</em> the world. By contrast, test-time interaction turns the environment into a workshop. A model adjusting a city’s layout or running dozens of code tests isn’t just drawing on stored wisdom—it’s discovering through feedback. Like someone solving a Rubik’s Cube by trying moves, the AI learns not just from memory but from <em>manipulation</em>. It’s not just acting on a plan—it’s planning by acting.</p>
+<p>Each failed attempt, each edge case poked is a move in an externalized reasoning loop. It is just choosing external exploration over internal simulation. The world is no longer the object of thought—it’s a part of the reasoning process. What began as language models predicting next tokens is morphing into systems that reason through <em>external scaffolding</em>. The evolution path isn’t just bigger models—it’s better interfaces for thinking by doing: sandboxes, simulations, toolkits, games—environments that push back.</p>
+      </div>
+      <nav class="post-nav">
+        <a class="pn pn-older" href="../busy-week-in-ai/"><span class="pn-dir">← Older</span><span class="pn-t">A Busy Week in AI</span></a>
+        <a class="pn pn-newer" href="../knowledge-work-bundle/"><span class="pn-dir">Newer →</span><span class="pn-t">Knowledge work is a bundle of activities and AI is unbundling them</span></a>
+      </nav>
+      <p><a class="link back" href="../">← All writing</a></p>
+    </article>
+  </main>
+
+</body>
+</html>

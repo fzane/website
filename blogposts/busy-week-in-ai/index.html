@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Busy Week in AI — Francis Zane</title>
+<meta name="description" content="OpenAI, Anthropic, and Google each made big news the same week — and each revealed a different bet: consumer, enterprise, and platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
+<style>
+  body{background:var(--paper)}
+  .post{max-width:none;padding:0}
+  .post-head{margin-top:64px}
+  .post-kicker{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay);margin:0 0 14px}
+  .post-title{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+  .post-sub{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--muted);margin:16px 0 0;max-width:44ch}
+  .post-body{margin-top:44px}
+  .post-body p{margin:0 0 1.15em;max-width:64ch}
+  .post-body h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,32px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin:48px 0 14px;text-wrap:balance}
+  .post-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,25px);
+    line-height:1.25;color:var(--ink);margin:38px 0 12px}
+  .post-body h4{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--ink);margin:30px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.4em;max-width:64ch}
+  .post-body li{margin:0 0 .5em;color:var(--body)}
+  .post-body strong{color:var(--ink);font-weight:700}
+  .post-body blockquote{margin:28px 0;padding-left:24px;border-left:2px solid var(--clay);
+    color:var(--muted);max-width:60ch}
+  .post-body blockquote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6}
+  .post-body blockquote strong{color:var(--ink);font-style:normal}
+  .post-body hr{border:none;border-top:1px solid var(--line);margin:44px auto;width:180px}
+  .post-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+    background:var(--well);padding:1px 5px;border-radius:4px}
+  .post-body a{color:var(--blue);font-weight:700;text-decoration:none}
+  .post-body a:hover{text-decoration:underline;text-underline-offset:3px}
+  .post-nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);margin-top:72px;padding-top:26px}
+  .pn{display:flex;flex-direction:column;gap:4px;text-decoration:none;max-width:46%}
+  .pn-newer{margin-left:auto;text-align:right}
+  .pn-dir{font-size:13px;color:var(--muted)}
+  .pn-t{font-family:var(--serif);font-size:18px;color:var(--ink);line-height:1.25}
+  .pn:hover .pn-t{color:var(--clay)}
+  .back{display:inline-block;margin-top:8px;font-size:14.5px}
+  @media(max-width:560px){.pn{max-width:100%}.pn-newer{text-align:left;margin-left:0}}
+</style>
+</head>
+<body>
+
+  <div style="width:100%;padding:30px var(--pad-x) 0">
+    <div style="max-width:1080px;margin:0 auto">
+      <header class="site">
+        <a class="mark" href="../../">FZ<b>*</b></a>
+        <div class="site-right">
+          <nav class="nav">
+            <a href="../../about/" style="--nav-c:var(--moss)">About</a>
+          </nav>
+          <div class="social"><a href="mailto:francis@francis-zane.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.6 2L12 11.7 19.4 7H4.6ZM20 8.5l-7.4 4.7a1 1 0 0 1-1.2 0L4 8.5V17h16V8.5Z"/></svg></a><a href="https://www.linkedin.com/in/francis-zane-ba75521/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.4 8.5h3.1V21H3.4V8.5Zm5.06 0h2.97v1.71h.04c.41-.78 1.43-1.6 2.94-1.6 3.14 0 3.72 2.07 3.72 4.76V21h-3.1v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H8.46V8.5Z"/></svg></a><a href="https://throughthecontextwindow.substack.com" target="_blank" rel="noopener" aria-label="Substack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2.6H4V4Zm0 4.6h16v2.6H4V8.6Zm0 4.6h16L12 20.4 4 13.2Z"/></svg></a></div>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <main class="page">
+    <article class="post">
+      <div class="post-head">
+        <p class="post-kicker">May 23, 2025</p>
+        <h1 class="post-title">A Busy Week in AI</h1>
+      </div>
+      <div class="post-body">
+<p>The competitive landscape of AI is often flattened into a single leaderboard—a race to the best model, the most users, or the flashiest demo. But this view oversimplifies a field that is rapidly diverging.</p>
+<p>OpenAI, Anthropic, and Google each had big news events recently, and each framed their story through a different market lens.</p>
+<ul>
+  <li><strong>OpenAI</strong>: Acquire Windsurf's coding application and Jony Ive's design company to dominate the chat and feed interfaces, becoming the surface through which users encounter AI in daily life. &rarr; <strong>Consumer</strong></li>
+  <li><strong>Anthropic</strong>: Use Code with Claude event to release deeply integrated, semi-autonomous agents designed to operate without constant user interaction &rarr; <strong>Enterprise</strong></li>
+  <li><strong>Google</strong>: Use Google I/O to show off a collection of individual, powerful models across a wide range of capabilities, albeit with a somewhat less compelling product vision. &rarr; <strong>Infrastructure?</strong></li>
+</ul>
+<p>The announcements from the past week point to AI moving from being a standalone product in its own right to increasingly becoming a tool to support different business strategies.  Each of these announcements makes sense when seen in the context of the different journeys of the three companies.</p>
+<hr>
+<h4><strong>▸ OpenAI — From AGI Lab to Consumer Attention Flywheel</strong></h4>
+<p>OpenAI began as a lab dedicated to long-horizon AGI research, bolstered by an API strategy that catered to developers. But the runaway success of ChatGPT reshaped the company from an ivory tower research lab into a consumer-facing platform with one of the world’s largest user bases.</p>
+<p>OpenAI’s product developments increasingly focus on end-user experience. Advanced Voice Mode, sticky personalization via chat history, and rich multimodal interactions are not just feature upgrades—they are strategic moves to anchor OpenAI as the default interface for a mass audience. Viral moments, like the Ghibli memes, showcase its cultural resonance.</p>
+<p>Recent moves continue this shift. The Windsurf acquisition isn’t just about acquiring a VSCode UI—it is a way to directly touch the new class of vibe-coding developers. Paying a premium to bring on Jony Ive, the visionary behind Apple’s iconic devices, strongly suggests a future in consumer electronics.</p>
+<p>Yet OpenAI hasn’t entirely shed its origins. The release of GPT-4.1—an API-focused model not used in ChatGPT—and Codex, an agentic asynchronous programming tool, reflect some mix of in-house needs, its developer-first roots or catch-up plays from other lanes.</p>
+<hr>
+<h4><strong>▸ Anthropic — Enterprise Agent Operator</strong></h4>
+<p>Anthropic was founded as a breakaway from OpenAI, emphasizing alignment and safety. Yet its strategic identity has quietly transformed. With Claude, it has found traction not in public virality but in backend enterprise integration.</p>
+<p>Claude supported integrations with Google Workspace, Slack, and Zoom. More notably, Anthropic’s publication of the MCP protocol—a standard for AI models to call external programs—accelerated its adoption by SaaS tools and websites, giving traditional software players a path to join in the AI ecosystem.</p>
+<p>Claude models have long been acknowledged as top-tier for coding, but the recent Code with Claude announcement reframed their use: as autonomous, asynchronous agents submitting work via GitHub. Crucially, they showcased Claude operating independently for extended periods—90 minutes on an internal task, seven hours for a customer—a fundamentally different skill profile than a chatbot checking back with the user every minute.</p>
+<p>Anthropic’s vision is sharply aligned. Enterprises demand high safety and reliability—especially in hands-free agentic tasks—which aligns with its founding principles. Even their playful stories - Claude Plays Pokemon - can be tied back to the challenges of long-running agentic behavior.  Technically, Claude’s limited context window (200k vs. 1M tokens in competitors) may constrain its capabilities for long, hands-off tasks. And Anthropic’s deeper push into coding agents introduces tension with downstream tools like Cursor and Windsurf that build on top of Claude’s models.</p>
+<hr>
+<h4><strong>▸ Google — AI Infrastructure Cloud</strong></h4>
+<p>Google stands as both AI’s pioneering inventor and its most inconsistent executor. With deep research pedigree (inventing the transformer) and unparalleled infrastructure (TPUs and GCP), it should be the natural leader. On the other side, its wide product array—Search, Ads, Android, Gmail, Docs—offers massive reach. Yet internal fragmentation has undermined its advantage.</p>
+<p>After early missteps (remember glue on pizza? multiracial Nazis?), Google has found its footing in the past year. AI Search may be the most used AI tool globally. Notebook LM for podcasts popularized a new kind of summarization. At the model layer, Gemini 2.5 Pro leads benchmarks, and Gemini Flash offers arguably the best price-to-performance ratio.</p>
+<p>Google I/O unveiled technical brilliance—cutting-edge video and image models, novel text diffusion models operating at lightning speed—but left many confused about the overarching strategy. Me-too product offers (an expensive paid tier and agentic coder just like openAI and Anthropic) lacked unifying vision.</p>
+<p>This confusion has always existed in Google's AI effort.  It extended from branding (Bard, Duet, Gemini-as-model and Gemini-as-service) to platforms (Vertex, AI Studio, Gemini Workspace). It has been unclear what Google is truly offering and to whom, except when it is acting as its own customer.  What Google can do it confront that fork directly.</p>
+<p>It should continue to add AI to the product surfaces where it is already dominant - Search and Android being obvious starting point.  However, rather than chase new product wins—a weak spot for large firms, and Google especially—it should lean into its actual strengths as a foundational technology builder.  Instead, it should focus on powerful, general purpose models at leading edge costs, leveraging its full stack capabilities in models, infrastructure, and chips, and then sell them as intelligence-as-service.  It already needs to build models that serve many different uses just to serve its existing in-house product customer, aligning it with the requirements of being this kind of AI foundry a la TSMC.  And with OpenAI and Anthropic aligning their models to their product lanes, and AWS and Azure lacking competitive models, this lane looks more open than ever.</p>
+<hr>
+<h4><strong>III Conclusion: Forked Futures, Realigned Stack</strong></h4>
+<p>If current trajectories hold, we are not heading toward a single AI market with one dominant winner, but toward distinct ecosystems governed by different logics.</p>
+<ul>
+  <li><strong>OpenAI</strong> is fighting for the <strong>top of the UI stack</strong>—not just through chat, but by capturing the <em>moment of user intention</em>. What used to be product UI becomes behavioral context. It isn’t replacing Google Search or the Facebook feed—it is becoming the new default page for the Internet.</li>
+  <li><strong>Anthropic</strong> is building a <strong>new middle layer</strong>—AI that performs autonomous labor inside existing tools. Claude doesn’t need to be your friend—it wants to be the thing <em>inside</em> your company that quietly gets work done. Agents instead of users, tasks instead of clicks.</li>
+  <li><strong>Google</strong> has the chance to become the <strong>base of the new AI cloud stack</strong>—the silicon bedrock beneath the AI economy. If it embraces its role as infrastructure provider, it can become the API layer everyone else builds upon. But it must confront its most difficult opponent: itself.</li>
+</ul>
+<p>As AI permeates diverse sectors, we shouldn’t expect uniformity. Each lane rewards a different kind of mastery: personalization and design for OpenAI; integration, robustness, and trust for Anthropic; and scale intelligence and infrastructure economics for Google.</p>
+      </div>
+      <nav class="post-nav">
+        <a class="pn pn-older" href="../what-is-context-window/"><span class="pn-dir">← Older</span><span class="pn-t">What Is a Context Window, Anyways?</span></a>
+        <a class="pn pn-newer" href="../thinking-with-hands/"><span class="pn-dir">Newer →</span><span class="pn-t">From Thinking in Its Head to Thinking with Its Hands</span></a>
+      </nav>
+      <p><a class="link back" href="../">← All writing</a></p>
+    </article>
+  </main>
+
+</body>
+</html>

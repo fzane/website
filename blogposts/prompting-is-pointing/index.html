@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompting Is Really Pointing — Francis Zane</title>
+<meta name="description" content="Prompting advice says be exhaustive. But past a point, the harder task isn't describing what you want — it's pointing at it through shared references.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
+<style>
+  body{background:var(--paper)}
+  .post{max-width:none;padding:0}
+  .post-head{margin-top:64px}
+  .post-kicker{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay);margin:0 0 14px}
+  .post-title{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+  .post-sub{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--muted);margin:16px 0 0;max-width:44ch}
+  .post-body{margin-top:44px}
+  .post-body p{margin:0 0 1.15em;max-width:64ch}
+  .post-body h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,32px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin:48px 0 14px;text-wrap:balance}
+  .post-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,25px);
+    line-height:1.25;color:var(--ink);margin:38px 0 12px}
+  .post-body h4{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--ink);margin:30px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.4em;max-width:64ch}
+  .post-body li{margin:0 0 .5em;color:var(--body)}
+  .post-body strong{color:var(--ink);font-weight:700}
+  .post-body blockquote{margin:28px 0;padding-left:24px;border-left:2px solid var(--clay);
+    color:var(--muted);max-width:60ch}
+  .post-body blockquote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6}
+  .post-body blockquote strong{color:var(--ink);font-style:normal}
+  .post-body hr{border:none;border-top:1px solid var(--line);margin:44px auto;width:180px}
+  .post-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+    background:var(--well);padding:1px 5px;border-radius:4px}
+  .post-body a{color:var(--blue);font-weight:700;text-decoration:none}
+  .post-body a:hover{text-decoration:underline;text-underline-offset:3px}
+  .post-nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);margin-top:72px;padding-top:26px}
+  .pn{display:flex;flex-direction:column;gap:4px;text-decoration:none;max-width:46%}
+  .pn-newer{margin-left:auto;text-align:right}
+  .pn-dir{font-size:13px;color:var(--muted)}
+  .pn-t{font-family:var(--serif);font-size:18px;color:var(--ink);line-height:1.25}
+  .pn:hover .pn-t{color:var(--clay)}
+  .back{display:inline-block;margin-top:8px;font-size:14.5px}
+  @media(max-width:560px){.pn{max-width:100%}.pn-newer{text-align:left;margin-left:0}}
+</style>
+</head>
+<body>
+
+  <div style="width:100%;padding:30px var(--pad-x) 0">
+    <div style="max-width:1080px;margin:0 auto">
+      <header class="site">
+        <a class="mark" href="../../">FZ<b>*</b></a>
+        <div class="site-right">
+          <nav class="nav">
+            <a href="../../about/" style="--nav-c:var(--moss)">About</a>
+          </nav>
+          <div class="social"><a href="mailto:francis@francis-zane.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.6 2L12 11.7 19.4 7H4.6ZM20 8.5l-7.4 4.7a1 1 0 0 1-1.2 0L4 8.5V17h16V8.5Z"/></svg></a><a href="https://www.linkedin.com/in/francis-zane-ba75521/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.4 8.5h3.1V21H3.4V8.5Zm5.06 0h2.97v1.71h.04c.41-.78 1.43-1.6 2.94-1.6 3.14 0 3.72 2.07 3.72 4.76V21h-3.1v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H8.46V8.5Z"/></svg></a><a href="https://throughthecontextwindow.substack.com" target="_blank" rel="noopener" aria-label="Substack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2.6H4V4Zm0 4.6h16v2.6H4V8.6Zm0 4.6h16L12 20.4 4 13.2Z"/></svg></a></div>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <main class="page">
+    <article class="post">
+      <div class="post-head">
+        <p class="post-kicker">June 26, 2026</p>
+        <h1 class="post-title">Prompting Is Really Pointing</h1>
+      </div>
+      <div class="post-body">
+<p>You've probably read a lot of prompting advice that tells you to be specific, precise, and exhaustive: spell out the audience, the tone, the format, the dos and don'ts, and so on. At some point, though, it starts to feel harder to describe this hypothetical document than to just write the actual document yourself.</p>
+<p>Is all of that really necessary? It depends. When you have a clear, specific thing you want and you want the model to check each of the criteria, yes. When you're not quite sure what you want — what precisely makes a good competitive analysis report? — things are different. With earlier models that needed a lot of handholding, you needed to be pedantic. With modern models, though, the real challenge usually isn't explaining <em>how</em> to do something — it's clearly communicating <em>what</em> you want.</p>
+<p>Instead of communicating a list of properties, though, we can communicate through shared references. If that sounds too abstract, I ran a simple experiment in <strong><a class="link" href="/projects/who-picked-the-headphones/">Who Picked the Headphones</a></strong>. I asked several different models to "make a product page for an e-commerce site." That short phrase was enough for every model to know it needed a whole set of pieces — a product image and gallery, buy buttons, customer reviews, a price, and the rest.</p>
+<p>Look at what that did — pages of potential specification, compressed into a single phrase: "e-commerce product page."  That worked only because we and the AIs have this shared understanding of what that phrase means through real-world examples we've both seen.</p>
+<p>At the same time, this compression leaves the AI to fill in a lot of gaps. Based on just that description, the models made pages about noise-cancelling headphones, with color names like "Midnight Black", and 4.7–4.8 star reviews. Those are also just the obvious, default answers to "what's on a product page", only along dimensions we're not used to noticing.</p>
+<p>Now that we see this pattern, how do we make use of it in practice?</p>
+<p>Instead of specifying everything up front, you can lean on these shared references to get most of the way there in just a few phrases and examples, and spend your own words only where necessary.</p>
+<p>The simple case is that there just is a word for the thing you want.  That makes it easy to ask for it, but also means you're getting the exact same thing as everyone else using those words.  This is more like Googling an answer than creating something new.  In practice, you want to use standard names to land you near the target quickly, and then move more carefully as you get close.</p>
+<p><strong>Start with a bad first version.</strong> You need to start somewhere.  Take the most basic description for the thing that defines its shape: a product webpage for headphones, a blog post arguing some position.  Ask for the obvious thing, and the model will give you the default answer.</p>
+<p>This is where it's easy to go wrong. You've got a plausible-looking output, so the instinct is to start polishing it into the final thing. Resist that urge. You have invested only one sentence of effort so far, and the answer in front of you is likely a "C." Polishing might get you to a "C+," but it won't get you to an "A" because there just isn't "A" material in it. It's fine to throw this one away. Its only job was to orient you.</p>
+<p><strong>Name it with examples.</strong> Having something concrete to look at makes it easier to say what you want as "similar to that but more like X".  A design can look like Apple or like LEGO.  A blog post can sound like a TED talk or like an academic paper.  These aren't better-or-worse versions of the same thing; they're different directions, and you get to pick one.</p>
+<p>Each of those names answers many questions at once — a lot of specification work for very little input.  It does ask something of you, though.  You need to know these names and what they stand for.  You can't point at something if you don't know what it's called or even that it exists.</p>
+<p><strong>Describe the difference.</strong> Eventually the names run out.   There's no existing thing that's just what you mean. You wanted Apple's calm, but warmer: wood and stone, not aluminum and white. Now you start spelling it out, but working from a nearby starting point.  It's like this thing you're pointing at, but different in these specific ways.</p>
+<p>Sometimes it's not easy to find the words for these differences.  One trick is to borrow them.  Think of some examples that have the quality you're after.  Ask the model to describe them and watch for the phrases that capture what you're trying to name.</p>
+<p>That's the arc:  Pick a starting point that grounds you in the default answer and your reaction to it.  Narrow it down by pointing at common references until you hit fine distinctions you can't explain with them. Find the precise words for the difference you want.</p>
+<p>To make that work, though, you have to accept that you're not writing and refining drafts — you're making lots of cheap prototypes and watching your own reactions to them.</p>
+      </div>
+      <nav class="post-nav">
+        <a class="pn pn-older" href="../new-employee/"><span class="pn-dir">← Older</span><span class="pn-t">The Work Is Mostly In Our Heads</span></a>
+      </nav>
+      <p><a class="link back" href="../">← All writing</a></p>
+    </article>
+  </main>
+
+</body>
+</html>

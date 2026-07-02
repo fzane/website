@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genie in a Model — Francis Zane</title>
+<meta name="description" content="The apocalyptic AI story imagines a single on-off switch to AGI. That framing gets two things badly wrong.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
+<style>
+  body{background:var(--paper)}
+  .post{max-width:none;padding:0}
+  .post-head{margin-top:64px}
+  .post-kicker{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay);margin:0 0 14px}
+  .post-title{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+  .post-sub{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--muted);margin:16px 0 0;max-width:44ch}
+  .post-body{margin-top:44px}
+  .post-body p{margin:0 0 1.15em;max-width:64ch}
+  .post-body h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,32px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin:48px 0 14px;text-wrap:balance}
+  .post-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,25px);
+    line-height:1.25;color:var(--ink);margin:38px 0 12px}
+  .post-body h4{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--ink);margin:30px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.4em;max-width:64ch}
+  .post-body li{margin:0 0 .5em;color:var(--body)}
+  .post-body strong{color:var(--ink);font-weight:700}
+  .post-body blockquote{margin:28px 0;padding-left:24px;border-left:2px solid var(--clay);
+    color:var(--muted);max-width:60ch}
+  .post-body blockquote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6}
+  .post-body blockquote strong{color:var(--ink);font-style:normal}
+  .post-body hr{border:none;border-top:1px solid var(--line);margin:44px auto;width:180px}
+  .post-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+    background:var(--well);padding:1px 5px;border-radius:4px}
+  .post-body a{color:var(--blue);font-weight:700;text-decoration:none}
+  .post-body a:hover{text-decoration:underline;text-underline-offset:3px}
+  .post-nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);margin-top:72px;padding-top:26px}
+  .pn{display:flex;flex-direction:column;gap:4px;text-decoration:none;max-width:46%}
+  .pn-newer{margin-left:auto;text-align:right}
+  .pn-dir{font-size:13px;color:var(--muted)}
+  .pn-t{font-family:var(--serif);font-size:18px;color:var(--ink);line-height:1.25}
+  .pn:hover .pn-t{color:var(--clay)}
+  .back{display:inline-block;margin-top:8px;font-size:14.5px}
+  @media(max-width:560px){.pn{max-width:100%}.pn-newer{text-align:left;margin-left:0}}
+</style>
+</head>
+<body>
+
+  <div style="width:100%;padding:30px var(--pad-x) 0">
+    <div style="max-width:1080px;margin:0 auto">
+      <header class="site">
+        <a class="mark" href="../../">FZ<b>*</b></a>
+        <div class="site-right">
+          <nav class="nav">
+            <a href="../../about/" style="--nav-c:var(--moss)">About</a>
+          </nav>
+          <div class="social"><a href="mailto:francis@francis-zane.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.6 2L12 11.7 19.4 7H4.6ZM20 8.5l-7.4 4.7a1 1 0 0 1-1.2 0L4 8.5V17h16V8.5Z"/></svg></a><a href="https://www.linkedin.com/in/francis-zane-ba75521/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.4 8.5h3.1V21H3.4V8.5Zm5.06 0h2.97v1.71h.04c.41-.78 1.43-1.6 2.94-1.6 3.14 0 3.72 2.07 3.72 4.76V21h-3.1v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H8.46V8.5Z"/></svg></a><a href="https://throughthecontextwindow.substack.com" target="_blank" rel="noopener" aria-label="Substack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2.6H4V4Zm0 4.6h16v2.6H4V8.6Zm0 4.6h16L12 20.4 4 13.2Z"/></svg></a></div>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <main class="page">
+    <article class="post">
+      <div class="post-head">
+        <p class="post-kicker">November 16, 2025</p>
+        <h1 class="post-title">Genie in a Model</h1>
+      </div>
+      <div class="post-body">
+<p>The discussion around the AI future today often has an apocalyptic feel: Right now, AI isn’t all that good, but one day, they will invent Artificial General Intelligence (AGI), and then we’ll all be cooked. I think this misses the mark in two key ways.</p>
+<p>First, it implies a binary on-off switch from before to after.</p>
+<p>Second, it suggests that there’s a single thing—”intelligence”—that it takes to get there.</p>
+<p>Instead, think in terms of the ability of AI to operate more or less autonomously, and to do so differently for different tasks. Seeing AI in terms of autonomy shows us how to leverage increasingly powerful models. To see why, let’s unpack what’s wrong with the standard story.</p>
+<h4>The Genie Analogy</h4>
+<p>The apocalyptic story assumes there’s a before/after moment when AI crosses some intelligence threshold and everything changes. But think about genie stories. The genie has unlimited power from the first wish. The problem was never “is the genie powerful enough?” It was always: the wisher doesn’t know what to ask for, or asks imprecisely, or fails to consider consequences.</p>
+<p>AI is getting more and more genie-like. GPT-5 or Claude can reason through complex problems, write sophisticated code, analyze nuanced situations. They have “enough” intelligence for most useful work. The limitation isn’t raw cognitive ability—it’s that they can’t read your mind. They need context: what success means, what tradeoffs to make, what you want beyond the literal instructions.</p>
+<h4>The Specification Problem</h4>
+<p>In the AI world, that specification comes through prompts and context. But context doesn’t work like intelligence does in the apocalyptic story.</p>
+<p>There’s no neat single axis. The specification you need is domain-specific—not universal. The context that helps AI write your specific marketing copy doesn’t help it debug your specific database configuration.</p>
+<p>And there’s no sharp transition. The amount of specification is always a matter of degree. You can always be more or less detailed about what you want.</p>
+<h4>Optimizing Your Wishes</h4>
+<p>Returning to the genie story, these insights change how we should think about the human role. You don’t need to make the genie even more powerful. You’re trying to get it to work for you, and the way to do that is to make many more wishes, and make each wish more valuable, for the same effort from you.</p>
+<p>Chat is the familiar starting point. You make a request, AI responds, you clarify. “For this audience, use a more formal tone.” “That approach violates our policy.” “Actually, what I really need is...” Each intervention gives AI the context to know what to do next.</p>
+<p>In that interaction, you are a supervisor that the AI escalates to whenever it gets stuck in its current job. You then get it unstuck by giving it some additional “just-in-time” context. However, the goal isn’t to supervise the AI, it is to make many big wishes. To get there, the AI needs to become more autonomous—not “AGI,” but able to take bigger steps before it needs to escalate to you.</p>
+<h4>The Autonomy Continuum</h4>
+<p>The natural way to think about that is in terms of how long the AI can work on your behalf. This isn’t a single threshold, but instead depends on the context infrastructure you give it.</p>
+<p>With just chat, you’re providing context in real-time for every decision—AI works autonomously for a couple minutes at most.</p>
+<p>Build reusable templates that detail what “good” looks like in this setting, and AI can handle sessions of related work with occasional check-ins—autonomy lasting many minutes.</p>
+<p>Build scaffolding that makes success externally verifiable—test suites, evaluation criteria, clear constraints—and AI can work toward “done” for hours without constant supervision.</p>
+<h4>Why Domains Progress Differently</h4>
+<p>Domains achieve different levels of autonomy at different rates. Coding is ahead because code has natural scaffolding: tests fail or pass, types check or don’t, programs run or error. AI can work for hours or days on code because “working” is externally verifiable.</p>
+<p>Most other domains don’t have that clear specification of a successful wish. What is a good strategy brief or a unique blog post? Getting more out of AI in these domains will require providing it the kind of structured autonomy that makes larger wishes possible. Seen through this lens, “AGI” means that wishes become big enough that anything we can ask for can be expressed in a few sentences—if those sentences are said in the right context.</p>
+<h4>What This Means</h4>
+<p>The real challenge isn’t AI gaining more power. Like any genie story, the power is already there. The hard part is learning to make bigger, more powerful wishes without ending up as a cautionary lesson.</p>
+<p>But it is more than just a metaphor. Seeing it this way changes our relation to AI as it gets more powerful. AI crossing some intelligence threshold is something that happens to us. Finding ways to give AI more autonomy—richer context enabling it to work longer on its own—is a story where we have agency. “AGI” doesn’t just arrive - it’s something we make, step by step, in each of our domains.</p>
+      </div>
+      <nav class="post-nav">
+        <a class="pn pn-older" href="../claude-code-minus-code/"><span class="pn-dir">← Older</span><span class="pn-t">Claude Code. Minus the Code.</span></a>
+        <a class="pn pn-newer" href="../prototyping-in-words/"><span class="pn-dir">Newer →</span><span class="pn-t">Prototyping With Words</span></a>
+      </nav>
+      <p><a class="link back" href="../">← All writing</a></p>
+    </article>
+  </main>
+
+</body>
+</html>

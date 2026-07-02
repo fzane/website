@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Work Is Mostly In Our Heads — Francis Zane</title>
+<meta name="description" content="A new hire who forgot everything not written down, but read the entire codebase, the manuals, and a two-year-old lunch order. The easiest onboarding ever — until it wasn’t.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
+<style>
+  body{background:var(--paper)}
+  .post{max-width:none;padding:0}
+  .post-head{margin-top:64px}
+  .post-kicker{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay);margin:0 0 14px}
+  .post-title{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+  .post-sub{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--muted);margin:16px 0 0;max-width:44ch}
+  .post-body{margin-top:44px}
+  .post-body p{margin:0 0 1.15em;max-width:64ch}
+  .post-body h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,32px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin:48px 0 14px;text-wrap:balance}
+  .post-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,25px);
+    line-height:1.25;color:var(--ink);margin:38px 0 12px}
+  .post-body h4{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--ink);margin:30px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.4em;max-width:64ch}
+  .post-body li{margin:0 0 .5em;color:var(--body)}
+  .post-body strong{color:var(--ink);font-weight:700}
+  .post-body blockquote{margin:28px 0;padding-left:24px;border-left:2px solid var(--clay);
+    color:var(--muted);max-width:60ch}
+  .post-body blockquote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6}
+  .post-body blockquote strong{color:var(--ink);font-style:normal}
+  .post-body hr{border:none;border-top:1px solid var(--line);margin:44px auto;width:180px}
+  .post-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+    background:var(--well);padding:1px 5px;border-radius:4px}
+  .post-body a{color:var(--blue);font-weight:700;text-decoration:none}
+  .post-body a:hover{text-decoration:underline;text-underline-offset:3px}
+  .post-nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);margin-top:72px;padding-top:26px}
+  .pn{display:flex;flex-direction:column;gap:4px;text-decoration:none;max-width:46%}
+  .pn-newer{margin-left:auto;text-align:right}
+  .pn-dir{font-size:13px;color:var(--muted)}
+  .pn-t{font-family:var(--serif);font-size:18px;color:var(--ink);line-height:1.25}
+  .pn:hover .pn-t{color:var(--clay)}
+  .back{display:inline-block;margin-top:8px;font-size:14.5px}
+  @media(max-width:560px){.pn{max-width:100%}.pn-newer{text-align:left;margin-left:0}}
+</style>
+</head>
+<body>
+
+  <div style="width:100%;padding:30px var(--pad-x) 0">
+    <div style="max-width:1080px;margin:0 auto">
+      <header class="site">
+        <a class="mark" href="../../">FZ<b>*</b></a>
+        <div class="site-right">
+          <nav class="nav">
+            <a href="../../about/" style="--nav-c:var(--moss)">About</a>
+          </nav>
+          <div class="social"><a href="mailto:francis@francis-zane.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.6 2L12 11.7 19.4 7H4.6ZM20 8.5l-7.4 4.7a1 1 0 0 1-1.2 0L4 8.5V17h16V8.5Z"/></svg></a><a href="https://www.linkedin.com/in/francis-zane-ba75521/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.4 8.5h3.1V21H3.4V8.5Zm5.06 0h2.97v1.71h.04c.41-.78 1.43-1.6 2.94-1.6 3.14 0 3.72 2.07 3.72 4.76V21h-3.1v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H8.46V8.5Z"/></svg></a><a href="https://throughthecontextwindow.substack.com" target="_blank" rel="noopener" aria-label="Substack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2.6H4V4Zm0 4.6h16v2.6H4V8.6Zm0 4.6h16L12 20.4 4 13.2Z"/></svg></a></div>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <main class="page">
+    <article class="post">
+      <div class="post-head">
+        <p class="post-kicker">May 18, 2026</p>
+        <h1 class="post-title">The Work Is Mostly In Our Heads</h1>
+      </div>
+      <div class="post-body">
+<p>We got a new employee on Monday. They could be a bit odd at times.  They didn't seem to remember anything that wasn't written down, and they had some weird verbal tics. Who actually says "It's not X, it's Y" that often in regular conversation?</p>
+<p>But there was no denying they were smart and hard-working. And oh did they read the materials. I don't mean they skimmed the files I handed them and asked a few questions. I mean they read the codebase, the website, the HR manuals. They even found the lunch order from the offsite two years ago and read that too.</p>
+<p>This was going to be the easiest onboarding ever.</p>
+<p>Then the questions started.</p>
+<p>We were looking at the sales conversion dashboard when they asked: "Is 4% bad and we need to fix it, or is it good and we don't?"</p>
+<p>I told them we'd spent the last two months getting that number up from under 3%, so 4% was huge progress. Their response: where can I find that on the dashboard?</p>
+<p>That... was a good question. I'd always looked at the dashboard and seen "the data". Now I had to admit it was only showing me a snapshot. The history I was making sense of it with — the 3% from two months ago, the industry benchmarking we'd done — was all in my head.</p>
+<p>Odd. I pinged the dashboard owner and asked them to add a historical view. Problem solved.</p>
+<p>Then there was the sprint review.</p>
+<p>As we sat down they leaned over and whispered, "Sorry, dumb question — why are we reading the task board together, out loud, very slowly?"</p>
+<p>The meeting organizer glared at us, so instead of answering I sat back and watched.</p>
+<p>The first ticket was the release of the new website design. Someone said the completion date needed to slip another two weeks. We all nodded. Hardly surprising. This was the fifth time we'd slipped it. Then I realized that the updated ticket was going to show a new date the same way it had shown the previous ones. This new date didn't mean what a date was supposed to mean. It was surely going to slip again. But thinking about that dashboard conversation, I wondered where we would remember that.</p>
+<p>I stopped enjoying the meeting.</p>
+<p>Then there was the architecture discussion. Three different approaches, lots of debate over pros and cons, we picked one and opened a ticket for implementing it. Now I could see where this was going. A month from now someone would come in and propose one of the rejected approaches again and we'd go in circles for a while having the same debates. But you can't put a ticket in for the things you decided not to make, right?</p>
+<p>I'd always thought the point of the meeting was to discuss the stuff we'd saved in our system — the tickets. But maybe the tickets were just the starting point for discussing all the things that didn't actually fit in the tickets, the stuff we were all carrying around in our heads.</p>
+<p>I walked back to my desk. A reply was waiting from the dashboard owner: history added. I looked at it and thought that fix was easy, but the problem was a lot messier than just that.</p>
+<p>I sat down and looked at the new view. There was the climb — under 3% two months ago, 4% now, all of it in a clean line. Useful. But when I looked at it again, what I was really seeing was "we're most of the way to the 5% industry benchmark." The 5% wasn't on the dashboard. The tools were holding the data. I was holding what I expected the data to be.</p>
+<p>The sprint review was the same pattern. The website ticket now showed a new completion date. If it slipped again, that would be expected. If it actually got delivered on time, that would be news.</p>
+<p>The thing the new hire had been getting stuck on wasn't that they didn't have enough information. They didn't have any expectation for what they were going to see. So either everything they saw was surprising, or nothing was, and neither was useful.</p>
+<p>What was I actually going to tell them? Maybe they just needed to start building expectations of their own, to give themselves something to be surprised or unsurprised by.</p>
+<p>So before they left for the day, I stopped by their desk to give them some advice: Based on what you saw today, what do you expect will happen this week, and what would surprise you? Oh, and I reminded them to write that down in a file. Otherwise they wouldn't remember it in the morning.</p>
+      </div>
+      <nav class="post-nav">
+        <a class="pn pn-older" href="../making-work/"><span class="pn-dir">← Older</span><span class="pn-t">Making Work Is Good After All</span></a>
+        <a class="pn pn-newer" href="../prompting-is-pointing/"><span class="pn-dir">Newer →</span><span class="pn-t">Prompting Is Really Pointing</span></a>
+      </nav>
+      <p><a class="link back" href="../">← All writing</a></p>
+    </article>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Document is the Interface — Francis Zane</title>
+<meta name="description" content="When AI collaboration goes wrong, we blame the prompt. Often the real problem is having the conversation in the wrong format.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
+<style>
+  body{background:var(--paper)}
+  .post{max-width:none;padding:0}
+  .post-head{margin-top:64px}
+  .post-kicker{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay);margin:0 0 14px}
+  .post-title{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+  .post-sub{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--muted);margin:16px 0 0;max-width:44ch}
+  .post-body{margin-top:44px}
+  .post-body p{margin:0 0 1.15em;max-width:64ch}
+  .post-body h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,32px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin:48px 0 14px;text-wrap:balance}
+  .post-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,25px);
+    line-height:1.25;color:var(--ink);margin:38px 0 12px}
+  .post-body h4{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--ink);margin:30px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.4em;max-width:64ch}
+  .post-body li{margin:0 0 .5em;color:var(--body)}
+  .post-body strong{color:var(--ink);font-weight:700}
+  .post-body blockquote{margin:28px 0;padding-left:24px;border-left:2px solid var(--clay);
+    color:var(--muted);max-width:60ch}
+  .post-body blockquote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6}
+  .post-body blockquote strong{color:var(--ink);font-style:normal}
+  .post-body hr{border:none;border-top:1px solid var(--line);margin:44px auto;width:180px}
+  .post-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+    background:var(--well);padding:1px 5px;border-radius:4px}
+  .post-body a{color:var(--blue);font-weight:700;text-decoration:none}
+  .post-body a:hover{text-decoration:underline;text-underline-offset:3px}
+  .post-nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);margin-top:72px;padding-top:26px}
+  .pn{display:flex;flex-direction:column;gap:4px;text-decoration:none;max-width:46%}
+  .pn-newer{margin-left:auto;text-align:right}
+  .pn-dir{font-size:13px;color:var(--muted)}
+  .pn-t{font-family:var(--serif);font-size:18px;color:var(--ink);line-height:1.25}
+  .pn:hover .pn-t{color:var(--clay)}
+  .back{display:inline-block;margin-top:8px;font-size:14.5px}
+  @media(max-width:560px){.pn{max-width:100%}.pn-newer{text-align:left;margin-left:0}}
+</style>
+</head>
+<body>
+
+  <div style="width:100%;padding:30px var(--pad-x) 0">
+    <div style="max-width:1080px;margin:0 auto">
+      <header class="site">
+        <a class="mark" href="../../">FZ<b>*</b></a>
+        <div class="site-right">
+          <nav class="nav">
+            <a href="../../about/" style="--nav-c:var(--moss)">About</a>
+          </nav>
+          <div class="social"><a href="mailto:francis@francis-zane.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.6 2L12 11.7 19.4 7H4.6ZM20 8.5l-7.4 4.7a1 1 0 0 1-1.2 0L4 8.5V17h16V8.5Z"/></svg></a><a href="https://www.linkedin.com/in/francis-zane-ba75521/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.4 8.5h3.1V21H3.4V8.5Zm5.06 0h2.97v1.71h.04c.41-.78 1.43-1.6 2.94-1.6 3.14 0 3.72 2.07 3.72 4.76V21h-3.1v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H8.46V8.5Z"/></svg></a><a href="https://throughthecontextwindow.substack.com" target="_blank" rel="noopener" aria-label="Substack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2.6H4V4Zm0 4.6h16v2.6H4V8.6Zm0 4.6h16L12 20.4 4 13.2Z"/></svg></a></div>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <main class="page">
+    <article class="post">
+      <div class="post-head">
+        <p class="post-kicker">December 15, 2025</p>
+        <h1 class="post-title">The Document is the Interface</h1>
+      </div>
+      <div class="post-body">
+<p>When AI collaboration goes wrong, people blame the prompt. They play with the wording, add more context, try again. Sometimes that helps. But often the prompt was fine—the problem was having the conversation in the wrong format entirely.</p>
+<p>Chat is good for loose, exploratory feedback. It's bad for categorical choices, explicit approvals, or cases where silence is ambiguous. When you ask an AI to do work on your behalf, you're working through decisions, scope, and authority all in the same stream, and using the same informal language you use to chat. No wonder things sometimes go sideways.</p>
+<p>Every AI collaboration involves negotiation—about which decisions need approval, about what you're actually trying to accomplish, about who does what. Chat buries that negotiation in a stream of text where it's easy to miss and hard to revisit. Documents make the negotiation explicit and editable.</p>
+<h3>The Approval List</h3>
+<p>A friend was using AI to bulk-reorganize directories on his computer—hundreds of accumulated files that needed sorting. The problem wasn't capability. The AI could move files with the right tooling (in this case, Claude Code). The problem was trust. How could he be confident it wouldn't delete something important or misfile something he'd never find again?</p>
+<p>The insight was to break the process into explicit steps. First, the AI produces a plan—a document listing every file it wants to move, with a one-line summary of each and where it thinks the file should go. Then the human pauses, actually reads the plan, and edits it—deleting actions that seem wrong, correcting misunderstandings, adding notes. Only then does the AI execute what the document authorizes. Three phases, with the document as the handoff point between thinking and doing.</p>
+<p>That plan is a different kind of document than most people produce with AI. It's not an incomplete draft of the final output. It's a throwaway surface whose only purpose is making decisions explicit and correctable. The document exists to be edited, not to be preserved.</p>
+<p>There's a reason signatures matter on contracts and vows matter in ceremonies. Some language doesn't describe what you'll do—it <em>does</em> something. Philosophers call these "speech acts." Pressing "buy" on a website isn't describing a purchase—it's making one. The approval document works the same way. Editing the list <em>is</em> the approval. When you delete a line, you've vetoed that action. When you leave a line untouched, you've authorized it. The document doesn't describe your decisions—it constitutes them.</p>
+<p>Restaurants have a version of this: the order read-back. The waiter recites what you asked for before sending it to the kitchen. You're not composing anything—just verifying. "Here's what I heard. Correct me now or accept what arrives." An AI approval document serves the same function: a checkpoint where errors are cheap to fix, before they become expensive to undo.</p>
+<h3>The Scope Document</h3>
+<p>Other failures aren't about wrong decisions but wasted effort. The AI produces something technically correct that completely misses what you actually needed. You specified the task; you just didn't specify the <em>point</em>.</p>
+<p>This is where a different document helps—something closer to a meeting agenda than an approval list. Before a meeting, someone sends around a message: here's what I plan to cover, here's what I think we're trying to accomplish, here are the topics I'm explicitly <em>not</em> addressing. Add items or object before we start.</p>
+<p>An AI scope document works the same way. Before the AI does substantive work, it produces a brief statement: here's what I understand the goal to be, here's my planned approach, here's what I'm assuming is out of scope. You review it, correct the misunderstandings, and <em>then</em> the work begins. In fact, some AI tools have already started building this in to their workflows. Deep Research features often ask clarifying questions before they spend ten minutes searching and synthesizing. That's a scope document—lightweight, but doing real work.</p>
+<p>The key insight: <strong>this document is designed to be thrown away.</strong> It's not a draft of anything. It's a specification surface—more like a Google Sheet collecting everyone's lunch order than an essay awaiting revision. Nobody agonizes over the prose quality of a sandwich order. The lunch-order spreadsheet succeeds when everyone gets what they wanted, not when the spreadsheet itself is beautiful.</p>
+<h3>The Role Document</h3>
+<p>A subtler failure mode: the AI does more than it should. You asked for feedback on your argument; it rewrote your prose. You asked for research; it made decisions you wanted to make yourself. The AI wasn't wrong about what you asked—it was wrong about where its authority ended.</p>
+<p>This isn't just about restraining the AI—it's about protecting the parts of the work you actually value. Maybe you enjoy crafting conclusions. Maybe the research is tedious but the synthesis is where your judgment matters. A role document makes those preferences explicit: "Pull the data and summarize the sources. But I write the conclusion—that's where I actually think."</p>
+<p>The question isn't only "what should the AI not do?" It's "what am I here for?" If you're not sure which parts of the work are yours to own, a role document forces the question.</p>
+<p>Here's what this looks like in practice. Without a role document: "Edit this essay." You get back a polished version. Better in some ways, but your voice is gone, and you're not sure which changes were corrections versus preferences.</p>
+<p>With a role document: "Mark sentences that are unclear. Flag arguments that need more support. Note where the structure loses momentum. But don't rewrite anything—I want to see what you see, then fix it myself." Now the diagnosis is the AI's, but the treatment is yours.</p>
+<h3>What This Changes</h3>
+<p>"Write a better prompt" is often the wrong lesson. The right question is: what negotiation between you and the AI broke down, and what document would have made that negotiation explicit?</p>
+<ul>
+  <li>Mistakes you can't catch → an approval document that surfaces decisions before execution</li>
+  <li>Wasted effort on the wrong goal → a scope document that aligns on purpose before work begins</li>
+  <li>AI overstepping its role → a role document that clarifies boundaries and authority</li>
+</ul>
+<p>These aren't outputs. They're not drafts. They're interaction surfaces—documents designed to structure a conversation that chat handles poorly.</p>
+<p>People are excited about using vibecoding tools to build custom apps—finally, software that fits your workflow instead of forcing your workflow into someone else's design. But this oversells the need for interactivity. Many tasks don't need buttons and forms. They need a document you can read, edit, and hand back. Apps require code and design. Documents require only writing and clear structure.  In settings that don't need real-time feedback, the document is often simpler, faster, and more legible.</p>
+<p>My friend's file reorganization became easier because a simple list transformed an opaque, anxiety-producing process into something he could see, judge, and control.</p>
+      </div>
+      <nav class="post-nav">
+        <a class="pn pn-older" href="../double-diamond/"><span class="pn-dir">← Older</span><span class="pn-t">Four Summaries And A Decision</span></a>
+        <a class="pn pn-newer" href="../renaissance-workshop/"><span class="pn-dir">Newer →</span><span class="pn-t">In The Artist's Own Hand</span></a>
+      </nav>
+      <p><a class="link back" href="../">← All writing</a></p>
+    </article>
+  </main>
+
+</body>
+</html>

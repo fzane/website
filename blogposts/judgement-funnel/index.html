@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building Judgement Funnels — Francis Zane</title>
+<meta name="description" content="In a world flooded with cheap thinking, human judgment becomes the scarce resource — and the task is to architect when, where, and how it lands.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
+<style>
+  body{background:var(--paper)}
+  .post{max-width:none;padding:0}
+  .post-head{margin-top:64px}
+  .post-kicker{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--clay);margin:0 0 14px}
+  .post-title{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+  .post-sub{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--muted);margin:16px 0 0;max-width:44ch}
+  .post-body{margin-top:44px}
+  .post-body p{margin:0 0 1.15em;max-width:64ch}
+  .post-body h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,32px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);margin:48px 0 14px;text-wrap:balance}
+  .post-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,25px);
+    line-height:1.25;color:var(--ink);margin:38px 0 12px}
+  .post-body h4{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--ink);margin:30px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.4em;max-width:64ch}
+  .post-body li{margin:0 0 .5em;color:var(--body)}
+  .post-body strong{color:var(--ink);font-weight:700}
+  .post-body blockquote{margin:28px 0;padding-left:24px;border-left:2px solid var(--clay);
+    color:var(--muted);max-width:60ch}
+  .post-body blockquote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6}
+  .post-body blockquote strong{color:var(--ink);font-style:normal}
+  .post-body hr{border:none;border-top:1px solid var(--line);margin:44px auto;width:180px}
+  .post-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+    background:var(--well);padding:1px 5px;border-radius:4px}
+  .post-body a{color:var(--blue);font-weight:700;text-decoration:none}
+  .post-body a:hover{text-decoration:underline;text-underline-offset:3px}
+  .post-nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);margin-top:72px;padding-top:26px}
+  .pn{display:flex;flex-direction:column;gap:4px;text-decoration:none;max-width:46%}
+  .pn-newer{margin-left:auto;text-align:right}
+  .pn-dir{font-size:13px;color:var(--muted)}
+  .pn-t{font-family:var(--serif);font-size:18px;color:var(--ink);line-height:1.25}
+  .pn:hover .pn-t{color:var(--clay)}
+  .back{display:inline-block;margin-top:8px;font-size:14.5px}
+  @media(max-width:560px){.pn{max-width:100%}.pn-newer{text-align:left;margin-left:0}}
+</style>
+</head>
+<body>
+
+  <div style="width:100%;padding:30px var(--pad-x) 0">
+    <div style="max-width:1080px;margin:0 auto">
+      <header class="site">
+        <a class="mark" href="../../">FZ<b>*</b></a>
+        <div class="site-right">
+          <nav class="nav">
+            <a href="../../about/" style="--nav-c:var(--moss)">About</a>
+          </nav>
+          <div class="social"><a href="mailto:francis@francis-zane.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.6 2L12 11.7 19.4 7H4.6ZM20 8.5l-7.4 4.7a1 1 0 0 1-1.2 0L4 8.5V17h16V8.5Z"/></svg></a><a href="https://www.linkedin.com/in/francis-zane-ba75521/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.4 8.5h3.1V21H3.4V8.5Zm5.06 0h2.97v1.71h.04c.41-.78 1.43-1.6 2.94-1.6 3.14 0 3.72 2.07 3.72 4.76V21h-3.1v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H8.46V8.5Z"/></svg></a><a href="https://throughthecontextwindow.substack.com" target="_blank" rel="noopener" aria-label="Substack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2.6H4V4Zm0 4.6h16v2.6H4V8.6Zm0 4.6h16L12 20.4 4 13.2Z"/></svg></a></div>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <main class="page">
+    <article class="post">
+      <div class="post-head">
+        <p class="post-kicker">May 8, 2025</p>
+        <h1 class="post-title">Building Judgement Funnels</h1>
+      <p class="post-sub">Architecting Scarce Human Insight</p>
+      </div>
+      <div class="post-body">
+<p>AI has made thought fast and cheap.</p>
+<p>But in a world flooded with cheap thinking, human judgment emerges as a scarce, strategic resource.  The work ahead isn't to automate away judgment. It's to architect when, where, and how it lands—maximizing its leverage.</p>
+<p>Let’s look at a new kind of funnel—not just for capturing leads, but for sequencing how and where judgment is applied. It begins with surfacing fit, moves through sculpting inputs, and culminates in high-leverage human engagement.</p>
+<hr>
+<h3>Dynamic Interaction: Proving Fit Before Contact</h3>
+<p>Most websites still act like static brochures—content on one side, a "Contact Us" form on the other, leaving it up to users to guess: are you relevant to my problem?</p>
+<p>If instead of static sites, we enabled dynamic interaction layers—intelligent search, guided flows, and AI-backed content queries—users would surface immediate, tailored proof of a fit. Completed projects that match the user's goal, whitepapers tackling the exact issue, past wins directly aligned with current needs.</p>
+<p>Landing pages can dynamically assemble based on user signals, offering custom-fit credibility. Case study engines can stitch examples together live. Instead of waiting for a sales call to prove relevance, you demonstrate it dynamically.</p>
+<blockquote>
+<p>How many opportunities slip away today because users can't immediately see you solving their problem?</p>
+</blockquote>
+<p>The shift here is to move credibility earlier: build mechanisms that show, not tell, why you're relevant—before contact is ever made.</p>
+<hr>
+<h3>Sculpting the Inputs: Structured Diagnostics for Alignment</h3>
+<p>Even when users reach out, today's intake is messy: meetings, discussions, half-formed briefs.</p>
+<p>But if you're an expert, you already know the majority of what any serious engagement will require. The real bottleneck is gathering and structuring the information that real decisions will depend on.</p>
+<p>Users can build structured briefs through guided forms and AI assistance, if given the right structures . Messy drafts can be refined into coherent frames before a human even gets involved. Some companies are already using audio-based AI agents to even have AI phone conversations to make structured data gathering easier for the participants.</p>
+<p>Partial analyses will become normal: users will receive inexpensive, human-reviewed first-pass insights early, helping them validate their needs before committing to major time or money.</p>
+<p>The strategic move here is to frontload alignment: design workflows that extract useful, decision-ready context before your team ever shows up.</p>
+<blockquote>
+<p>If you could design a first-pass diagnostic that returned real value within an hour, what would it ask—and what would it teach the user about their own problem?</p>
+</blockquote>
+<hr>
+<h3>Surgical Judgment: Right Tool at the Right Time</h3>
+<p>Surgeons don't walk into the operating room blind. They prepare with scans, tests, scenarios before they ever start cutting. Other judgment work should follow the same model.</p>
+<p>After this dynamic surface matching and structured intake, human expertise engages only when conditions maximize success—high-trust, high-context, high-leverage.</p>
+<p>Firms will shift away from large analyst teams to principal-only consulting models with fewer hours at higher value.  And leveraging that clearer picture of the customer's environment, engagements won't just end with a report—they'll deliver execution-ready prompts, rules, and frameworks that the clients can use across the organization to drive next actions without new bottlenecks.</p>
+<blockquote>
+<p>If you had all the right information upfront, how would you restructure your face time with clients to deliver even more—not just faster, but deeper?</p>
+</blockquote>
+<hr>
+<h3>Architectures of Action: Where to Start</h3>
+<p>You don't need to build a perfect funnel overnight. Start by diagnosing where users fall off today:</p>
+<p><strong>Where do users fail to recognize fit?</strong></p>
+<ul>
+  <li>Prototype smarter site search and dynamic surfacing of relevant proofs. Most of all, make sure that your key proof data is online. </li>
+  <li>Build guided pathways that mirror real user goals and language. Even without online adaptation, structuring pages around customer personas or segments can help.</li>
+</ul>
+<p><strong>Where does user input arrive too messy to act on?</strong></p>
+<ul>
+  <li>Frame diagnostic structures that collect critical assumptions and contexts upfront.    </li>
+  <li>Offer quick-turn, partially automated first-pass analyses to validate engagements early.</li>
+</ul>
+<p><strong>Where does precious judgment get wasted?</strong></p>
+<ul>
+  <li>Redesign entry thresholds—demand structured diagnostics before committing serious human time.    </li>
+  <li>Treat pre-engagement preparation as the gateway to precision, not an optional extra.</li>
+</ul>
+<blockquote>
+<p>Scarce human judgment isn't a bottleneck. It's the new engine of serious value.</p>
+</blockquote>
+      </div>
+      <nav class="post-nav">
+        <a class="pn pn-older" href="../decisions-not-documents/"><span class="pn-dir">← Older</span><span class="pn-t">Decisions, Not Documents</span></a>
+        <a class="pn pn-newer" href="../what-is-context-window/"><span class="pn-dir">Newer →</span><span class="pn-t">What Is a Context Window, Anyways?</span></a>
+      </nav>
+      <p><a class="link back" href="../">← All writing</a></p>
+    </article>
+  </main>
+
+</body>
+</html>

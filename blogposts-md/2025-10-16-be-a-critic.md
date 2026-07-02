@@ -1,0 +1,17 @@
+---
+title: "Be A Critic: Learn to Evaluate Even Things You Can't Do"
+date: "2025-10-16"
+description: "School taught us to specialize and execute. AI inverts that: value moves upstream to people who can evaluate work they could never produce themselves."
+---
+
+School taught us to specialize. Pick a major, master the facts, develop execution skills. The implicit promise was that deep expertise in one domain would make you valuable. You'd write the code, run the analyses, design the systems yourself.
+
+AI is inverting this model. The detailed execution - writing code, generating designs, analyzing data - increasingly belongs to machines. Human value shifts upstream: to product managers who shape what gets built, architects who evaluate technical approaches, leaders who recognize which strategies will work. These roles rewards pattern recognition across domains, taste, and judgment more than execution skill.
+
+At first, this might seem impossible. How do you learn to judge code quality without writing thousands of lines? How do you develop product taste without shipping products? The judgement appears inseparable from the execution.
+
+But consider film critics. They've never directed a major film, yet many can articulate what makes a film work better than the filmmakers themselves. They developed this capability through specific methods: watching thousands of films (pattern library), studying frameworks (three-act structure, mise-en-scène), and practicing evaluation (writing critiques that test their judgment). This same model exists in other domains - venture capitalists who evaluate startups they couldn't build, creative directors who judge designs they can't execute, editors who improve writing they couldn't originate.
+
+So what does this look like in practice? Pick a couple of domains adjacent to your current work or natural interests - UX design for a programmer, marketing for a salesperson, and so on. Then immerse yourself in that domain. Watch videos of experts talking to experts and see how they talk and how they think. Learn the vocabulary of technical language and frameworks they use to make fine distinctions. Read reviews and analyses by experts - Ben Thompson / Stratechery on business strategy in tech. This isn't passive consumption - it's active learning of patterns and how to match them. The goal of learning UX design as a programmer isn't for you to change careers, it's to prepare you to leverage AI to handle a bigger project that will require managing both tasks, as much of the grunt work is done by AI.
+
+Formal education will eventually catch up. We'll see more cross disciplinary, more judgement and taste based areas like Product Management find homes in academic departments. Degrees will shift from primarily credentials in specific expertise towards portfolios demonstrating capability in emerging, undefined domains. But institutions move slowly. While they're planning this redesign and figuring out how to implement it, you'll have to create your own curriculum for this new shape of work.
