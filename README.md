@@ -79,8 +79,15 @@ re-run the build; never edit files under `blogposts/` directly. If you change
 1. Create `projects/<slug>/` with an `index.html`; keep all its assets inside
    the folder, referenced by relative paths.
 2. Add `<script src="../../nav.js" defer></script>` before `</body>`.
-3. Add an entry at the appropriate position in `manifest.json` (newest first).
-4. Run `node build.mjs` to refresh the index pages.
+3. Add social/link metadata in the page `<head>`:
+   - `<meta name="description" content="...">`
+   - `<link rel="canonical" href="https://francis-zane.com/projects/<slug>/">`
+   - `og:type`, `og:site_name`, `og:url`, `og:title`, and `og:description`
+   - `twitter:card`, `twitter:title`, and `twitter:description`
+   - If a purpose-built 1200×630 social card exists, also add `og:image`,
+     `og:image:width`, `og:image:height`, and `twitter:image`.
+4. Add an entry at the appropriate position in `manifest.json` (newest first).
+5. Run `node build.mjs` to refresh the index pages.
 
 To freeze a citable version of a piece, copy its folder to
 `projects/<slug>/v1/` and link it from the living page.
